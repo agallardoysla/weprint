@@ -11,7 +11,7 @@ import {
   BackHandler,
   Text,
 } from 'react-native';
-import {colores} from '../constantes/Temas';
+import {colores, tipoDeLetra} from '../constantes/Temas';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 
 const Cargando = ({
@@ -28,7 +28,7 @@ const Cargando = ({
         style={[
           {
             alignSelf: 'center',
-            fontFamily: 'RobotoBold',
+            fontFamily: tipoDeLetra.bold,
             fontSize: RFPercentage(3.5),
             color: colores.verCanasta,
           },

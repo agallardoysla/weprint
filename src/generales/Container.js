@@ -6,13 +6,20 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import Cargando from './Cargando';
 import {connect} from 'react-redux';
 
-function Container({children, isloading = false, navigation, footer = true}) {
+function Container({
+  children,
+  isloading = false,
+  navigation,
+  footer = true,
+  loadingProps,
+}) {
   return (
     <View style={styles.container}>
       <View style={{flex: 1, width: '100%'}}>{children}</View>
       {footer && <Footer navigation={navigation.navigation} />}
       {isloading && (
         <Cargando
+          {...loadingProps}
           style={{
             position: 'absolute',
             backgroundColor: 'rgba(52,52,52,0.5)',

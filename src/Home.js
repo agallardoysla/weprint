@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
@@ -9,6 +10,7 @@ import Container from './generales/Container';
 
 function Home(props) {
   const {login, dispatch, navigation} = props;
+  const [loading, setloading] = useState(false);
 
   console.log('Home', login);
 

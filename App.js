@@ -18,7 +18,8 @@ const App: () => React$Node = () => {
   );
 
   useEffect(() => {
-    persistStore(store).purge();
+    //limpiar persist
+    //persistStore(store).purge();
   }, []);
 
   return (
