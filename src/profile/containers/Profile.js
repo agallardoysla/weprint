@@ -35,15 +35,13 @@ function Profile({navigation}) {
               name="Politicas de Privacidad"
               icon="policy"
               color="#ffd948"
-              routeName="Policy"
-              navigation={navigation}
+              onPressFunction={() => navigation.navigate('Policy')}
             />
             <MenuItem
               name="Somos #Weprint"
               icon="supervisor-account"
               color="#ffd948"
-              routeName="AboutUs"
-              navigation={navigation}
+              onPressFunction={() => navigation.navigate('AboutUs')}
               divider={false}
             />
           </View>
@@ -55,7 +53,12 @@ function Profile({navigation}) {
               paddingHorizontal: '5%',
               paddingVertical: '5%',
             }}>
-            <MenuItem name="Cerrar Sesion" color="#ffd948" divider={false} />
+            <MenuItem
+              name="Cerrar Sesion"
+              color="#ffd948"
+              onPressFunction={() => console.log('Session')}
+              divider={false}
+            />
           </View>
         </View>
       </View>

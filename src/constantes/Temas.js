@@ -42,3 +42,12 @@ export const pantalla = {
   screenHeight: Math.round(Dimensions.get('window').height),
   screenWidth: Math.round(Dimensions.get('window').screenWidth),
 };
+
+
+export const estiloDeLetra = {
+  negrita: {
+    color: '#000000',
+    fontFamily: tipoDeLetra.bold,
+    fontWeight: 'bold',
+}
+}

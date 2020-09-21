@@ -1,17 +1,17 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, Image, StyleSheet} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {tipoDeLetra, colores} from '../constantes/Temas';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import navigation from '../redux/reducer/navigation';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export const MenuItem = ({
   name,
   nameStyle,
   icon,
   color,
-  routeName,
-  navigation,
+  background,
+  onPressFunction,
   divider = true,
   photo,
   text,
@@ -20,13 +20,13 @@ export const MenuItem = ({
   console.log(photo);
   return (
     <TouchableOpacity
-      style={{backgroundColor: colores.blanco}}
-      onPress={() => navigation.navigate(routeName)}>
+      style={{backgroundColor: background ? background : colores.blanco}}
+      onPress={onPressFunction}>
       <View style={{flexDirection: 'row', alignItems: 'center', padding: 10}}>
         {photo ? (
           <Image
             source={{uri: `${photo}`}}
-            style={{height: 40, width: 40, marginRight: 15, borderRadius: 100}}
+            style={{height: 45, width: 45, marginRight: 15, borderRadius: 100}}
           />
         ) : (icon ? (
           <Icon name={icon} style={{marginRight: 15}} color={color} size={20} />
