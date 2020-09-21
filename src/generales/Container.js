@@ -44,7 +44,7 @@ const Footer = ({navigation}) => {
         paddingHorizontal: 10,
       }}>
       <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
+      <Item navigation={navigation} ruta={'Login'} />
       <Item navigation={navigation} ruta={'Home'} />
       <Item navigation={navigation} ruta={'Home'} />
       <Item navigation={navigation} ruta={'Home'} />

@@ -28,7 +28,7 @@ const example = {
   },
 };
 
-export const register_api = async (body = example.register) => {
+export const register_api = async (body) => {
   postToken(body, '/register');
 };
 

@@ -33,6 +33,7 @@ export const opacidades = {
 export const tamañoLetra = {
   terminos: 2.2,
   tituloContainer: 2.5,
+  subtituloContainer: 25.5,
   botones: 2.5,
 };
 export const pantalla = {

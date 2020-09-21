@@ -3,6 +3,7 @@ export const ACTUALIZAR_LOGIN = 'ACTUALIZAR_LOGIN';
 export const actualizarLogin = (login) => ({
   type: ACTUALIZAR_LOGIN,
   login,
+
 });
 
 const initialState = {};
