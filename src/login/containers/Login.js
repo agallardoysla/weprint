@@ -16,7 +16,8 @@ import { SvgUri } from 'react-native-svg';
 import Feather from 'react-native-vector-icons/Feather'
 
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
+import LinearGradientButton from 'react-native-linear-gradient';
+
 
 //importaciones necesarias para redux
 import { connect, useDispatch, useSelector } from 'react-redux';
@@ -29,8 +30,12 @@ import { tamañoLetra } from '../../constantes/Temas'
 import LoginInput from '../components/LayoutInput';
 import LayoutInput from '../components/LayoutInput';
 import CardLogin from '../components/CardLogin';
-import backgroundLogin from '../../../assets/images/login.png';
+import SvgBackground from '../components/LoginSvg'
 import logo from '../../../assets/images/logo_blanco.png';
+import LoginSvg from '../components/LoginSvg'
+
+
+import Background from '../../../assets/images/svg/login.svg';
 
 // styles
 import styles from '../styles/styles';
@@ -129,10 +134,10 @@ function Login(props) {
     <Container footer={false} style={styles.container}>
       <ScrollView>
         <StatusBar backgroundColor='#ff7b7f' barStyle="light-content" />
-        <View>
-          <Image source={backgroundLogin} alt='' style={styles.backgroundLogo} />
-          <Image source={logo} alt='' style={[styles.logo, { width: '80%' }]} />
+        <View style={{ height: 30, width: '100%' }}>
+          <Background width={'100%'} height={83} />
         </View>
+        <Image source={logo} alt='' style={[styles.logo, { width: '80%' }]} />
         <View>
           <CardLogin>
             <Text style={styles.titleform}>Login</Text>
@@ -187,14 +192,14 @@ function Login(props) {
               style={styles.signIn}
               onPress={() => { loginHandle() }}
             >
-              <LinearGradient
+              <LinearGradientButton
                 colors={['#f18263', '#ff7b7f']}
                 style={styles.signIn}
               >
                 <Text style={[styles.textSign, {
                   color: '#fff'
                 }]}>Ingresar</Text>
-              </LinearGradient>
+              </LinearGradientButton>
             </TouchableOpacity>
 
             <TouchableOpacity>
@@ -208,14 +213,14 @@ function Login(props) {
               style={styles.signUp}
               onPress={() => console.log('val')}
             >
-              <LinearGradient
+              <LinearGradientButton
                 colors={['#FFF', '#FFF']}
                 style={styles.signUp}
               >
                 <Text style={[styles.textSignUp, {
                   color: '#f18263'
                 }]}>Sign Up</Text>
-              </LinearGradient>
+              </LinearGradientButton>
             </TouchableOpacity>
           </View>
         </View>

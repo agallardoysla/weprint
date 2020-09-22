@@ -14,7 +14,7 @@ export default {
         flex: 1,
         width: '80%',
         height: 125,
-        bottom: '70%',
+        bottom: '80%',
         justifyContent: 'center',
         alignSelf: 'center',
 
@@ -35,7 +35,7 @@ export default {
         borderRadius: 10,
         elevation: 3,
         backgroundColor: '#fff',
-        height: '60%',
+        height: '70%',
         width: '90%',
         shadowOffset: { width: 1, height: 1 },
         shadowColor: '#333',
@@ -44,7 +44,7 @@ export default {
         marginHorizontal: 3,
         marginVertical: 6,
         alignSelf: 'center',
-        bottom: '40%'
+        
 
     },
     cardContent: {
@@ -62,7 +62,7 @@ export default {
         justifyContent: 'center',
         alignItems: 'center',
         marginVertical: 10,
-        borderRadius: 10,
+        borderRadius: 10, 
     },
     textSign: {
         fontSize: 18,
@@ -83,7 +83,6 @@ export default {
         bottom: '10%',
     },
     signUp: {
-  
         shadowOffset: { width: 1, height: 1 },
         shadowColor: '#333',
         shadowOpacity: 0.3,
@@ -92,9 +91,8 @@ export default {
         bottom: '10%',
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: 10,
         borderRadius: 10,
-        bottom: '215%',
+        marginTop: '5%',
     },
     textSignUp: {
         fontSize: 18,
