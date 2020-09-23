@@ -4,8 +4,9 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import {tipoDeLetra, colores} from '../../constantes/Temas';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import navigation from '../../redux/reducer/navigation';
 
-export const ProfileMainView = ({name, address, photo, age}) => {
+export const ProfileMainView = ({name, address, photo, age, navigation}) => {
   return (
     <LinearGradient
       colors={['#ffaa66', '#ff7584']}
@@ -67,7 +68,9 @@ export const ProfileMainView = ({name, address, photo, age}) => {
           </Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('EditProfile')}>
         <Text style={styles.buttonTitle}>EDITAR PERFIL</Text>
       </TouchableOpacity>
     </LinearGradient>

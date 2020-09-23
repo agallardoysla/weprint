@@ -11,6 +11,7 @@ import Home from './home/containers/Home';
 import Profile from './profile/containers/Profile'
 import Policy from './profile/menuScreens/Policy'
 import About from './profile/menuScreens/About'
+import EditProfile from './editProfile/containers/EditProfile'
 
 import { colores } from './constantes/Temas'
 
@@ -26,6 +27,7 @@ const Navegador = (props) => {
         initialRouteName="Home">
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="Policy" component={Policy} 
           options={{ title: "Políticas de privacidad", headerShown: true, headerTintColor: colores.gris, headerTitleStyle: { color: 'black' }}} 
         />

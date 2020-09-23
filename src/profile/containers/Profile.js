@@ -11,7 +11,7 @@ function Profile({navigation}) {
   return (
     <Container>
       <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
-        <ProfileMainView />
+        <ProfileMainView navigation={navigation} />
         <View style={styles.menuContainer}>
           <View
             style={{
