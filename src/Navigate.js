@@ -24,6 +24,7 @@ const Navegador = (props) => {
       }}
       initialRouteName="Home">
       <AuthStack.Screen name="Home" component={Home} />
+      <AuthStack.Screen name="Profile" component={Profile} />
     </AppDrawer.Navigator>
   );
 

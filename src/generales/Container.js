@@ -47,7 +47,7 @@ const Footer = ({navigation}) => {
       <Item navigation={navigation} ruta={'Login'} />
       <Item navigation={navigation} ruta={'Home'} />
       <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
+      <Item navigation={navigation} ruta={'Profile'} />
     </View>
   );
 };
