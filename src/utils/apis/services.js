@@ -19,9 +19,8 @@ export const get = async (uri) => {
     redirect: 'follow',
   };
 
-  fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log(result))
+  return fetch(`${BASE_API}${uri}`, requestOptions)
+    .then((response) => response.json())
     .catch((error) => console.log('error', error));
 };
 
@@ -89,7 +88,7 @@ export const postToken = async (body, uri) => {
     redirect: 'follow',
   };
 
-  fetch(`${BASE_API}${uri}`, requestOptions)
+  return fetch(`${BASE_API}${uri}`, requestOptions)
     .then((response) => response.json())
     .then(async (result) => {
       if (result.success) {

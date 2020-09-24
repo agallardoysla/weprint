@@ -12,19 +12,39 @@ import Login from './login/containers/Login';
 import Register from './register/containers/Register';
 
 const Navegador = (props) => {
+  const {login} = props
   const Stack = createStackNavigator();
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator
+  const AppDrawer = createStackNavigator();
+  const AppDrawerScreen = () => (
+      <AppDrawer.Navigator
         screenOptions={{
           headerShown: false,
         }}
         initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Register" component={Register} />
-      </Stack.Navigator>
+        <AuthStack.Screen name="Home" component={Home} />
+      </AppDrawer.Navigator>
+  )
+
+  const AuthStack = createStackNavigator();
+  const AuthStackScreen = () => (
+    <AuthStack.Navigator initialRouteName="SignUp" screenOptions={{
+      headerShown: false,
+    }} >
+      <AuthStack.Screen name="SignIn" component={Register} />
+      <AuthStack.Screen name="SignUp" component={Login} />
+    </AuthStack.Navigator>
+  )
+
+  return (
+    <NavigationContainer>
+      {
+        login.login ? (
+          <AppDrawerScreen />
+        ) : (
+          <AuthStackScreen />
+        )
+      }
     </NavigationContainer>
   );
 };
