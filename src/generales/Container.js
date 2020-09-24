@@ -38,16 +38,16 @@ const Footer = ({navigation}) => {
         flexDirection: 'row',
         width: '100%',
         height: 60,
-        borderTopWidth: 1,
         justifyContent: 'space-around',
         alignItems: 'center',
         paddingHorizontal: 10,
+        backgroundColor: 'white',
       }}>
+      <Item navigation={navigation} ruta={'Home'} title={'Home'} />
       <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Login'} />
       <Item navigation={navigation} ruta={'Home'} />
       <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Profile'} />
+      <Item navigation={navigation} ruta={'Profile'} title={'Perfil'} />
     </View>
   );
 };

@@ -7,10 +7,16 @@ import {connect} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import Home from './Home';
+//import Home from './Home';
 import Login from './login/containers/Login';
 import Register from './register/containers/Register';
+import Home from './home/containers/Home';
 import Profile from './profile/containers/Profile';
+
+import Policy from './profile/menuScreens/Policy';
+import About from './profile/menuScreens/About';
+
+import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
   const {login} = props;
@@ -25,6 +31,8 @@ const Navegador = (props) => {
       initialRouteName="Home">
       <AuthStack.Screen name="Home" component={Home} />
       <AuthStack.Screen name="Profile" component={Profile} />
+      <AuthStack.Screen name="Policy" component={Policy} />
+      <AuthStack.Screen name="About" component={About} />
     </AppDrawer.Navigator>
   );
 
