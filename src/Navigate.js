@@ -10,41 +10,38 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from './Home';
 import Login from './login/containers/Login';
 import Register from './register/containers/Register';
+import Profile from './profile/containers/Profile';
 
 const Navegador = (props) => {
-  const {login} = props
+  const {login} = props;
   const Stack = createStackNavigator();
 
   const AppDrawer = createStackNavigator();
   const AppDrawerScreen = () => (
-      <AppDrawer.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName="Home">
-        <AuthStack.Screen name="Home" component={Home} />
-      </AppDrawer.Navigator>
-  )
+    <AppDrawer.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+      initialRouteName="Home">
+      <AuthStack.Screen name="Home" component={Home} />
+    </AppDrawer.Navigator>
+  );
 
   const AuthStack = createStackNavigator();
   const AuthStackScreen = () => (
-    <AuthStack.Navigator initialRouteName="SignUp" screenOptions={{
-      headerShown: false,
-    }} >
+    <AuthStack.Navigator
+      initialRouteName="SignUp"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <AuthStack.Screen name="SignIn" component={Register} />
       <AuthStack.Screen name="SignUp" component={Login} />
     </AuthStack.Navigator>
-  )
+  );
 
   return (
     <NavigationContainer>
-      {
-        login.login ? (
-          <AppDrawerScreen />
-        ) : (
-          <AuthStackScreen />
-        )
-      }
+      {login.login ? <AppDrawerScreen /> : <AuthStackScreen />}
     </NavigationContainer>
   );
 };

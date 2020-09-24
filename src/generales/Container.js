@@ -52,7 +52,7 @@ const Footer = ({navigation}) => {
   );
 };
 
-const Item = ({navigation, ruta}) => {
+const Item = ({navigation, ruta, title}) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -67,7 +67,7 @@ const Item = ({navigation, ruta}) => {
         backgroundColor: 'gray',
         borderRadius: 5,
       }}>
-      <Text>Home</Text>
+      <Text>{title}</Text>
     </TouchableOpacity>
   );
 };

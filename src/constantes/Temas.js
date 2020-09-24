@@ -15,6 +15,9 @@ export const colores = {
   naranja: '#E1B100',
   dorado: '#E1B100',
   gratis: '#c00525',
+  blanco: '#FFFFFF',
+  transparente: 'rgba(0,0,0,0)',
+  gris: '#a2a4ab' 
 };
 
 export const tipoDeLetra = {
