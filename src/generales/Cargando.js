@@ -20,6 +20,7 @@ const Cargando = ({
   titulo,
   showError,
   errorStyle,
+  loaderColor,
   error,
 }) => {
   return (
@@ -36,7 +37,7 @@ const Cargando = ({
         ]}>
         {titulo !== undefined ? titulo : '¡Bienvenido!'}
       </Text>
-      <ActivityIndicator size="large" color={colores.verCanasta} />
+      <ActivityIndicator size="large" color={ loaderColor ? loaderColor : colores.verCanasta} />
       {showError && (
         <Text
           style={[
@@ -57,8 +58,6 @@ const Cargando = ({
 };
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },

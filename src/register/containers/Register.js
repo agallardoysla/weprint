@@ -26,6 +26,7 @@ import styles from '../styles/styles';
 import {getProvinces, getDiscricts} from '../../utils/apis/location_api';
 import {register_api} from '../../utils/apis/login_api'
 import {actualizarLogin} from '../../redux/reducer/login';
+import CargandoModal from '../../generales/CargandoModal'
 
 function Register(props) {
   const {login, dispatch, navigation} = props;
@@ -43,7 +44,6 @@ function Register(props) {
     username: '',
     email: '',
     password: '',
-    confirm_password: '',
     address: '',
     province: '',
     comuna: '',
@@ -64,6 +64,8 @@ function Register(props) {
     isValidComunaSelected: null,
     isValidDate: null,
   });
+
+  const [registerValidation, setRegisterValidation] = useState(null)
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -100,20 +102,32 @@ function Register(props) {
       districtId,
     } = data;
     let body = {
-      nickname: username,
-      firstname: name,
-      lastname: lastname,
-      email: email,
-      password: password,
-      address: `${address}, ${comuna}, ${province}`,
-      birthdate: bornDate,
-      district_id: districtId,
+      nickname: username.trim(),
+      firstname: name.trim(),
+      lastname: lastname.trim(),
+      email: email.trim(),
+      password: password.trim(),
+      address: `${address.trim()}, ${comuna.trim()}, ${province.trim()}`,
+      birthdate: bornDate.trim(),
+      district_id: districtId.trim(),
     };
-    register_api(body).then((response) => {
-      console.log(response);
-      response.success && dispatch(actualizarLogin());
-      response.errors && setError(true);
-    });
+    for(let value in textValidator ){
+      if(!textValidator[value]){
+        setRegisterValidation(false)
+        return false
+      } 
+    }
+    setRegisterValidation(true)
+
+    if(registerValidation === true){
+      setloading(true)
+      register_api(body).then((response) => {
+        console.log(response);
+        response.success && dispatch(actualizarLogin());
+        response.errors && setError(true);
+        setloading(false)
+      });
+    }
   };
 
   const textDataValidation = (value, minLength, validateKey, datakey) => {
@@ -142,6 +156,7 @@ function Register(props) {
   };
 
   const handleDateChange = async (val) => {
+
     setShow(Platform.OS === 'ios');
     let date = new Date(val.nativeEvent.timestamp);
     let dateParse = JSON.stringify(date);
@@ -163,6 +178,7 @@ function Register(props) {
 
   return (
     <Container footer={false}>
+      <CargandoModal title="Validando, porfavor espere..." show={loading} /> 
       <ScrollView>
         <StatusBar backgroundColor="#ff7b7f" barStyle="light-content" />
         <LinearGradient
@@ -194,6 +210,11 @@ function Register(props) {
               <Text style={styles.subtitleform}>
                 ¡Vamos! tan solo son unos cuantos datos que necesitamos.
               </Text>
+              {
+                registerValidation === false && (
+                  <AnimatedMessage message="Completar datos *" />
+                )
+              }
               <View style={styles.action}>
                 <Text style={{marginVertical: 10}}>Nombre</Text>
                 <TextInput
@@ -263,11 +284,12 @@ function Register(props) {
                 <TextInput
                   style={styles.registerInput}
                   onChangeText={(val) =>
-                    textDataValidation(val, 8, 'isValidRepeatPassword', 'confirm_password')
+                    setTextValidator({...textValidator, isValidRepeatPassword: val === data.password ? true : false})
                   }
+                  onEndEditing={(val) =>  console.log(val.currentTarget)}
                 />
                 {textValidator.isValidRepeatPassword === false && (
-                  <AnimatedMessage message="Ingresa un password valido!" />
+                  <AnimatedMessage message="Los password no coinciden!" />
                 )}
               </View>
 
@@ -349,7 +371,7 @@ function Register(props) {
                     onChange={(val) => handleDateChange(val)}
                   />
                 )}
-                {data.isValidDate ? null : (
+                {textValidator.isValidDate === false && (
                   <Animatable.View animation="bounceIn">
                     <Text
                       style={{

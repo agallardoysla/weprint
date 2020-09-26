@@ -22,6 +22,7 @@ import Background from '../../../assets/images/svg/login.svg';
 import styles from '../styles/styles';
 import {actualizarLogin} from '../../redux/reducer/login';
 import {login_api} from '../../utils/apis/login_api';
+import CargandoModal from '../../generales/CargandoModal'
 
 function Login(props) {
   const {login, dispatch, navigation} = props;
@@ -47,10 +48,12 @@ function Login(props) {
     };
 
     if (data.isValidPassword && data.isValidUser) {
+      setloading(true)
       login_api(body).then((response) => {
         console.log(response);
         response.success && dispatch(actualizarLogin());
         response.errors && setError(true);
+        setloading(false)
       });
     }
   };
@@ -58,6 +61,7 @@ function Login(props) {
 
   return (
     <Container footer={false}>
+      <CargandoModal title="Validando, porfavor espere..." show={loading} /> 
       <ScrollView>
         <StatusBar backgroundColor="#ff7b7f" barStyle="light-content" />
         <View style={{height: 30, width: '100%'}}>
@@ -70,7 +74,7 @@ function Login(props) {
             <Text style={styles.subtitleform}>
               Ingresa a tu email y contraseña para acceder a la aplicación
             </Text>
-            {error && !login && <Text>* Email y/o password es incorrecto</Text>}
+            {error === true && !login && <Text>* Email y/o password es incorrecto</Text>}
             <View style={styles.action}>
               <Text style={{marginVertical: 10}}>Email</Text>
               <TextInput
@@ -80,7 +84,7 @@ function Login(props) {
                 onChangeText={(val) =>
                   setData({
                     ...data,
-                    email: val,
+                    email: val.trim(),
                     check_textInputChange: true,
                     isValidUser: val.trim().length >= 4 ? true : false,
                   })
@@ -118,7 +122,7 @@ function Login(props) {
                 onChangeText={(val) =>
                   setData({
                     ...data,
-                    password: val,
+                    password: val.trim(),
                     isValidPassword: val.trim().length >= 8 ? true : false,
                   })
                 }
