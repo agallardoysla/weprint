@@ -18,7 +18,7 @@ export const colores = {
   blanco: '#FFFFFF',
   transparente: 'rgba(0,0,0,0)',
   gris: '#a2a4ab',
-  grisClaro: '#d9dadd',
+  loader: '#f18263',
 };
 
 export const tipoDeLetra = {

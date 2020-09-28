@@ -5,13 +5,22 @@ import Container from '../../generales/Container';
 import {ProfileMainView} from '../components/ProfileMainView';
 import {MenuItem} from '../../generales/MenuItem';
 import {colores} from '../../constantes/Temas';
+import { get_profile_api } from '../../utils/apis/login_api'
 
 function Profile({navigation}) {
-  console.log('navigate: ' + navigation);
+  
+  const [userData, setUserData] = useState({})
+
+  useEffect(() => {
+    console.log("ready")
+    const getUserData = get_profile_api().then((data) =>
+      setUserData(data.data[0]),
+    );
+  }, [])
   return (
     <Container>
       <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
-        <ProfileMainView navigation={navigation} />
+        <ProfileMainView navigation={navigation} data={userData} />
         <View style={styles.menuContainer}>
           <View
             style={{

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
@@ -11,11 +10,12 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Login from './login/containers/Login';
 import Register from './register/containers/Register';
 import Home from './home/containers/Home';
-import Profile from './profile/containers/Profile'
-import Policy from './profile/menuScreens/Policy'
-import About from './profile/menuScreens/About'
-import EditProfile from './editProfile/containers/EditProfile'
+import Profile from './profile/containers/Profile';
 
+import Policy from './profile/menuScreens/Policy';
+import About from './profile/menuScreens/About';
+import EditProfile from './editProfile/containers/EditProfile'
+ 
 import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
@@ -33,6 +33,7 @@ const Navegador = (props) => {
       <AuthStack.Screen name="Profile" component={Profile} />
       <AuthStack.Screen name="Policy" component={Policy} />
       <AuthStack.Screen name="About" component={About} />
+      <AuthStack.Screen name="EditProfile" component={EditProfile} />
     </AppDrawer.Navigator>
   );
 
@@ -50,21 +51,7 @@ const Navegador = (props) => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName="Home">
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
-        <Stack.Screen name="Policy" component={Policy} 
-          options={{ title: "Políticas de privacidad", headerShown: true, headerTintColor: colores.gris, headerTitleStyle: { color: 'black' }}} 
-        />
-        <Stack.Screen name="AboutUs" component={About} 
-          options={{ title: "Somos #Wepint", headerShown: true, headerTintColor: colores.gris, headerTitleStyle: { color: 'black' }}} 
-        />
-      </Stack.Navigator>
+      {login.login ? <AppDrawerScreen /> : <AuthStackScreen />}
     </NavigationContainer>
   );
 };

@@ -6,7 +6,23 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import navigation from '../../redux/reducer/navigation';
 
-export const ProfileMainView = ({name, address, photo, age, navigation}) => {
+export const ProfileMainView = ({data, navigation}) => {
+  console.log(nickname)
+
+  const {nickname, district_name, country_name, photo, birthdate} = data
+
+  function getAge(dateString) {
+      var today = new Date();
+      var birthDate = new Date(dateString);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+      {
+          age--;
+      }
+      return age;
+  }
+
   return (
     <LinearGradient
       colors={['#ffaa66', '#ff7584']}
@@ -37,7 +53,7 @@ export const ProfileMainView = ({name, address, photo, age, navigation}) => {
           margin: 10,
           fontWeight: 'bold',
         }}>
-        {name}
+        {nickname}
       </Text>
       <View
         style={{
@@ -53,7 +69,7 @@ export const ProfileMainView = ({name, address, photo, age, navigation}) => {
               color: colores.blanco,
               fontFamily: tipoDeLetra.bold,
             }}>
-            Edad: {age} Años
+            Edad: {getAge(birthdate)} Años
           </Text>
         </View>
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
@@ -64,13 +80,13 @@ export const ProfileMainView = ({name, address, photo, age, navigation}) => {
               color: colores.blanco,
               fontFamily: tipoDeLetra.bold,
             }}>
-            {address}
+            {`${district_name}, ${country_name}`}
           </Text>
         </View>
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('EditProfile')}>
+        onPress={() => navigation.navigate('EditProfile', data )}>
         <Text style={styles.buttonTitle}>EDITAR PERFIL</Text>
       </TouchableOpacity>
     </LinearGradient>
