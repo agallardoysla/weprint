@@ -16,18 +16,11 @@ import {colores} from '../../constantes/Temas';
 import {get_profile_api} from '../../utils/apis/login_api'
 
 
-function EditProfile({navigation}) {
-  const originalWidth = 300;
-  const originalHeight = 150;
-  
+function EditProfile({navigation, route}) {
+
   useEffect(() => {
-    const userData = get_profile_api().then((data) =>
-      console.log(data.data),
-    );
-    return () => {
-      cleanup
-    }
-  }, [input])
+    
+  }, [])
 
   return (
     <Container footer={false}>
@@ -76,7 +69,7 @@ function EditProfile({navigation}) {
                 }}
               />
             </View>
-            <MainForm />
+            <MainForm data={route.params} />
           </View>
         </ScrollView>
       </SafeAreaView>
