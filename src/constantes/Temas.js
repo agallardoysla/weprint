@@ -18,7 +18,10 @@ export const colores = {
   blanco: '#FFFFFF',
   transparente: 'rgba(0,0,0,0)',
   gris: '#a2a4ab',
+<<<<<<< HEAD
   loader: '#f18263',
+=======
+>>>>>>> 4df26172a6ad9aea11361391158f6fed4b163f8b
 };
 
 export const tipoDeLetra = {
