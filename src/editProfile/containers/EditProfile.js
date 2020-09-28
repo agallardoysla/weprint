@@ -13,11 +13,22 @@ import Background from '../../assets/img/bg-app.svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {MainForm} from '../components/MainForm';
 import {colores} from '../../constantes/Temas';
-import Svg from 'react-native-svg';
+import {get_profile_api} from '../../utils/apis/login_api'
+
 
 function EditProfile({navigation}) {
   const originalWidth = 300;
   const originalHeight = 150;
+  
+  useEffect(() => {
+    const userData = get_profile_api().then((data) =>
+      console.log(data.data),
+    );
+    return () => {
+      cleanup
+    }
+  }, [input])
+
   return (
     <Container footer={false}>
       <SafeAreaView>

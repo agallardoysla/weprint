@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
     case ACTUALIZAR_LOGIN:
       return {
         ...state,
-        login: action.login,
+        login: true,
       };
     default:
       return state;

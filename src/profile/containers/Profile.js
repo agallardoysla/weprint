@@ -41,7 +41,7 @@ function Profile({navigation}) {
               name="Somos #Weprint"
               icon="supervisor-account"
               color="#ffd948"
-              onPressFunction={() => navigation.navigate('AboutUs')}
+              onPressFunction={() => navigation.navigate('About')}
               divider={false}
             />
           </View>

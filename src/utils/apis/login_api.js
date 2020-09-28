@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {del, get, postToken, put} from './services';
 
 const example = {
@@ -28,12 +27,12 @@ const example = {
   },
 };
 
-export const register_api = async (body = example.register) => {
-  postToken(body, '/register');
+export const register_api = async (body) => {
+  return postToken(body, '/register');
 };
 
 export const login_api = async (body = example.login) => {
-  postToken(body, '/login');
+  return postToken(body, '/login');
 };
 
 export const update_user_api = async (body = example.update) => {
@@ -41,7 +40,7 @@ export const update_user_api = async (body = example.update) => {
 };
 
 export const get_profile_api = async () => {
-  get('/profile');
+  return get('/profile');
 };
 
 export const del_repository_api = async () => {
