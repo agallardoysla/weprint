@@ -15,6 +15,11 @@ function Home({login, dispatch, navigation}) {
     dispatch(actions.actualizarNavigation(navigation));
   }, []);
 
+  const handleGoToAlbumList = () =>{
+    console.log("prop: "+navigation)
+    navigation.navigate("AlbumList")
+  }
+
   return (
     <Container>
       <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
@@ -47,7 +52,7 @@ function Home({login, dispatch, navigation}) {
             }}>
             Crea tus proyectos
           </Text>
-          <PromoMenuView />
+          <PromoMenuView onPress={() => handleGoToAlbumList} />
         </View>
       </View>
     </Container>
