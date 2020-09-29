@@ -36,11 +36,11 @@ export const login_api = async (body = example.login) => {
 };
 
 export const update_user_api = async (body = example.update) => {
-  put(body, '/profile');
+  return put(body, '/profile');
 };
 
 export const get_profile_api = async () => {
-  get('/profile');
+  return get('/profile');
 };
 
 export const del_repository_api = async () => {

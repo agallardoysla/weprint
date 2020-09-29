@@ -15,7 +15,7 @@ export const PromoMenuView = () => {
       }}>
       <Image
         source={require('../../../assets/img/album2.jpeg')}
-        resizeMode='cover'
+        resizeMode="cover"
         style={{width: '100%', height: '100%'}}
       />
       <View

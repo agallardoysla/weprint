@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 
@@ -15,7 +14,8 @@ import Profile from './profile/containers/Profile';
 
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
-
+import EditProfile from './editProfile/containers/EditProfile'
+ 
 import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
@@ -33,6 +33,7 @@ const Navegador = (props) => {
       <AuthStack.Screen name="Profile" component={Profile} />
       <AuthStack.Screen name="Policy" component={Policy} />
       <AuthStack.Screen name="About" component={About} />
+      <AuthStack.Screen name="EditProfile" component={EditProfile} />
     </AppDrawer.Navigator>
   );
 

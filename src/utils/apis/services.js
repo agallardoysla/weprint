@@ -26,7 +26,6 @@ export const get = async (uri) => {
 
 export const put = async (uri, body) => {
   var myHeaders = await getHeaders();
-
   var raw = JSON.stringify(body);
 
   var requestOptions = {
@@ -38,7 +37,7 @@ export const put = async (uri, body) => {
 
   fetch(`${BASE_API}${uri}`, requestOptions)
     .then((response) => response.text())
-    .then((result) => console.log(result))
+    .then((result) => console.log("result: "+result))
     .catch((error) => console.log('error', error));
 };
 
