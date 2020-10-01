@@ -6,27 +6,39 @@ import Cargando from '../../generales/Cargando';
 import {tipoDeLetra} from '../../constantes/Temas';
 import FormatCardView from '../components/FormatCardView';
 import {get_format_by_project} from '../../utils/apis/project_api';
+import orderBy from 'lodash/orderBy';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
-function Format({dispatch, navigation, route}) {
+function Format({dispatch, navigation, route, formats}) {
   const {projectId} = route.params;
-  const [formats, setFormats] = useState([]);
   const [formatError, setFormatError] = useState(false);
   const [loadingFormat, setLoadingFormat] = useState(true);
 
-  const loadData = useCallback(async () => {
+  const loadFormats = useCallback(async () => {
     setFormatError(false);
     setLoadingFormat(true);
 
     try {
       const response = await get_format_by_project(projectId);
-      setFormats(response.data);
+
+      if (response.data.length) {
+        dispatch(actions.actualizarFormats(response.data));
+      }
+
       setLoadingFormat(false);
     } catch (error) {
       setLoadingFormat(false);
       setFormatError(true);
     }
   }, [projectId]);
+
+  const loadData = useCallback(() => {
+    if (formats.length) {
+      setLoadingFormat(false);
+    } else {
+      loadFormats();
+    }
+  }, [setLoadingFormat, loadFormats]);
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -67,7 +79,7 @@ function Format({dispatch, navigation, route}) {
           </Text>
         </View>
       )}
-      {formats.length > 0 && (
+      {formats.length > 0 && !loadingFormat && (
         <FlatList
           data={formats}
           renderItem={renderFormatCards}
@@ -100,7 +112,6 @@ const style = StyleSheet.create({
   },
   formatGeneralMessageContainer: {
     height: 120,
-    marginTop: 40,
     borderRadius: 8,
     justifyContent: 'center',
     backgroundColor: 'white',
@@ -121,6 +132,21 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({login: state.login});
+const mapStateToProps = (
+  state,
+  {
+    route: {
+      params: {projectId},
+    },
+  },
+) => {
+  const data = state.format.data.filter(
+    (format) => format.project_id === projectId,
+  );
+
+  return {
+    formats: orderBy(data, ['created'], ['desc']),
+  };
+};
 
 export default connect(mapStateToProps)(Format);
