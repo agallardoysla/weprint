@@ -24,7 +24,7 @@ export const PromoView = () => {
           width: '100%',
           backgroundColor: 'rgba(0,0,0,0.25)',
         }}>
-        <View style={{marginHorizontal: '5%', marginTop: '5%',}}>
+        <View style={{marginHorizontal: '5%', marginTop: '5%'}}>
           <Text
             style={{
               fontSize: RFPercentage(2.5),
