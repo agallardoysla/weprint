@@ -48,14 +48,19 @@ function Format({dispatch, navigation, route, formats}) {
     loadData();
   }, [loadData]);
 
-  const renderFormatCards = ({item: format}) => (
-    <FormatCardView format={format} />
-  );
-
   const handleOnPressGoToBack = () => navigation.navigate('Home');
+  const handleOnPressGoToSelectImage = (formatId) =>
+    navigation.navigate('SelectImage', {formatId});
 
   const isEmptyFormats = () =>
     !loadingFormat && !formatError && !formats.length;
+
+  const renderFormatCards = ({item: format}) => (
+    <FormatCardView
+      format={format}
+      onPressGoToSelectImage={handleOnPressGoToSelectImage}
+    />
+  );
 
   return (
     <View style={style.formatContainer}>

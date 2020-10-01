@@ -1,10 +1,12 @@
 import React from 'react';
-import {Text, View, Image, StyleSheet} from 'react-native';
+import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const FormatCardView = ({format}) => {
+const FormatCardView = ({format, onPressGoToSelectImage}) => {
+  const handleOnPress = () => onPressGoToSelectImage(format.id);
+
   return (
-    <View style={style.formatContainer}>
+    <TouchableOpacity onPress={handleOnPress} style={style.formatContainer}>
       <View style={style.formatImgContainer}>
         <Image
           style={style.formatImg}
@@ -21,7 +23,7 @@ const FormatCardView = ({format}) => {
         <Text style={style.fomatInfoSmallText}>desde</Text>
         <Text style={style.formatInfoBigText}>CLP {format.price_unit}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
