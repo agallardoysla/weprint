@@ -3,9 +3,13 @@ import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {colores} from '../../../constantes/Temas';
 
-const ProjectCardView = ({project}) => {
+const ProjectCardView = ({project, onPressGoToFormat}) => {
+  const handleOnPress = () => onPressGoToFormat(project.id);
+
   return (
-    <View style={style.projectCardContainer}>
+    <TouchableOpacity
+      onPress={handleOnPress}
+      style={style.projectCardContainer}>
       <Image
         source={{
           uri: project.image,
@@ -19,7 +23,7 @@ const ProjectCardView = ({project}) => {
       <View style={style.projectCardOverlay}>
         <Text style={style.projectCardOverlayText}>{project.name}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

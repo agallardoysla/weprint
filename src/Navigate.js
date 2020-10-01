@@ -14,8 +14,9 @@ import Profile from './profile/containers/Profile';
 
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
-import EditProfile from './editProfile/containers/EditProfile'
- 
+import EditProfile from './editProfile/containers/EditProfile';
+import Format from './format/containers/Format';
+
 import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
@@ -34,6 +35,7 @@ const Navegador = (props) => {
       <AuthStack.Screen name="Policy" component={Policy} />
       <AuthStack.Screen name="About" component={About} />
       <AuthStack.Screen name="EditProfile" component={EditProfile} />
+      <AuthStack.Screen name="Format" component={Format} />
     </AppDrawer.Navigator>
   );
 

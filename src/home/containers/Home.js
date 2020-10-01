@@ -17,6 +17,9 @@ function Home({dispatch, navigation}) {
   const [errorProject, setErrorProject] = useState(false);
   const [loadingProject, setLoadingProject] = useState(true);
 
+  const handleOnPressGoToFormat = (projectId) =>
+    navigation.navigate('Format', {projectId});
+
   const loadData = useCallback(async () => {
     setErrorProject(false);
     setLoadingProject(true);
@@ -39,7 +42,10 @@ function Home({dispatch, navigation}) {
   }, [loadData]);
 
   const renderProjectCards = ({item: project}) => (
-    <ProjectCardView project={project} />
+    <ProjectCardView
+      project={project}
+      onPressGoToFormat={handleOnPressGoToFormat}
+    />
   );
 
   return (
