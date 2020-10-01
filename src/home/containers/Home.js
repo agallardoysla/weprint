@@ -7,8 +7,8 @@ import Cargando from '../../generales/Cargando';
 import Logo from '../../assets/img/logo.svg';
 import {MenuItem} from '../../generales/MenuItem';
 import {estiloDeLetra, tipoDeLetra} from '../../constantes/Temas';
-import {PromoView} from './components/PromoView';
-import ProjectCardView from './components/ProjectCardView';
+import {PromoView} from '../components/PromoView';
+import ProjectCardView from '../components/ProjectCardView';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {get_projects_api} from '../../utils/apis/project_api';
 

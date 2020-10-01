@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
-import {colores} from '../../../constantes/Temas';
+import {colores} from '../../constantes/Temas';
 
 const ProjectCardView = ({project, onPressGoToFormat}) => {
   const handleOnPress = () => onPressGoToFormat(project.id);

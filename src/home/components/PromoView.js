@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
-import {tipoDeLetra, colores} from '../../../constantes/Temas';
+import {tipoDeLetra, colores} from '../../constantes/Temas';
 
 export const PromoView = () => {
   return (
@@ -15,7 +15,7 @@ export const PromoView = () => {
       }}>
       <Image
         style={{resizeMode: 'contain', width: '100%', height: '100%'}}
-        source={require('../../../assets/img/slidetab1.png')}
+        source={require('../../assets/img/slidetab1.png')}
       />
       <View
         style={{
