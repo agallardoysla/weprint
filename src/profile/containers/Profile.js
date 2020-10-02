@@ -2,31 +2,37 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import Container from '../../generales/Container';
+import CargandoModal from '../../generales/CargandoModal'
 import {ProfileMainView} from '../components/ProfileMainView';
 import {MenuItem} from '../../generales/MenuItem';
+import { Header } from '../../generales/Header'
 import {colores} from '../../constantes/Temas';
 import { get_profile_api } from '../../utils/apis/login_api'
+import {actions} from '../../redux';
 
-function Profile({navigation}) {
+function Profile({navigation, dispatch}) {
   
   const [userData, setUserData] = useState({})
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log("ready")
-    const getUserData = get_profile_api().then((data) =>
-      setUserData(data.data[0]),
-    );
+    const getUserData = get_profile_api().then((data) =>{
+      setUserData(data.data[0])
+      setLoading(false)
+    });
   }, [])
   return (
     <Container>
+      <CargandoModal title="Cargando" show={loading} />
+      <Header />
       <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
         <ProfileMainView navigation={navigation} data={userData} />
         <View style={styles.menuContainer}>
           <View
             style={{
               width: '100%',
-              paddingHorizontal: '5%',
-              paddingVertical: '5%',
+              paddingHorizontal: '4%',
+              paddingVertical: '4%',
             }}>
             <MenuItem
               name="Mis Compras"
@@ -59,13 +65,11 @@ function Profile({navigation}) {
           <View
             style={{
               width: '100%',
-              paddingHorizontal: '5%',
-              paddingVertical: '5%',
             }}>
             <MenuItem
               name="Cerrar Sesion"
               color="#ffd948"
-              onPressFunction={() => console.log('Session')}
+              onPressFunction={() => dispatch(actions.logout())}
               divider={false}
             />
           </View>

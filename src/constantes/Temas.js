@@ -19,6 +19,7 @@ export const colores = {
   transparente: 'rgba(0,0,0,0)',
   gris: '#a2a4ab',
   loader: '#f18263',
+  menuSelect: '#666666',
 };
 
 export const tipoDeLetra = {

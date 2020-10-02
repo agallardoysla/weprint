@@ -7,6 +7,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { colores, estiloDeLetra } from '../../constantes/Temas';
 import { ProductItem } from '../components/ProductItem'
+import { Header } from '../../generales/Header'
 
 function CartMainView({dispatch, navigation}) {
 
@@ -19,10 +20,11 @@ function CartMainView({dispatch, navigation}) {
   return (
     <Container>
       <SafeAreaView>
+        <Header />
         <ScrollView>
           {
               isCartEmpty ? (
-                <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
+                <View style={{width: '100%', height: '100%', alignItems: 'center', marginTop: 30}}>
                     <Image source={require('../../assets/img/carro_weprint.gif')} style={{height: 250, width: 250}} />
                     <View style={{alignItems: 'center', marginTop: 20, marginBottom: 50}}>
                         <Text style={{fontSize: RFPercentage(2), ...estiloDeLetra.negrita, marginBottom: 15}}>Tu cesta está vacía</Text>
