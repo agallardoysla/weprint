@@ -1,5 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -44,9 +42,7 @@ const Footer = ({navigation}) => {
         backgroundColor: 'white',
       }}>
       <Item navigation={navigation} ruta={'Home'} title={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
+      <Item navigation={navigation} ruta={'Cart'} title={'Cesta'}  />
       <Item navigation={navigation} ruta={'Profile'} title={'Perfil'} />
     </View>
   );
