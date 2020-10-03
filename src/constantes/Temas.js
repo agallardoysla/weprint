@@ -20,6 +20,7 @@ export const colores = {
   gris: '#a2a4ab',
   loader: '#f18263',
   grisFormatoAlbum: '#737373',
+  grisClaro: '#e5e6e8',
 };
 
 export const tipoDeLetra = {
