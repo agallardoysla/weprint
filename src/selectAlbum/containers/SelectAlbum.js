@@ -16,10 +16,11 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import AlbumItem from '../components/AlbumItem';
 import Cargando from '../../generales/Cargando';
 
-function SelectAlbum({dispatch, navigation, format}) {
+function SelectAlbum({dispatch, navigation, route}) {
   const [albums, setAlbums] = useState([]);
   const [storage, setStorage] = useState('device');
   const [loading, setLoading] = useState(true);
+  const {formatId} = route.params;
 
   const hasAndroidPermission = useCallback(async () => {
     const permission = PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
@@ -65,7 +66,7 @@ function SelectAlbum({dispatch, navigation, format}) {
 
   const handleGoToSelectImagen = (albumTitle) =>
     navigation.navigate('SelectImagen', {
-      formatId: format.id,
+      formatId,
       albumTitle,
     });
 
@@ -229,21 +230,4 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (
-  state,
-  {
-    route: {
-      params: {formatId},
-    },
-  },
-) => {
-  const format = state.format.data.find(
-    (searchedFormat) => searchedFormat.id === formatId,
-  );
-
-  return {
-    format,
-  };
-};
-
-export default connect(mapStateToProps)(SelectAlbum);
+export default connect(null)(SelectAlbum);

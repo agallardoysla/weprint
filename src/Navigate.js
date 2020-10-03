@@ -14,14 +14,15 @@ import Profile from './profile/containers/Profile';
 
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
-import EditProfile from './editProfile/containers/EditProfile'
-import AlbumList from './home/containers/screens/AlbumList' 
-import AlbumDescription from './home/containers/screens/AlbumDescription'
+import EditProfile from './editProfile/containers/EditProfile';
+import AlbumList from './home/containers/screens/AlbumList';
+import AlbumDescription from './home/containers/screens/AlbumDescription';
 
-import CartMainView from './cart/containers/CartMainView' 
+import CartMainView from './cart/containers/CartMainView';
 import Format from './format/containers/Format';
 import SelectAlbum from './selectAlbum/containers/SelectAlbum';
 import SelectImagen from './selectImagen/containers/SelectImagen';
+import Layout from './layout/containers/Layout';
 
 import {colores} from './constantes/Temas';
 
@@ -42,11 +43,20 @@ const Navegador = (props) => {
       <AuthStack.Screen name="About" component={About} />
       <AuthStack.Screen name="EditProfile" component={EditProfile} />
       <AuthStack.Screen name="Cart" component={CartMainView} />
-      <AuthStack.Screen name="AlbumList" component={AlbumList} options={{headerShown: true, title: ''}} />
-      <AuthStack.Screen name="AlbumDescription" component={AlbumDescription} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen
+        name="AlbumList"
+        component={AlbumList}
+        options={{headerShown: true, title: ''}}
+      />
+      <AuthStack.Screen
+        name="AlbumDescription"
+        component={AlbumDescription}
+        options={{headerShown: true, title: ''}}
+      />
       <AuthStack.Screen name="Format" component={Format} />
       <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
       <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
+      <AuthStack.Screen name="Layout" component={Layout} />
     </AppDrawer.Navigator>
   );
 

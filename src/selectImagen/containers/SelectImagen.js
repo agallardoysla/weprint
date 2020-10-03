@@ -3,7 +3,7 @@ import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
-import {colores} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Cargando from '../../generales/Cargando';
 import ImagenItem from '../components/ImagenItem';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -42,6 +42,11 @@ function SelectImagen({dispatch, navigation, route, format}) {
       formatId: format.id,
     });
 
+  const handleOnPressGoToLayout = () =>
+    navigation.navigate('Layout', {
+      formatId: format.id,
+    });
+
   return (
     <View style={style.selectImagenMainContainer}>
       <TouchableOpacity
@@ -64,12 +69,20 @@ function SelectImagen({dispatch, navigation, route, format}) {
           />
         )}
       </View>
+      <View style={style.selectImagenButtonContainer}>
+        <TouchableOpacity
+          style={style.selectImagenButton}
+          onPress={handleOnPressGoToLayout}>
+          <Text style={style.selectImagenButtonText}>Siguiente</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const style = StyleSheet.create({
   selectImagenMainContainer: {
+    position: 'relative',
     height: '100%',
     paddingBottom: 100,
   },
@@ -87,7 +100,6 @@ const style = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
   selectImagenHeaderText: {
@@ -102,6 +114,26 @@ const style = StyleSheet.create({
   selectImagenListContainer: {
     marginTop: 10,
     paddingVertical: 10,
+  },
+  selectImagenButtonContainer: {
+    position: 'absolute',
+    bottom: 22,
+    width: '100%',
+    alignItems: 'center',
+  },
+  selectImagenButton: {
+    width: 400,
+    paddingVertical: 7,
+    alignItems: 'center',
+    borderRadius: 290486,
+    borderWidth: 1,
+    borderColor: colores.logo,
+    backgroundColor: colores.logo,
+  },
+  selectImagenButtonText: {
+    color: colores.blanco,
+    fontFamily: tipoDeLetra.regular,
+    fontSize: 20,
   },
 });
 
