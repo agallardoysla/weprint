@@ -140,7 +140,7 @@ function SelectAlbum({dispatch, navigation, format}) {
         </TouchableOpacity>
       </View>
       {loading && <Cargando titulo=" " />}
-      {!loading && albums.length > 0 ? (
+      {!loading && albums.length && (
         <View style={style.selectAlbumAlbumContainer}>
           <FlatList
             data={albums}
@@ -149,7 +149,8 @@ function SelectAlbum({dispatch, navigation, format}) {
             keyExtractor={(album) => album.title}
           />
         </View>
-      ) : (
+      )}
+      {!loading && !albums.length && (
         <View style={style.selectAlbumMessageContainer}>
           <Text style={style.selectAlbumMessage}>
             No se pudo acceder a álbumes
