@@ -20,7 +20,8 @@ import AlbumDescription from './home/containers/screens/AlbumDescription'
 
 import CartMainView from './cart/containers/CartMainView' 
 import Format from './format/containers/Format';
-import SelectImage from './selectImage/containers/SelectImage';
+import SelectAlbum from './selectAlbum/containers/SelectAlbum';
+import SelectImagen from './selectImagen/containers/SelectImagen';
 
 import {colores} from './constantes/Temas';
 
@@ -44,7 +45,8 @@ const Navegador = (props) => {
       <AuthStack.Screen name="AlbumList" component={AlbumList} options={{headerShown: true, title: ''}} />
       <AuthStack.Screen name="AlbumDescription" component={AlbumDescription} options={{headerShown: true, title: ''}} />
       <AuthStack.Screen name="Format" component={Format} />
-      <AuthStack.Screen name="SelectImage" component={SelectImage} />
+      <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
+      <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
     </AppDrawer.Navigator>
   );
 

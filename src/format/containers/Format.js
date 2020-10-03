@@ -49,8 +49,9 @@ function Format({dispatch, navigation, route, formats}) {
   }, [loadData]);
 
   const handleOnPressGoToBack = () => navigation.navigate('Home');
+
   const handleOnPressGoToSelectImage = (formatId) =>
-    navigation.navigate('SelectImage', {formatId});
+    navigation.navigate('SelectAlbum', {formatId});
 
   const isEmptyFormats = () =>
     !loadingFormat && !formatError && !formats.length;

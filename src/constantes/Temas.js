@@ -21,6 +21,9 @@ export const colores = {
   loader: '#f18263',
   menuSelect: '#666666',
   grisFormatoAlbum: '#737373',
+  grisClaro: '#e5e6e8',
+  azulNoche: '#051441',
+  logo: '#f98364',
 };
 
 export const tipoDeLetra = {
