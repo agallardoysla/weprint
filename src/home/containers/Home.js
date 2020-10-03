@@ -17,9 +17,6 @@ function Home({dispatch, navigation}) {
   const [errorProject, setErrorProject] = useState(false);
   const [loadingProject, setLoadingProject] = useState(true);
 
-  const handleOnPressGoToFormat = (projectId) =>
-    navigation.navigate('Format', {projectId});
-
   const loadData = useCallback(async () => {
     setErrorProject(false);
     setLoadingProject(true);
@@ -37,10 +34,13 @@ function Home({dispatch, navigation}) {
     dispatch(actions.actualizarNavigation(navigation));
   }, []);
 
-  const handleGoToAlbumList = () =>{
-    console.log("prop: "+navigation)
-    navigation.navigate("AlbumList")
-  }
+  const handleOnPressGoToFormat = (projectId) =>
+    navigation.navigate('Format', {projectId});
+
+  const handleGoToAlbumList = () => {
+    console.log('prop: ' + navigation);
+    navigation.navigate('AlbumList');
+  };
   useEffect(() => {
     loadData();
   }, [loadData]);
