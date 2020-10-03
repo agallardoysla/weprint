@@ -20,6 +20,7 @@ export const colores = {
   gris: '#a2a4ab',
   loader: '#f18263',
   menuSelect: '#666666',
+  grisFormatoAlbum: '#737373',
 };
 
 export const tipoDeLetra = {
@@ -46,11 +47,10 @@ export const pantalla = {
   screenWidth: Math.round(Dimensions.get('window').screenWidth),
 };
 
-
 export const estiloDeLetra = {
   negrita: {
     color: '#000000',
     fontFamily: tipoDeLetra.bold,
     fontWeight: 'bold',
-}
-}
+  },
+};

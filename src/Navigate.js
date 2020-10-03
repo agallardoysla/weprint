@@ -19,6 +19,8 @@ import AlbumList from './home/containers/screens/AlbumList'
 import AlbumDescription from './home/containers/screens/AlbumDescription'
 
 import CartMainView from './cart/containers/CartMainView' 
+import Format from './format/containers/Format';
+import SelectImage from './selectImage/containers/SelectImage';
 
 import {colores} from './constantes/Temas';
 
@@ -41,6 +43,8 @@ const Navegador = (props) => {
       <AuthStack.Screen name="Cart" component={CartMainView} />
       <AuthStack.Screen name="AlbumList" component={AlbumList} options={{headerShown: true, title: ''}} />
       <AuthStack.Screen name="AlbumDescription" component={AlbumDescription} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen name="Format" component={Format} />
+      <AuthStack.Screen name="SelectImage" component={SelectImage} />
     </AppDrawer.Navigator>
   );
 
