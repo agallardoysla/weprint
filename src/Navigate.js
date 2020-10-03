@@ -16,7 +16,7 @@ import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
 import EditProfile from './editProfile/containers/EditProfile';
 import Format from './format/containers/Format';
-import SelectImage from './selectImage/containers/SelectImage';
+import SelectAlbum from './selectAlbum/containers/SelectAlbum';
 
 import {colores} from './constantes/Temas';
 
@@ -37,7 +37,7 @@ const Navegador = (props) => {
       <AuthStack.Screen name="About" component={About} />
       <AuthStack.Screen name="EditProfile" component={EditProfile} />
       <AuthStack.Screen name="Format" component={Format} />
-      <AuthStack.Screen name="SelectImage" component={SelectImage} />
+      <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
     </AppDrawer.Navigator>
   );
 

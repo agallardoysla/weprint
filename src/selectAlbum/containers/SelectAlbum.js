@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import AlbumItem from '../components/AlbumItem';
 import Cargando from '../../generales/Cargando';
 
-function SelectImage({dispatch, navigation, format}) {
+function SelectAlbum({dispatch, navigation, format}) {
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -70,29 +70,29 @@ function SelectImage({dispatch, navigation, format}) {
   );
 
   return (
-    <View style={style.selectImageMainContainer}>
+    <View style={style.selectAlbumMainContainer}>
       <TouchableOpacity
-        style={style.selectImageHeader}
+        style={style.selectAlbumHeader}
         onPress={handleOnPressGoToBack}>
         <Icon name="arrow-left" size={27} color="#000" />
-        <View style={style.selectImageHeaderTextContainer}>
-          <Text style={style.selectImageHeaderText}>Seleccionar</Text>
+        <View style={style.selectAlbumHeaderTextContainer}>
+          <Text style={style.selectAlbumHeaderText}>Seleccionar</Text>
         </View>
       </TouchableOpacity>
-      <View style={style.selectImageIconContainer}>
-        <TouchableOpacity style={style.selectImageSocialMediaContainer}>
+      <View style={style.selectAlbumIconContainer}>
+        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
           <Icon name="smartphone" size={27} color={colores.grisClaro} />
         </TouchableOpacity>
-        <TouchableOpacity style={style.selectImageSocialMediaContainer}>
+        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
           <Icon name="facebook" size={27} color={colores.grisClaro} />
         </TouchableOpacity>
-        <TouchableOpacity style={style.selectImageSocialMediaContainer}>
+        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
           <Icon name="instagram" size={27} color={colores.grisClaro} />
         </TouchableOpacity>
       </View>
       {loading && <Cargando titulo=" " />}
       {!loading && albums.length > 0 ? (
-        <View style={style.selectImageAlbumContainer}>
+        <View style={style.selectAlbumAlbumContainer}>
           <FlatList
             data={albums}
             numColumns={2}
@@ -101,9 +101,9 @@ function SelectImage({dispatch, navigation, format}) {
           />
         </View>
       ) : (
-        <View style={style.selectImageMessageContainer}>
-          <Text style={style.selectImageMessage}>
-            No se pudo acceder álbumes
+        <View style={style.selectAlbumMessageContainer}>
+          <Text style={style.selectAlbumMessage}>
+            No se pudo acceder a álbumes
           </Text>
         </View>
       )}
@@ -112,11 +112,11 @@ function SelectImage({dispatch, navigation, format}) {
 }
 
 const style = StyleSheet.create({
-  selectImageMainContainer: {
+  selectAlbumMainContainer: {
     height: '100%',
     paddingBottom: 100,
   },
-  selectImageHeader: {
+  selectAlbumHeader: {
     height: 60,
     width: '100%',
     flexDirection: 'row',
@@ -133,30 +133,30 @@ const style = StyleSheet.create({
 
     elevation: 4,
   },
-  selectImageHeaderText: {
+  selectAlbumHeaderText: {
     color: 'black',
     fontWeight: '600',
     fontSize: 19,
   },
-  selectImageHeaderTextContainer: {
+  selectAlbumHeaderTextContainer: {
     marginLeft: 12,
     paddingBottom: 1,
   },
-  selectImageIconContainer: {
+  selectAlbumIconContainer: {
     height: 50,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.blanco,
   },
-  selectImageSocialMediaContainer: {
+  selectAlbumSocialMediaContainer: {
     marginHorizontal: 20,
   },
-  selectImageAlbumContainer: {
+  selectAlbumAlbumContainer: {
     marginTop: 10,
     paddingVertical: 10,
   },
-  selectImageMessageContainer: {
+  selectAlbumMessageContainer: {
     height: 120,
     width: '100%',
     maxWidth: 768,
@@ -164,7 +164,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
-  selectImageMessage: {
+  selectAlbumMessage: {
     marginLeft: 20,
     color: 'black',
     fontFamily: tipoDeLetra.bold,
@@ -189,4 +189,4 @@ const mapStateToProps = (
   };
 };
 
-export default connect(mapStateToProps)(SelectImage);
+export default connect(mapStateToProps)(SelectAlbum);
