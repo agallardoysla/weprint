@@ -63,10 +63,17 @@ function SelectAlbum({dispatch, navigation, format}) {
 
   const handleOnPressGoToBack = () => navigation.navigate('Format');
 
+  const handleGoToSelectImagen = (albumTitle) =>
+    navigation.navigate('SelectImagen', {
+      formatId: format.id,
+      albumTitle,
+    });
+
   const renderAlbums = ({item: album}) => (
     <AlbumItem
       album={album}
       getPhotosByAlbumFromPhone={getPhotosByAlbumFromPhone}
+      onPressGoToSelectImagen={handleGoToSelectImagen}
     />
   );
 

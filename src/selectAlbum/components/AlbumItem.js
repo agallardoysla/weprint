@@ -3,7 +3,11 @@ import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import Cargando from '../../generales/Cargando';
 import {estiloDeLetra, tipoDeLetra, colores} from '../../constantes/Temas';
 
-const AlbumItem = ({album, getPhotosByAlbumFromPhone}) => {
+const AlbumItem = ({
+  album,
+  getPhotosByAlbumFromPhone,
+  onPressGoToSelectImagen,
+}) => {
   const [loading, setLoading] = useState(true);
   const [placeHolderImg, setPlaceHolderImg] = useState('');
 
@@ -17,8 +21,10 @@ const AlbumItem = ({album, getPhotosByAlbumFromPhone}) => {
     handleGetImage();
   }, [handleGetImage]);
 
+  const handleOnPress = () => onPressGoToSelectImagen(album.title);
+
   return (
-    <TouchableOpacity style={style.albumContainer}>
+    <TouchableOpacity style={style.albumContainer} onPress={handleOnPress}>
       <View style={style.albumImageContainer}>
         {loading ? (
           <View style={style.albumLoaderContainer}>
