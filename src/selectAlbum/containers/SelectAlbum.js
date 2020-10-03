@@ -18,6 +18,7 @@ import Cargando from '../../generales/Cargando';
 
 function SelectAlbum({dispatch, navigation, format}) {
   const [albums, setAlbums] = useState([]);
+  const [storage, setStorage] = useState('device');
   const [loading, setLoading] = useState(true);
 
   const hasAndroidPermission = useCallback(async () => {
@@ -69,6 +70,8 @@ function SelectAlbum({dispatch, navigation, format}) {
     />
   );
 
+  const isSelectedStorage = (storageSelected) => storageSelected === storage;
+
   return (
     <View style={style.selectAlbumMainContainer}>
       <TouchableOpacity
@@ -80,14 +83,53 @@ function SelectAlbum({dispatch, navigation, format}) {
         </View>
       </TouchableOpacity>
       <View style={style.selectAlbumIconContainer}>
-        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
-          <Icon name="smartphone" size={27} color={colores.grisClaro} />
+        <TouchableOpacity
+          style={
+            isSelectedStorage('device')
+              ? style.selectAlbumStorage
+              : style.selectAlbumSocialMediaContainer
+          }>
+          <Icon
+            name="smartphone"
+            size={27}
+            color={
+              isSelectedStorage('device')
+                ? colores.azulNoche
+                : colores.grisClaro
+            }
+          />
         </TouchableOpacity>
-        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
-          <Icon name="facebook" size={27} color={colores.grisClaro} />
+        <TouchableOpacity
+          style={
+            isSelectedStorage('facebook')
+              ? style.selectAlbumStorage
+              : style.selectAlbumSocialMediaContainer
+          }>
+          <Icon
+            name="facebook"
+            size={27}
+            color={
+              isSelectedStorage('facebook')
+                ? colores.azulNoche
+                : colores.grisClaro
+            }
+          />
         </TouchableOpacity>
-        <TouchableOpacity style={style.selectAlbumSocialMediaContainer}>
-          <Icon name="instagram" size={27} color={colores.grisClaro} />
+        <TouchableOpacity
+          style={
+            isSelectedStorage('instagram')
+              ? style.selectAlbumStorage
+              : style.selectAlbumSocialMediaContainer
+          }>
+          <Icon
+            name="instagram"
+            size={27}
+            color={
+              isSelectedStorage('instagram')
+                ? colores.azulNoche
+                : colores.grisClaro
+            }
+          />
         </TouchableOpacity>
       </View>
       {loading && <Cargando titulo=" " />}
@@ -151,6 +193,13 @@ const style = StyleSheet.create({
   },
   selectAlbumSocialMediaContainer: {
     marginHorizontal: 20,
+    paddingBottom: 5,
+  },
+  selectAlbumStorage: {
+    marginHorizontal: 20,
+    paddingBottom: 5,
+    borderBottomColor: colores.azulNoche,
+    borderBottomWidth: 2,
   },
   selectAlbumAlbumContainer: {
     marginTop: 10,
