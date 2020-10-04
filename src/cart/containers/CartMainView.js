@@ -11,7 +11,7 @@ import { Header } from '../../generales/Header'
 
 function CartMainView({dispatch, navigation}) {
 
-  const [isCartEmpty, setCartEmpty] = useState(true)  
+  const [isCartEmpty, setCartEmpty] = useState(false)  
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -43,7 +43,7 @@ function CartMainView({dispatch, navigation}) {
                     <ProductItem />
                     <ProductItem />
                     <View style={{width: '80%', padding: 20, backgroundColor: colores.blanco, elevation: 2, borderRadius: 50, alignSelf: 'center', marginBottom: 30}}>
-                        <TouchableWithoutFeedback onPress={() => navigation.push("Home")}>
+                        <TouchableWithoutFeedback onPress={() => navigation.push("ConfirmCart")}>
                                 <Text style={{textAlign: 'center', ...estiloDeLetra.negrita, color: colores.dorado}}>IR A COMPRAR</Text>
                         </TouchableWithoutFeedback>
                     </View>
