@@ -14,8 +14,17 @@ import Profile from './profile/containers/Profile';
 
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
+import Drafts from './profile/menuScreens/Drafts'
 import EditProfile from './editProfile/containers/EditProfile'
- 
+import AlbumList from './home/containers/screens/AlbumList' 
+import AlbumDescription from './home/containers/screens/AlbumDescription'
+
+import CartMainView from './cart/containers/CartMainView' 
+import ConfirmCart from './cart/containers/ConfirmCart'
+import Format from './format/containers/Format';
+import SelectAlbum from './selectAlbum/containers/SelectAlbum';
+import SelectImagen from './selectImagen/containers/SelectImagen';
+
 import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
@@ -30,10 +39,15 @@ const Navegador = (props) => {
       }}
       initialRouteName="Home">
       <AuthStack.Screen name="Home" component={Home} />
-      <AuthStack.Screen name="Profile" component={Profile} />
-      <AuthStack.Screen name="Policy" component={Policy} />
-      <AuthStack.Screen name="About" component={About} />
-      <AuthStack.Screen name="EditProfile" component={EditProfile} />
+      <AuthStack.Screen name="Profile" component={ProfileNavigator} />
+
+      <AuthStack.Screen name="Cart" component={CartMainView} />
+      <AuthStack.Screen name="ConfirmCart" component={ConfirmCart} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen name="AlbumList" component={AlbumList} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen name="AlbumDescription" component={AlbumDescription} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen name="Format" component={Format} />
+      <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
+      <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
     </AppDrawer.Navigator>
   );
 
@@ -55,6 +69,20 @@ const Navegador = (props) => {
     </NavigationContainer>
   );
 };
+
+const ProfileTab = createStackNavigator();
+const ProfileNavigator = () => (
+  <ProfileTab.Navigator initialRouteName="Profile" screenOptions={{
+    headerShown: false,
+  }}>
+    <ProfileTab.Screen name="Profile" component={Profile} />
+    <ProfileTab.Screen name="Policy" component={Policy} />
+    <ProfileTab.Screen name="Drafts" component={Drafts} />
+    <ProfileTab.Screen name="About" component={About} />
+    <ProfileTab.Screen name="EditProfile" component={EditProfile} />
+  </ProfileTab.Navigator>
+);
+
 
 const mapStateToProps = (state) => ({
   login: state.login,

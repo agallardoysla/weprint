@@ -2,42 +2,54 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import Container from '../../generales/Container';
+import CargandoModal from '../../generales/CargandoModal'
 import {ProfileMainView} from '../components/ProfileMainView';
 import {MenuItem} from '../../generales/MenuItem';
+import { Header } from '../../generales/Header'
 import {colores} from '../../constantes/Temas';
 import { get_profile_api } from '../../utils/apis/login_api'
+import {actions} from '../../redux';
 
-function Profile({navigation}) {
+function Profile({navigation, dispatch}) {
   
   const [userData, setUserData] = useState({})
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log("ready")
-    const getUserData = get_profile_api().then((data) =>
-      setUserData(data.data[0]),
-    );
+    const getUserData = get_profile_api().then((data) =>{
+      setUserData(data.data[0])
+      setLoading(false)
+    });
   }, [])
   return (
     <Container>
+      <CargandoModal title="Cargando" show={loading} />
+      <Header />
       <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
         <ProfileMainView navigation={navigation} data={userData} />
         <View style={styles.menuContainer}>
           <View
             style={{
               width: '100%',
-              paddingHorizontal: '5%',
-              paddingVertical: '5%',
+              paddingHorizontal: '4%',
+              paddingVertical: '4%',
             }}>
             <MenuItem
               name="Mis Compras"
               icon="shopping-basket"
               color="#f18263"
             />
-            <MenuItem name="Mis Borradores" icon="edit" color="#50c8ff" />
+            <MenuItem 
+              name="Mis Borradores" 
+              icon="edit" 
+              color="#50c8ff" 
+              onPressFunction={() => navigation.navigate('Drafts', userData.photo)}
+            />
             <MenuItem
               name="Mis Albunes compartidos"
               icon="insert-photo"
               color="#5d58e0"
+              
             />
             <MenuItem name="Mis repositorios" icon="folder" color="#e0bb2e" />
             <MenuItem
@@ -59,13 +71,11 @@ function Profile({navigation}) {
           <View
             style={{
               width: '100%',
-              paddingHorizontal: '5%',
-              paddingVertical: '5%',
             }}>
             <MenuItem
               name="Cerrar Sesion"
               color="#ffd948"
-              onPressFunction={() => console.log('Session')}
+              onPressFunction={() => dispatch(actions.logout())}
               divider={false}
             />
           </View>

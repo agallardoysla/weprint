@@ -1,10 +1,11 @@
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Cargando from './Cargando';
 import {connect} from 'react-redux';
+import {colores, estiloDeLetra} from '../constantes/Temas'
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {useRoute} from '@react-navigation/native';
 
 function Container({
   children,
@@ -16,6 +17,7 @@ function Container({
   return (
     <View style={styles.container}>
       <View style={{flex: 1, width: '100%'}}>{children}</View>
+      
       {footer && <Footer navigation={navigation.navigation} />}
       {isloading && (
         <Cargando
@@ -32,6 +34,8 @@ function Container({
 }
 
 const Footer = ({navigation}) => {
+  const route = useRoute();
+
   return (
     <View
       style={{
@@ -43,31 +47,35 @@ const Footer = ({navigation}) => {
         paddingHorizontal: 10,
         backgroundColor: 'white',
       }}>
-      <Item navigation={navigation} ruta={'Home'} title={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Home'} />
-      <Item navigation={navigation} ruta={'Profile'} title={'Perfil'} />
+      <Item navigation={navigation} ruta={'Home'} title={'Home'} iconName={'home'} isRoute={route} />
+      <Item navigation={navigation} ruta={'Cart'} title={'Cesta'} iconName={'shopping-cart'} isRoute={route} />
+      <Item navigation={navigation} ruta={'Profile'} title={'Perfil'} iconName={'user-alt'} isRoute={route} />
     </View>
   );
 };
 
-const Item = ({navigation, ruta, title}) => {
+const Item = ({navigation, ruta, title, iconName, isRoute}) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        alert('Navega hacia ' + ruta);
         navigation.navigate(ruta);
       }}
       style={{
-        width: 60,
-        height: '80%',
+        height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'gray',
         borderRadius: 5,
+        width: 125,
+        flexGrow: 0,
+        borderRadius: 25,
       }}>
-      <Text>{title}</Text>
+      <Icon
+        name={iconName}
+        color={colores.loader}
+        size={20}
+        style={{margin: 3}}
+      />
+      <Text style={{...estiloDeLetra.negrita, color: isRoute.name !== ruta ?  colores.menuSelect : colores.naranja}}>{title}</Text>
     </TouchableOpacity>
   );
 };

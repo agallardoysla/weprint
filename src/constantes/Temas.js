@@ -18,10 +18,13 @@ export const colores = {
   blanco: '#FFFFFF',
   transparente: 'rgba(0,0,0,0)',
   gris: '#a2a4ab',
-<<<<<<< HEAD
   loader: '#f18263',
-=======
->>>>>>> 4df26172a6ad9aea11361391158f6fed4b163f8b
+  menuSelect: '#666666',
+  grisFormatoAlbum: '#737373',
+  grisClaro: '#e5e6e8',
+  azulNoche: '#051441',
+  logo: '#f98364',
+  cartButton: '#23dcb3'
 };
 
 export const tipoDeLetra = {
@@ -48,11 +51,10 @@ export const pantalla = {
   screenWidth: Math.round(Dimensions.get('window').screenWidth),
 };
 
-
 export const estiloDeLetra = {
   negrita: {
     color: '#000000',
     fontFamily: tipoDeLetra.bold,
     fontWeight: 'bold',
-}
-}
+  },
+};

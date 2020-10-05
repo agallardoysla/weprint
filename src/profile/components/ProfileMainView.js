@@ -4,7 +4,6 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import {tipoDeLetra, colores} from '../../constantes/Temas';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import navigation from '../../redux/reducer/navigation';
 
 export const ProfileMainView = ({data, navigation}) => {
   console.log(nickname)
@@ -31,14 +30,14 @@ export const ProfileMainView = ({data, navigation}) => {
       style={{
         alignItems: 'center',
         width: '100%',
-        height: '35%',
+        height: '30%',
         justifyContent: 'center',
       }}>
       <Image
         source={{uri: photo}}
         style={{
-          height: 120,
-          width: 120,
+          height: 90,
+          width: 90,
           borderRadius: 100,
           borderColor: colores.blanco,
           borderWidth: 2.5,
