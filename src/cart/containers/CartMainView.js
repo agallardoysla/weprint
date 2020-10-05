@@ -11,7 +11,7 @@ import { Header } from '../../generales/Header'
 
 function CartMainView({dispatch, navigation}) {
 
-  const [isCartEmpty, setCartEmpty] = useState(false)  
+  const [isCartEmpty, setCartEmpty] = useState(true)  
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
