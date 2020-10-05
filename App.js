@@ -9,11 +9,12 @@ import Cargando from './src/generales/Cargando';
 import Navigate from './src/Navigate';
 
 import {store, persistor} from './src/redux/store';
+import CargandoModal from './src/generales/CargandoModal';
 
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
-      <Cargando />
+      <CargandoModal />
     </View>
   );
 
@@ -37,7 +38,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'red',
   },
 });
 export default App;
