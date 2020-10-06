@@ -4,11 +4,10 @@ import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist'; //NO BORRAR
-
-import CargandoModal from './src/generales/CargandoModal';
 import Navigate from './src/Navigate';
 
 import {store, persistor} from './src/redux/store';
+import CargandoModal from './src/generales/CargandoModal';
 
 const App: () => React$Node = () => {
   const renderLoading = () => (
@@ -37,7 +36,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'red',
   },
 });
 export default App;
