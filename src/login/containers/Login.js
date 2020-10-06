@@ -37,6 +37,8 @@ function Login(props) {
   });
   const [error, setError] = useState(false);
 
+  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
   }, []);
@@ -86,16 +88,17 @@ function Login(props) {
                     ...data,
                     email: val.trim(),
                     check_textInputChange: true,
-                    isValidUser: val.trim().length >= 4 ? true : false,
+                    isValidUser: val.trim().length >= 4  ? true : false,
+                    
                   })
                 }
-                onEndEditing={(e) =>
+                onEndEditing={(e) =>{
                   setData({
                     ...data,
                     isValidUser:
-                      e.nativeEvent.text.trim().length >= 4 ? true : false,
+                      e.nativeEvent.text.trim().length >= 4 && regexMail.test(e.nativeEvent.text.trim()) ? true : false,
                   })
-                }
+                }}
               />
               {data.isValidUser ? null : (
                 <Animatable.View animation="bounceIn">

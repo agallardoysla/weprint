@@ -71,7 +71,7 @@ const Item = ({navigation, ruta, title, iconName, isRoute}) => {
       }}>
       <Icon
         name={iconName}
-        color={colores.loader}
+        color={isRoute.name !== ruta ?  colores.menuSelect : colores.naranja}
         size={20}
         style={{margin: 3}}
       />

@@ -12,7 +12,7 @@ import CargandoModal from './src/generales/CargandoModal';
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
-      <CargandoModal />
+      <CargandoModal transparentBackground={false} />
     </View>
   );
 

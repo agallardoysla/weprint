@@ -26,7 +26,8 @@ export const colores = {
   logo: '#f98364',
   cartButton: '#23dcb3',
   loginInput: 'rgba(52,52,52,0.8)',
-  cargandoModal: '#484848'
+  cargandoModal: '#484848',
+  cargandoModalFondo: 'rgba(0,0,0,0.5)'
 };
 
 export const tipoDeLetra = {

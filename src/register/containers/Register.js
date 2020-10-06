@@ -67,6 +67,8 @@ function Register(props) {
 
   const [registerValidation, setRegisterValidation] = useState(null);
 
+  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
     const provinceData = getProvinces().then((data) =>
@@ -256,6 +258,12 @@ function Register(props) {
                   onChangeText={(val) =>
                     textDataValidation(val, 2, 'isValidEmail', 'email')
                   }
+                  onEndEditing={(e) =>{
+                    regexMail.test(e.nativeEvent.text.trim()) === false && setTextValidator({
+                      ...textValidator,
+                      isValidEmail: false,
+                    })
+                  }}
                 />
                 {textValidator.isValidEmail === false && (
                   <AnimatedMessage message="Ingresa un email valido!" />
@@ -272,7 +280,7 @@ function Register(props) {
                   secureTextEntry={true}
                 />
                 {textValidator.isValidPassword === false && (
-                  <AnimatedMessage message="Ingresa un password valido!" />
+                  <AnimatedMessage message="La contraseña debe tener mas de 8 caracteres" />
                 )}
               </View>
 
@@ -291,7 +299,7 @@ function Register(props) {
                   secureTextEntry={true}
                 />
                 {textValidator.isValidRepeatPassword === false && (
-                  <AnimatedMessage message="Los password no coinciden!" />
+                  <AnimatedMessage message="Las contraseñas no coinciden!" />
                 )}
               </View>
 
@@ -386,7 +394,7 @@ function Register(props) {
                         textAlign: 'center',
                         marginVertical: 10,
                       }}>
-                      Ingresa una fecha!
+                      Ingresa tu fecha de nacimiento
                     </Text>
                   </Animatable.View>
                 )}

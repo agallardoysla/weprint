@@ -4,11 +4,11 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import Cargando from './Cargando';
 import {colores, tipoDeLetra} from '../constantes/Temas';
 
-const CargandoModal = ({style, title, show}) => {
+const CargandoModal = ({style, title, show, transparentBackground = true}) => {
   return (
     <Modal transparent={true} animationType="fade" visible={show}>
-      <View style={[styles.container, style]}>
-        <View style={{padding: 30, backgroundColor: '#484848'}}>
+      <View style={[styles.container, {backgroundColor: transparentBackground === true ? colores.cargandoModalFondo : colores.cargandoModal}, style]}>
+        <View style={{padding: 30, backgroundColor: colores.cargandoModal}}>
           <Cargando
             titulo={title}
             loaderColor={colores.loader}
@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
   },
 });
 export default CargandoModal;
