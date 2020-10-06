@@ -5,7 +5,7 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist'; //NO BORRAR
 
-import Cargando from './src/generales/Cargando';
+import CargandoModal from './src/generales/CargandoModal';
 import Navigate from './src/Navigate';
 
 import {store, persistor} from './src/redux/store';
@@ -13,7 +13,7 @@ import {store, persistor} from './src/redux/store';
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
-      <Cargando />
+      <CargandoModal />
     </View>
   );
 

@@ -273,6 +273,7 @@ function Register(props) {
                   onChangeText={(val) =>
                     textDataValidation(val, 8, 'isValidPassword', 'password')
                   }
+                  secureTextEntry={true}
                 />
                 {textValidator.isValidPassword === false && (
                   <AnimatedMessage message="Ingresa un password valido!" />
@@ -287,6 +288,7 @@ function Register(props) {
                     setTextValidator({...textValidator, isValidRepeatPassword: val === data.password ? true : false})
                   }
                   onEndEditing={(val) =>  console.log(val.currentTarget)}
+                  secureTextEntry={true}
                 />
                 {textValidator.isValidRepeatPassword === false && (
                   <AnimatedMessage message="Los password no coinciden!" />

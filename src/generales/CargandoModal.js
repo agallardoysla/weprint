@@ -16,7 +16,7 @@ const CargandoModal = ({
   return (
     <Modal transparent={true} animationType="fade" visible={show}>
         <View style={[styles.container, style]}>
-            <View style={{ padding: 30, backgroundColor: '#484848'}}>
+            <View style={{ padding: 30, backgroundColor: colores.cargandoModal}}>
               <Cargando titulo={title} loaderColor={colores.loader} style={{flexDirection: 'row'}} tituloStyle={{marginHorizontal: 20, fontSize: RFPercentage(2), color: colores.blanco, fontWeight: 'bold', fontFamily: tipoDeLetra.bold}} />
             </View>
         </View>

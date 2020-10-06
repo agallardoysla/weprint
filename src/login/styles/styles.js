@@ -1,7 +1,7 @@
 const React = require('react-native');
 const {Dimensions} = React;
 const {width, height} = Dimensions.get('window');
-import {tamañoLetra} from '../../constantes/Temas';
+import {colores, tamañoLetra} from '../../constantes/Temas';
 
 export default {
   logo: {
@@ -64,12 +64,12 @@ export default {
   loginInput: {
     height: 45,
     width: '100%',
-    borderColor: '#c1c1c1',
+    borderColor: colores.grisClaro,
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 20,
     fontWeight: 'bold',
-    color: '#E0E0E0',
+    color: colores.loginInput,
   },
   button: {
     alignItems: 'center',

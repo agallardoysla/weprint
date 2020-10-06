@@ -15,7 +15,7 @@ import LinearGradientButton from 'react-native-linear-gradient';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import {actions} from '../../redux';
 import Container from '../../generales/Container';
-import {tamañoLetra} from '../../constantes/Temas';
+import {tamañoLetra, colores} from '../../constantes/Temas';
 import CardLogin from '../components/CardLogin';
 import logo from '../../../assets/images/logo_blanco.png';
 import Background from '../../../assets/images/svg/login.svg';
@@ -63,7 +63,7 @@ function Login(props) {
     <Container footer={false}>
       <CargandoModal title="Validando, porfavor espere..." show={loading} /> 
       <ScrollView>
-        <StatusBar backgroundColor="#ff7b7f" barStyle="light-content" />
+        <StatusBar backgroundColor={colores.grisClaro} barStyle="light-content" />
         <View style={{height: 30, width: '100%'}}>
           <Background width={'100%'} height={95} />
         </View>

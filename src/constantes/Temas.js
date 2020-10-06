@@ -24,7 +24,9 @@ export const colores = {
   grisClaro: '#e5e6e8',
   azulNoche: '#051441',
   logo: '#f98364',
-  cartButton: '#23dcb3'
+  cartButton: '#23dcb3',
+  loginInput: 'rgba(52,52,52,0.8)',
+  cargandoModal: '#484848'
 };
 
 export const tipoDeLetra = {
