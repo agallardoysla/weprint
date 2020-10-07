@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, SafeAreaView} from 'react-native';
-import {TextView} from './components/TextView';
+import TextView from './components/TextView';
 import Container from '../../generales/Container';
 
 function Policy() {
