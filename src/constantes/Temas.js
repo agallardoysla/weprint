@@ -22,8 +22,10 @@ export const colores = {
   menuSelect: '#666666',
   grisFormatoAlbum: '#737373',
   grisClaro: '#e5e6e8',
+  grisBgIconCart: '#f6f8fa',
   azulNoche: '#051441',
   logo: '#f98364',
+  negro: 'black',
 };
 
 export const tipoDeLetra = {

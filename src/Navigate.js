@@ -22,7 +22,8 @@ import CartMainView from './cart/containers/CartMainView';
 import Format from './format/containers/Format';
 import SelectAlbum from './selectAlbum/containers/SelectAlbum';
 import SelectImagen from './selectImagen/containers/SelectImagen';
-import Layout from './layout/containers/Layout';
+import CartLayout from './cartLayout/containers/CartLayout';
+import EditCartLayoutImage from './editCartLayoutImage/containers/EditCartLayoutImage';
 
 import {colores} from './constantes/Temas';
 
@@ -56,7 +57,11 @@ const Navegador = (props) => {
       <AuthStack.Screen name="Format" component={Format} />
       <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
       <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
-      <AuthStack.Screen name="Layout" component={Layout} />
+      <AuthStack.Screen name="CartLayout" component={CartLayout} />
+      <AuthStack.Screen
+        name="EditCartLayoutImage"
+        component={EditCartLayoutImage}
+      />
     </AppDrawer.Navigator>
   );
 

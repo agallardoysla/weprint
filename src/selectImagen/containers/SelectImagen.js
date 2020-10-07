@@ -1,5 +1,7 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useCallback, useRef} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import concat from 'lodash/concat';
+import {nanoid} from 'nanoid/non-secure';
 import CameraRoll from '@react-native-community/cameraroll';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
@@ -9,9 +11,11 @@ import ImagenItem from '../components/ImagenItem';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
 function SelectImagen({dispatch, navigation, route, format}) {
-  const {albumTitle} = route.params;
+  const {albumTitle, storageId} = route.params;
   const [edges, setEdges] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const customImagesStorageId = useRef(storageId || nanoid());
 
   const loadImages = useCallback(async () => {
     const photos = await CameraRoll.getPhotos({
@@ -33,19 +37,60 @@ function SelectImagen({dispatch, navigation, route, format}) {
     loadImages();
   }, [loadImages]);
 
-  const renderImage = ({item: edge}) => (
-    <ImagenItem uri={edge.node.image.uri} />
-  );
+  const hasMinQuantitiy = () => selectedImages.length >= format.min_quantity;
 
   const handleOnPressGoToBack = () =>
     navigation.navigate('SelectAlbum', {
       formatId: format.id,
     });
 
-  const handleOnPressGoToLayout = () =>
-    navigation.navigate('Layout', {
-      formatId: format.id,
-    });
+  const handleSaveImageInStorage = (images) => {
+    dispatch(
+      actions.actualizarImagenesSeleccionadas(
+        customImagesStorageId.current,
+        images,
+      ),
+    );
+  };
+
+  const handleAddImage = (uri, base64) => {
+    const baseImg = {uri, base64};
+    const images = concat(selectedImages, [baseImg]);
+    setSelectedImages(images);
+    handleSaveImageInStorage(images);
+  };
+
+  const handleRemoveImage = (uri) => {
+    const images = selectedImages.filter(
+      (selectedImage) => selectedImage.uri !== uri,
+    );
+    setSelectedImages(images);
+    handleSaveImageInStorage(images);
+  };
+
+  const handleOnPressCheckImage = (uri, isCheck, base64) => {
+    if (isCheck) {
+      handleAddImage(uri, base64);
+    } else {
+      handleRemoveImage(uri);
+    }
+  };
+
+  const handleOnPressGoToLayout = () => {
+    if (hasMinQuantitiy()) {
+      navigation.navigate('CartLayout', {
+        formatId: format.id,
+        storageId: customImagesStorageId.current,
+      });
+    }
+  };
+
+  const renderImage = ({item: edge}) => (
+    <ImagenItem
+      uri={edge.node.image.uri}
+      onPressCheckImage={handleOnPressCheckImage}
+    />
+  );
 
   return (
     <View style={style.selectImagenMainContainer}>
@@ -54,7 +99,10 @@ function SelectImagen({dispatch, navigation, route, format}) {
         onPress={handleOnPressGoToBack}>
         <Icon name="arrow-left" size={27} color="#000" />
         <View style={style.selectImagenHeaderTextContainer}>
-          <Text style={style.selectImagenHeaderText}>Seleccionar</Text>
+          <Text style={style.selectImagenHeaderText}>
+            {' '}
+            {selectedImages.length} / {format.min_quantity}
+          </Text>
         </View>
       </TouchableOpacity>
       <View style={style.selectImagenListContainer}>
@@ -72,7 +120,9 @@ function SelectImagen({dispatch, navigation, route, format}) {
       <View style={style.selectImagenButtonContainer}>
         <TouchableOpacity
           style={style.selectImagenButton}
-          onPress={handleOnPressGoToLayout}>
+          onPress={handleOnPressGoToLayout}
+          disabled={!hasMinQuantitiy()}>
+          {!hasMinQuantitiy() && <View style={style.selectImagenOverlay} />}
           <Text style={style.selectImagenButtonText}>Siguiente</Text>
         </TouchableOpacity>
       </View>
@@ -108,8 +158,8 @@ const style = StyleSheet.create({
     fontSize: 19,
   },
   selectImagenHeaderTextContainer: {
-    marginLeft: 12,
-    paddingBottom: 1,
+    marginLeft: 15,
+    paddingBottom: 0.5,
   },
   selectImagenListContainer: {
     marginTop: 10,
@@ -122,13 +172,23 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   selectImagenButton: {
+    position: 'relative',
     width: 400,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderRadius: 290486,
+    backgroundColor: colores.logo,
+  },
+  selectImagenOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     paddingVertical: 7,
     alignItems: 'center',
     borderRadius: 290486,
-    borderWidth: 1,
-    borderColor: colores.logo,
-    backgroundColor: colores.logo,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
   selectImagenButtonText: {
     color: colores.blanco,
