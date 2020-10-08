@@ -43,9 +43,10 @@ const ImagenItem = ({uri, onPressCheckImage, isCheck}) => {
 const style = StyleSheet.create({
   imagenItemMainContainer: {
     position: 'relative',
-    marginHorizontal: 5,
+    marginHorizontal: 4,
     marginBottom: 10,
-    maxWidth: 768,
+    flexBasis: 0,
+    flexGrow: 1,
   },
   imagenItemOverlay: {
     position: 'absolute',
@@ -71,7 +72,6 @@ const style = StyleSheet.create({
   imagenItem: {
     height: 130,
     minWidth: 130,
-    width: '100%',
   },
   imagenItemLoadingContainer: {
     position: 'absolute',

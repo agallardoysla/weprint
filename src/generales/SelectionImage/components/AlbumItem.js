@@ -55,14 +55,14 @@ const AlbumItem = ({album, getPhotosByAlbumFromPhone, onPressSelectAlbum}) => {
 
 const style = StyleSheet.create({
   albumContainer: {
-    width: 180,
     marginHorizontal: 10,
     marginBottom: 10,
+    flexGrow: 1,
+    maxWidth: 768,
   },
   albumImageContainer: {
     height: 160,
-    width: '100%',
-    maxWidth: 768,
+    minWidth: 168,
   },
   albumImage: {
     width: '100%',

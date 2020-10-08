@@ -1,5 +1,12 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableHighlight,
+  FlatList,
+} from 'react-native';
 import concat from 'lodash/concat';
 import uniq from 'lodash/uniq';
 import CameraRoll from '@react-native-community/cameraroll';
@@ -137,15 +144,14 @@ const ImagesList = ({
           <View>
             <Text style={style.imagesListAlbumText}>{albumTitle}</Text>
           </View>
-          <TouchableOpacity
+          <TouchableHighlight
             style={style.imagesListButton}
-            onPress={handleOnPressSelectAll}>
-            {selectAll ? (
-              <Text style={style.imagesListButtonText}>Deseleccionar</Text>
-            ) : (
-              <Text style={style.imagesListButtonText}>Seleccionar todo</Text>
-            )}
-          </TouchableOpacity>
+            onPress={handleOnPressSelectAll}
+            underlayColor={colores.blanco}>
+            <Text style={style.imagesListButtonText}>
+              {selectAll ? 'Deseleccionar' : 'Seleccionar todo'}
+            </Text>
+          </TouchableHighlight>
         </View>
       )}
 

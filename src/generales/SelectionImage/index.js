@@ -3,36 +3,53 @@ import {View, Text, TouchableOpacity, Alert, StyleSheet} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import AlbumList from './components/AlbumList';
 import ImagesList from './components/ImagesList';
+import Cargando from '../Cargando';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
-
-/*const getBase64 = async () => {
-    try {
-      if (base64Cache) {
-        return base64Cache;
-      }
-
-      const base64Str = await RNFetchBlob.fs.readFile(uri, 'base64');
-      setBase64Cache(base64Str);
-
-      return base64Str;
-    } catch (error) {
-      throw new Error('Error');
-    }
-  };*/
 
 const SelectionImage = ({minQuantity, maxQuantity}) => {
   const [selectedAlbum, setSelectedAlbum] = useState('');
+  const [loading, setLoading] = useState(false);
   const [showImagesList, setShowImagesList] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
   const handleOnPressSelectAlbum = (albumTitle) => {
-    setSelectedAlbum(albumTitle);
-    setShowImagesList(true);
+    if (!loading) {
+      setSelectedAlbum(albumTitle);
+      setShowImagesList(true);
+    }
   };
 
   const handleOnPressGoToAlbumList = () => {
-    setSelectedAlbum('');
-    setShowImagesList(false);
+    if (!loading) {
+      setSelectedAlbum('');
+      setShowImagesList(false);
+    }
+  };
+
+  const getImageToBase64 = (uri) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const base64 = await RNFetchBlob.fs.readFile(uri, 'base64');
+        resolve({uri, base64});
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  const handleTransformImagesToBase64 = async () => {
+    setLoading(true);
+    const promises = selectedImages.map((selectedImage) =>
+      getImageToBase64(selectedImage),
+    );
+
+    try {
+      const imagesToBase64 = await Promise.all(promises);
+      setLoading(false);
+    } catch {
+      Alert.alert('Ha ocurrido un error vuelve a intentarlo');
+      setLoading(false);
+    }
   };
 
   const hasMinQuantitiy = () => selectedImages.length >= minQuantity;
@@ -40,15 +57,24 @@ const SelectionImage = ({minQuantity, maxQuantity}) => {
     maxQuantity > 0 && selectedImages.length == maxQuantity;
 
   const handleSelectImages = (images) => {
-    if (!hasMaxQuantity()) {
-      setSelectedImages(images);
-    } else {
-      Alert.alert(`Solo tiene un máximo permitido de ${maxQuantity} imágenes`);
+    if (!loading) {
+      if (!hasMaxQuantity()) {
+        setSelectedImages(images);
+      } else {
+        Alert.alert(
+          `Solo tiene un máximo permitido de ${maxQuantity} imágenes`,
+        );
+      }
     }
   };
 
   return (
     <View style={style.mainContainer}>
+      {loading && (
+        <View style={style.overlay}>
+          <Cargando titulo="" loaderColor={colores.logo} />
+        </View>
+      )}
       {showImagesList ? (
         <ImagesList
           albumTitle={selectedAlbum}
@@ -64,13 +90,13 @@ const SelectionImage = ({minQuantity, maxQuantity}) => {
           onPressSelectAlbum={handleOnPressSelectAlbum}
         />
       )}
-      <View style={style.imagesListButtonContainer}>
+      <View style={style.buttonContainer}>
         <TouchableOpacity
-          style={style.imagesListButton}
-          onPress={() => {}}
-          disabled={!hasMinQuantitiy()}>
-          {!hasMinQuantitiy() && <View style={style.imagesListOverlay} />}
-          <Text style={style.imagesListButtonText}>Siguiente</Text>
+          style={style.button}
+          onPress={handleTransformImagesToBase64}
+          disabled={!hasMinQuantitiy() || loading}>
+          {!hasMinQuantitiy() && <View style={style.overlayButton} />}
+          <Text style={style.buttonText}>Siguiente</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -79,15 +105,16 @@ const SelectionImage = ({minQuantity, maxQuantity}) => {
 
 const style = StyleSheet.create({
   mainContainer: {
+    position: 'relative',
     height: '100%',
   },
-  imagesListButtonContainer: {
+  buttonContainer: {
     position: 'absolute',
     bottom: 20,
     width: '100%',
     alignItems: 'center',
   },
-  imagesListButton: {
+  button: {
     position: 'relative',
     width: 400,
     paddingVertical: 10,
@@ -95,7 +122,7 @@ const style = StyleSheet.create({
     borderRadius: 290486,
     backgroundColor: colores.logo,
   },
-  imagesListOverlay: {
+  overlayButton: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -106,7 +133,20 @@ const style = StyleSheet.create({
     borderRadius: 290486,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
-  imagesListButtonText: {
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '100%',
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    elevation: 5,
+  },
+  buttonText: {
     color: colores.blanco,
     fontFamily: tipoDeLetra.regular,
     fontSize: 20,

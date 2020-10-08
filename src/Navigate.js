@@ -20,7 +20,6 @@ import AlbumDescription from './home/containers/screens/AlbumDescription';
 
 import CartMainView from './cart/containers/CartMainView';
 import Format from './format/containers/Format';
-import SelectAlbum from './selectAlbum/containers/SelectAlbum';
 import SelectImagen from './selectImagen/containers/SelectImagen';
 import CartLayout from './cartLayout/containers/CartLayout';
 import EditCartLayoutImage from './editCartLayoutImage/containers/EditCartLayoutImage';
@@ -55,7 +54,6 @@ const Navegador = (props) => {
         options={{headerShown: true, title: ''}}
       />
       <AuthStack.Screen name="Format" component={Format} />
-      <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
       <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
       <AuthStack.Screen name="CartLayout" component={CartLayout} />
       <AuthStack.Screen
