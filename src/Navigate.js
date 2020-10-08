@@ -15,6 +15,7 @@ import Profile from './profile/containers/Profile';
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
 import Drafts from './profile/menuScreens/Drafts'
+import Repositories from './profile/menuScreens/Repositories'
 import EditProfile from './editProfile/containers/EditProfile'
 import AlbumList from './home/containers/screens/AlbumList' 
 import AlbumDescription from './home/containers/screens/AlbumDescription'
@@ -78,6 +79,7 @@ const ProfileNavigator = () => (
     <ProfileTab.Screen name="Profile" component={Profile} />
     <ProfileTab.Screen name="Policy" component={Policy} />
     <ProfileTab.Screen name="Drafts" component={Drafts} />
+    <ProfileTab.Screen name="Repositories" component={Repositories} />
     <ProfileTab.Screen name="About" component={About} />
     <ProfileTab.Screen name="EditProfile" component={EditProfile} />
   </ProfileTab.Navigator>
