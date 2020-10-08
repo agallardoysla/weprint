@@ -1,5 +1,10 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {
+  PESDK,
+  PhotoEditorModal,
+  Configuration,
+} from 'react-native-photoeditorsdk';
+import {
   Text,
   Image,
   View,
@@ -13,6 +18,7 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import {actions} from '../../redux';
 import Cargando from '../../generales/Cargando';
 import {get_layout_api} from '../../utils/apis/layout_api';
+import SelectionImage from '../../generales/SelectionImage';
 
 function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
@@ -59,7 +65,8 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
   };
 
   return (
-    <View style={style.editCartLayoutMainContainer}>
+    <SelectionImage />
+    /*<View style={style.editCartLayoutMainContainer}>
       <TouchableOpacity style={style.editCartLayoutImageHeader}>
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <Text style={style.editCartLayoutImageHeaderText}>
@@ -109,7 +116,7 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
           />
         </>
       )}
-    </View>
+    </View>*/
   );
 }
 
@@ -144,8 +151,8 @@ const style = StyleSheet.create({
     position: 'relative',
   },
   editCartImageDeleteTextContainer: {
-    marginTop: 45,
-    paddingRight: 5,
+    marginTop: 40,
+    paddingRight: 6,
     alignItems: 'flex-end',
   },
   editCartImageDeleteText: {
@@ -192,7 +199,7 @@ const style = StyleSheet.create({
   },
   editCartImageLayoutList: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 45,
   },
   editCartImageLayoutPrompMainContainer: {
     alignItems: 'center',
