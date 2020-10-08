@@ -14,7 +14,12 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import AlbumItem from './AlbumItem';
 import Cargando from '../../Cargando';
 
-const AlbumList = ({onPressSelectAlbum, minQuantity, selectedImages}) => {
+const AlbumList = ({
+  onPressGoToBack,
+  onPressSelectAlbum,
+  minQuantity,
+  selectedImages,
+}) => {
   const [albums, setAlbums] = useState([]);
   const [storage, setStorage] = useState('device');
   const [loading, setLoading] = useState(true);
@@ -67,7 +72,7 @@ const AlbumList = ({onPressSelectAlbum, minQuantity, selectedImages}) => {
 
   return (
     <View style={style.albumListMainContainer}>
-      <TouchableOpacity style={style.albumListHeader} onPress={() => {}}>
+      <TouchableOpacity style={style.albumListHeader} onPress={onPressGoToBack}>
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <View style={style.albumListHeaderTextContainer}>
           <View>

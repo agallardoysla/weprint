@@ -1,8 +1,7 @@
-export const ACTUALIZAR_IMAGENES_SELECCIONADAS =
-  'ACTUALIZAR_IMAGENES_SELECCIONADAS';
+export const ACTUALIZAR_IMAGENES = 'ACTUALIZAR_IMAGENES';
 
-export const actualizarImagenesSeleccionadas = (customId, images) => ({
-  type: ACTUALIZAR_IMAGENES_SELECCIONADAS,
+export const actualizarImagenes = (customId, images) => ({
+  type: ACTUALIZAR_IMAGENES,
   payload: {
     customId,
     images,
@@ -17,7 +16,7 @@ export default (state = initialState, action) => {
   const {type, payload} = action;
 
   switch (type) {
-    case ACTUALIZAR_IMAGENES_SELECCIONADAS:
+    case ACTUALIZAR_IMAGENES:
       const {customId, images} = payload;
 
       return {

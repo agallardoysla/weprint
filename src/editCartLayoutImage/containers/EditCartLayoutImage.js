@@ -18,7 +18,6 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import {actions} from '../../redux';
 import Cargando from '../../generales/Cargando';
 import {get_layout_api} from '../../utils/apis/layout_api';
-import SelectionImage from '../../generales/SelectionImage';
 
 function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
@@ -65,8 +64,7 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
   };
 
   return (
-    <SelectionImage />
-    /*<View style={style.editCartLayoutMainContainer}>
+    <View style={style.editCartLayoutMainContainer}>
       <TouchableOpacity style={style.editCartLayoutImageHeader}>
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <Text style={style.editCartLayoutImageHeaderText}>
@@ -116,7 +114,7 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
           />
         </>
       )}
-    </View>*/
+    </View>
   );
 }
 

@@ -6,7 +6,12 @@ import ImagesList from './components/ImagesList';
 import Cargando from '../Cargando';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const SelectionImage = ({minQuantity, maxQuantity}) => {
+const SelectionListImage = ({
+  minQuantity,
+  maxQuantity,
+  onPressGoToBack,
+  onResponse,
+}) => {
   const [selectedAlbum, setSelectedAlbum] = useState('');
   const [loading, setLoading] = useState(false);
   const [showImagesList, setShowImagesList] = useState(false);
@@ -46,6 +51,7 @@ const SelectionImage = ({minQuantity, maxQuantity}) => {
     try {
       const imagesToBase64 = await Promise.all(promises);
       setLoading(false);
+      onResponse(imagesToBase64);
     } catch {
       Alert.alert('Ha ocurrido un error vuelve a intentarlo');
       setLoading(false);
@@ -88,6 +94,7 @@ const SelectionImage = ({minQuantity, maxQuantity}) => {
           minQuantity={minQuantity}
           selectedImages={selectedImages}
           onPressSelectAlbum={handleOnPressSelectAlbum}
+          onPressGoToBack={onPressGoToBack}
         />
       )}
       <View style={style.buttonContainer}>
@@ -153,9 +160,9 @@ const style = StyleSheet.create({
   },
 });
 
-SelectionImage.defaultProps = {
+SelectionListImage.defaultProps = {
   minQuantity: 1,
   maxQuantity: 0,
 };
 
-export default SelectionImage;
+export default SelectionListImage;

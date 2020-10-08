@@ -4,9 +4,7 @@ import login, {actualizarLogin, logout} from './reducer/login';
 import register, {actualizarRegister} from './reducer/register';
 import navigation, {actualizarNavigation} from './reducer/navigation';
 import format, {actualizarFormats} from './reducer/format';
-import selectImage, {
-  actualizarImagenesSeleccionadas,
-} from './reducer/selectImagen';
+import selectImage, {actualizarImagenes} from './reducer/selectImagen';
 
 import cart, {agregarCartPreseleccionado} from './reducer/cart';
 import layout, {actualizarLayout} from './reducer/layout';
@@ -27,7 +25,7 @@ export const actions = {
   actualizarNavigation,
   logout,
   actualizarFormats,
-  actualizarImagenesSeleccionadas,
+  actualizarImagenes,
   agregarCartPreseleccionado,
   actualizarLayout,
 };
