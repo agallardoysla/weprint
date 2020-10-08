@@ -6,13 +6,13 @@ import { RFPercentage } from 'react-native-responsive-fontsize';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-function Repositories({route, cover}){
+function Repositories({route, cover, navigation}){
   console.log(route.params)
   const photo = route.params
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
         <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 10}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("UploadRepository")}>
                 <View style={{padding: 20, backgroundColor: colores.button, width: 190, borderRadius: 50, margin: 5}}>
                     <Text style={{...estiloDeLetra.negrita, color: colores.blanco, textAlign:'center',fontSize: RFPercentage(1.5)}}>+ CREAR REPOSITORIO</Text>
                 </View>

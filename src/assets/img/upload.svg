@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="202.84" height="200.642" viewBox="0 0 202.84 200.642">
+  <defs>
+    <filter id="Unión_3" x="0" y="39.246" width="202" height="136" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.039"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <filter id="Rectángulo_11" x="57" y="24.246" width="88" height="68" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur-2"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Componente_1_1" data-name="Componente 1 – 1" transform="translate(9)">
+    <path id="Trazado_2" data-name="Trazado 2" d="M2027.473,187.015c-33.676-26.95-40.707-33.7-102.018-54.66s-73.4,56.083-69.686,78.787,15.452,155.451,90.544,108.178,92.743-73.048,92.743-73.048S2061.149,213.965,2027.473,187.015Z" transform="translate(-1852.332 -128.779)" fill="#fffbdf"/>
+    <path id="Trazado_1" data-name="Trazado 1" d="M2011.023,181.674c-30.461-24.478-36.821-30.611-92.278-49.647s-66.4,50.939-63.033,71.561,13.977,141.193,81.9,98.256S2021.5,235.5,2021.5,235.5,2041.484,206.152,2011.023,181.674Z" transform="translate(-1843.214 -119.577)" fill="#fff8c3"/>
+    <g id="Grupo_1" data-name="Grupo 1" transform="translate(-0.058 30.745)">
+      <g transform="matrix(1, 0, 0, 1, -8.94, -30.74)" filter="url(#Unión_3)">
+        <path id="Unión_3-2" data-name="Unión 3" d="M31.023,118v-.258A35.536,35.536,0,0,1,35.3,46.959a35.051,35.051,0,0,1,11.769,2.022C47.266,21.895,67.786,0,93.07,0c17.41,0,32.56,10.379,40.372,25.688a34.691,34.691,0,0,1,10.441-1.606C166.039,24.081,184,45.106,184,71.04c0,25.306-17.1,45.936-38.512,46.923V118Z" transform="translate(9 45.25)" fill="#fff"/>
+      </g>
+      <path id="Unión_4" data-name="Unión 4" d="M17.317,78V43.963H0L35.5,0,71,43.963H53.682V78Z" transform="translate(56.058 54.501)" fill="#f15647"/>
+      <g id="Grupo_3" data-name="Grupo 3" transform="translate(57.359 0)">
+        <g id="Grupo_1-2" data-name="Grupo 1" transform="translate(69.493 0) rotate(90)">
+          <g transform="matrix(0, -1, 1, 0, -30.74, 135.79)" filter="url(#Rectángulo_11)">
+            <g id="Rectángulo_11-2" data-name="Rectángulo 11" transform="translate(136 30.25) rotate(90)" fill="#fff" stroke="#fff" stroke-width="1">
+              <rect width="50" height="70" stroke="none"/>
+              <rect x="0.5" y="0.5" width="49" height="69" fill="none"/>
+            </g>
+          </g>
+          <g id="Rectángulo_12" data-name="Rectángulo 12" transform="translate(2.501 3.794)" fill="#fff" stroke="#d6d6d6" stroke-width="0.5">
+            <rect width="43" height="62" stroke="none"/>
+            <rect x="0.25" y="0.25" width="42.5" height="61.5" fill="none"/>
+          </g>
+        </g>
+        <g id="Grupo_2" data-name="Grupo 2" transform="translate(5.81 14.34)">
+          <circle id="Elipse_4" data-name="Elipse 4" cx="7.5" cy="7.5" r="7.5" transform="translate(4.889 4.161)" fill="#f05648"/>
+          <ellipse id="Elipse_8" data-name="Elipse 8" cx="8" cy="7.5" rx="8" ry="7.5" transform="translate(37.888 4.161)" fill="#f05648"/>
+          <circle id="Elipse_7" data-name="Elipse 7" cx="8.5" cy="8.5" r="8.5" transform="translate(20.889 0.161)" fill="#f05648"/>
+          <path id="Sustracción_1" data-name="Sustracción 1" d="M24.43,10.934H0a15.576,15.576,0,0,1,1.663-4.36A14.01,14.01,0,0,1,4.417,3.111,12.176,12.176,0,0,1,8.016.825a11.1,11.1,0,0,1,8.4,0,12.177,12.177,0,0,1,3.6,2.286,14.01,14.01,0,0,1,2.754,3.464,15.576,15.576,0,0,1,1.663,4.359h0Z" transform="translate(0 19.113)" fill="#f05648"/>
+          <path id="Sustracción_3" data-name="Sustracción 3" d="M24.43,10.934H0a15.576,15.576,0,0,1,1.663-4.36A14.01,14.01,0,0,1,4.417,3.111,12.176,12.176,0,0,1,8.016.825a11.1,11.1,0,0,1,8.4,0,12.177,12.177,0,0,1,3.6,2.286,14.01,14.01,0,0,1,2.754,3.464,15.576,15.576,0,0,1,1.663,4.359h0Z" transform="translate(33.872 19.113)" fill="#f05648"/>
+          <path id="Sustracción_2" data-name="Sustracción 2" d="M28.77,12.877H0A18.343,18.343,0,0,1,1.958,7.743,16.5,16.5,0,0,1,5.2,3.663,14.339,14.339,0,0,1,9.44.971a13.072,13.072,0,0,1,9.89,0,14.34,14.34,0,0,1,4.239,2.692,16.5,16.5,0,0,1,3.243,4.079,18.343,18.343,0,0,1,1.958,5.133h0Z" transform="translate(15.284 17.171)" fill="#f05648"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

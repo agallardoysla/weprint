@@ -16,6 +16,7 @@ import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
 import Drafts from './profile/menuScreens/Drafts'
 import Repositories from './profile/menuScreens/Repositories'
+import UploadRepository from './profile/menuScreens/UploadRepository'
 import EditProfile from './editProfile/containers/EditProfile'
 import AlbumList from './home/containers/screens/AlbumList' 
 import AlbumDescription from './home/containers/screens/AlbumDescription'
@@ -79,12 +80,23 @@ const ProfileNavigator = () => (
     <ProfileTab.Screen name="Profile" component={Profile} />
     <ProfileTab.Screen name="Policy" component={Policy} />
     <ProfileTab.Screen name="Drafts" component={Drafts} />
-    <ProfileTab.Screen name="Repositories" component={Repositories} />
+    <ProfileTab.Screen name="Repositories" component={RepositoriesTabScreen} />
     <ProfileTab.Screen name="About" component={About} />
     <ProfileTab.Screen name="EditProfile" component={EditProfile} />
   </ProfileTab.Navigator>
 );
 
+const RepositoriesTab = createStackNavigator();
+const RepositoriesTabScreen = () => (
+  <RepositoriesTab.Navigator
+    initialRouteName="Repositories"
+    screenOptions={{
+      headerShown: false,
+    }}>
+    <RepositoriesTab.Screen name="Repositories" component={Repositories} />
+    <RepositoriesTab.Screen name="UploadRepository" component={UploadRepository} />
+  </RepositoriesTab.Navigator>
+);
 
 const mapStateToProps = (state) => ({
   login: state.login,
