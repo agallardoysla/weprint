@@ -23,12 +23,8 @@ const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
   };
 
   useEffect(() => {
-    if (isSelected && !check) {
-      setCheck(true);
-    } else if (!isSelected && check) {
-      setCheck(false);
-    }
-  }, [isSelected, check, setCheck]);
+    setCheck(isSelected);
+  }, [isSelected, setCheck]);
 
   return (
     <TouchableWithoutFeedback

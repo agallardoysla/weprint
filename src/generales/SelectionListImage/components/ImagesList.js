@@ -80,7 +80,6 @@ const ImagesList = ({
   const onSelectAll = () => {
     const imagesFromAlbum = getUrisFromEdges();
     const images = concat(selectedImages, imagesFromAlbum);
-
     onSelectImages(uniq(images));
   };
 
