@@ -1,12 +1,22 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
 const CartLayoutCover = ({uri}) => {
+  const widthCover = Math.floor((useWindowDimensions().width * 60) / 100);
+
   return (
     <View style={style.cartLayoutCoverMainContainer}>
-      <View style={style.cartLayoutCoverContainerBg}>
-        <View style={style.cartLayoutConverContainer}>
+      <View
+        style={{
+          ...style.cartLayoutCoverContainerBg,
+          width: widthCover,
+        }}>
+        <View
+          style={{
+            ...style.cartLayoutConverContainer,
+            width: widthCover - 6,
+          }}>
           <Image
             source={{uri: `data:image/gif;base64,${uri}`}}
             style={style.cartLayoutImage}
@@ -26,7 +36,6 @@ const style = StyleSheet.create({
   cartLayoutCoverContainerBg: {
     position: 'relative',
     height: 150,
-    width: 226,
     borderWidth: 1,
     borderColor: colores.grisFormatoAlbum,
     backgroundColor: colores.blanco,
@@ -36,7 +45,6 @@ const style = StyleSheet.create({
     position: 'absolute',
     bottom: 3,
     height: 150,
-    width: 220,
     borderWidth: 1,
     borderColor: colores.grisFormatoAlbum,
   },

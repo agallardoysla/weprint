@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Image,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
@@ -55,8 +62,7 @@ const style = StyleSheet.create({
   cartLayoutImageMainContainer: {
     position: 'relative',
     height: 150,
-    flexGrow: 1,
-    maxWidth: 200,
+    width: '50%',
   },
   cartLayoutImageBg: {
     height: 110,
