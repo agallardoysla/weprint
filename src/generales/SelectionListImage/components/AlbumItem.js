@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import isEmpty from 'lodash/isEmpty';
 import Cargando from '../../Cargando';
 import {estiloDeLetra, tipoDeLetra, colores} from '../../../constantes/Temas';
@@ -27,7 +34,11 @@ const AlbumItem = ({album, getPhotosByAlbumFromPhone, onPressSelectAlbum}) => {
 
   return (
     <TouchableOpacity style={style.albumContainer} onPress={handleOnPress}>
-      <View style={style.albumImageContainer}>
+      <View
+        style={{
+          height: 160,
+          width: useWindowDimensions().width / 2 - 20,
+        }}>
         {loading && (
           <View style={style.albumLoaderContainer}>
             <Cargando titulo="" loaderColor={colores.logo} />
@@ -57,12 +68,6 @@ const style = StyleSheet.create({
   albumContainer: {
     marginHorizontal: 10,
     marginBottom: 10,
-    flexGrow: 1,
-    maxWidth: 768,
-  },
-  albumImageContainer: {
-    height: 160,
-    minWidth: 168,
   },
   albumImage: {
     width: '100%',

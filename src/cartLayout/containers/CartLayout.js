@@ -1,5 +1,12 @@
 import React, {useEffect, useCallback, useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  BackHandler,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -68,16 +75,35 @@ function CartLayout({
       storageId,
     });
 
+  const handleGoBack = useCallback(
+    () => navigation.navigate('SelectImagen', {storageId}),
+    [navigation],
+  );
+
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
   }, []);
 
   useEffect(() => handlePreSelectedCart(), [handlePreSelectedCart]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        handleGoBack();
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [handleGoBack]),
+  );
+
   return (
     <View style={style.cartLayoutMainContainer}>
-      <TouchableOpacity style={style.cartLayoutHeader}>
-        <Icon name="arrow-left" size={27} color="#000" />
+      <TouchableOpacity style={style.cartLayoutHeader} onPress={handleGoBack}>
+        <Icon name="arrow-left" size={27} color={colores.negro} />
         <Text style={style.cartLayoutHeaderText}>Plantilla</Text>
       </TouchableOpacity>
       <View style={style.cartLayoutIconsBar}>
@@ -100,7 +126,7 @@ function CartLayout({
         </View>
       </View>
       {loading ? (
-        <Cargando titulo="" />
+        <Cargando titulo="" loaderColor={colores.logo} />
       ) : (
         <CartLayoutListImage
           onGoToEditCartImage={handleGoToEditCartImage}

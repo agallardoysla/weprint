@@ -56,7 +56,7 @@ const style = StyleSheet.create({
     position: 'relative',
     height: 150,
     flexGrow: 1,
-    maxWidth: 768,
+    maxWidth: 200,
   },
   cartLayoutImageBg: {
     height: 110,

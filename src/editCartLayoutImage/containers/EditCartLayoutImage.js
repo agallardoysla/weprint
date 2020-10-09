@@ -1,9 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {
-  PESDK,
-  PhotoEditorModal,
-  Configuration,
-} from 'react-native-photoeditorsdk';
+import {PhotoEditorModal, Configuration} from 'react-native-photoeditorsdk';
 import {
   Text,
   Image,
@@ -22,6 +18,7 @@ import {get_layout_api} from '../../utils/apis/layout_api';
 function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
   const loadLayouts = useCallback(async () => {
     setLayoutLoading(true);
@@ -54,6 +51,10 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
     loadData();
   }, [loadData]);
 
+  const handleOnPressEditImage = () => {
+    setShowEdit(true);
+  };
+
   const renderLayouts = ({item: layout}) => {
     return (
       <Image
@@ -65,6 +66,13 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
 
   return (
     <View style={style.editCartLayoutMainContainer}>
+      <PhotoEditorModal
+        visible={showEdit}
+        image={`data:image/gif;base64,${page.pieces[0].file}`}
+        onExport={(result) => {
+          console.log('resul', result);
+        }}
+      />
       <TouchableOpacity style={style.editCartLayoutImageHeader}>
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <Text style={style.editCartLayoutImageHeaderText}>
@@ -76,10 +84,12 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
           <Text style={style.editCartImageDeleteText}>Borrar diseño</Text>
         </View>
         <View style={style.editCartContainerImage}>
-          <Image
-            source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
-            style={style.editCartImageSize}
-          />
+          <TouchableOpacity onPress={handleOnPressEditImage}>
+            <Image
+              source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
+              style={style.editCartImageSize}
+            />
+          </TouchableOpacity>
         </View>
       </View>
 

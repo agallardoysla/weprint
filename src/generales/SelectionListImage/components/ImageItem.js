@@ -1,22 +1,44 @@
-import React, {useState} from 'react';
-import {Image, View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Image,
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  useWindowDimensions,
+} from 'react-native';
 import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {colores} from '../../../constantes/Temas';
 
-const ImagenItem = ({uri, onPressCheckImage, isCheck}) => {
+const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
   const [loading, setLoading] = useState(true);
+  const [check, setCheck] = useState(isSelected);
 
   const handleOnLoadEndImage = () => setLoading(false);
   const handleOnPressSelectImage = () => {
+    const isCheck = !check;
+
     onPressCheckImage(uri, isCheck);
+    setCheck(isCheck);
   };
+
+  useEffect(() => {
+    if (isSelected && !check) {
+      setCheck(true);
+    } else if (!isSelected && check) {
+      setCheck(false);
+    }
+  }, [isSelected, check, setCheck]);
 
   return (
     <TouchableWithoutFeedback
       onPress={handleOnPressSelectImage}
       disabled={loading}>
-      <View style={style.imagenItemMainContainer}>
+      <View
+        style={{
+          ...style.imagenItemMainContainer,
+          width: useWindowDimensions().width / 3 - 8,
+        }}>
         {loading && (
           <View style={style.imagenItemLoadingContainer}>
             <Cargando titulo="" loaderColor={colores.logo} />
@@ -29,8 +51,8 @@ const ImagenItem = ({uri, onPressCheckImage, isCheck}) => {
           resizeMode="cover"
           onLoadEnd={handleOnLoadEndImage}
         />
-        {isCheck || loading ? <View style={style.imagenItemOverlay} /> : null}
-        {isCheck && (
+        {check || loading ? <View style={style.imagenItemOverlay} /> : null}
+        {check && (
           <View style={style.imagenItemCheckContainer}>
             <Icon name="check" size={27} color={colores.blanco} />
           </View>
@@ -43,10 +65,9 @@ const ImagenItem = ({uri, onPressCheckImage, isCheck}) => {
 const style = StyleSheet.create({
   imagenItemMainContainer: {
     position: 'relative',
+    height: 130,
     marginHorizontal: 4,
     marginBottom: 10,
-    flexBasis: 0,
-    flexGrow: 1,
   },
   imagenItemOverlay: {
     position: 'absolute',
@@ -70,8 +91,8 @@ const style = StyleSheet.create({
     lineHeight: 15,
   },
   imagenItem: {
-    height: 130,
-    minWidth: 130,
+    height: '100%',
+    width: '100%',
   },
   imagenItemLoadingContainer: {
     position: 'absolute',

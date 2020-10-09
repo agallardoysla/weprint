@@ -70,7 +70,7 @@ const ImagesList = ({
   };
 
   const handleOnPressCheckImage = (uri, isCheck) => {
-    if (!isCheck) {
+    if (isCheck) {
       handleAddImage(uri);
     } else {
       handleRemoveImage(uri);
@@ -104,17 +104,17 @@ const ImagesList = ({
     }
   };
 
-  const handleImageIsCheck = (uri) =>
+  const handleImageIsSelected = (uri) =>
     selectedImages.some((selectedImage) => selectedImage === uri);
 
   const renderImage = ({item: edge}) => {
     const uri = edge.node.image.uri;
-    const isCheck = handleImageIsCheck(uri);
+    const isSelected = handleImageIsSelected(uri);
 
     return (
       <ImageItem
         uri={edge.node.image.uri}
-        isCheck={isCheck}
+        isSelected={isSelected}
         onPressCheckImage={handleOnPressCheckImage}
       />
     );
