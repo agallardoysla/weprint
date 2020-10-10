@@ -9,14 +9,17 @@ import {
   View,
 } from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
-import {connect} from 'react-redux';
-import {actions} from '../../redux';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import AlbumItem from '../components/AlbumItem';
-import Cargando from '../../generales/Cargando';
+import AlbumItem from './AlbumItem';
+import Cargando from '../../Cargando';
 
-function SelectAlbum({dispatch, navigation, format}) {
+const AlbumList = ({
+  onPressGoToBack,
+  onPressSelectAlbum,
+  minQuantity,
+  selectedImages,
+}) => {
   const [albums, setAlbums] = useState([]);
   const [storage, setStorage] = useState('device');
   const [loading, setLoading] = useState(true);
@@ -54,47 +57,42 @@ function SelectAlbum({dispatch, navigation, format}) {
   }, []);
 
   useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-  }, []);
-
-  useEffect(() => {
     getAlbumsFromPhone();
   }, [getAlbumsFromPhone]);
-
-  const handleOnPressGoToBack = () => navigation.navigate('Format');
-
-  const handleGoToSelectImagen = (albumTitle) =>
-    navigation.navigate('SelectImagen', {
-      formatId: format.id,
-      albumTitle,
-    });
 
   const renderAlbums = ({item: album}) => (
     <AlbumItem
       album={album}
       getPhotosByAlbumFromPhone={getPhotosByAlbumFromPhone}
-      onPressGoToSelectImagen={handleGoToSelectImagen}
+      onPressSelectAlbum={onPressSelectAlbum}
     />
   );
 
   const isSelectedStorage = (storageSelected) => storageSelected === storage;
 
   return (
-    <View style={style.selectAlbumMainContainer}>
-      <TouchableOpacity
-        style={style.selectAlbumHeader}
-        onPress={handleOnPressGoToBack}>
-        <Icon name="arrow-left" size={27} color="#000" />
-        <View style={style.selectAlbumHeaderTextContainer}>
-          <Text style={style.selectAlbumHeaderText}>Seleccionar</Text>
+    <View style={style.albumListMainContainer}>
+      <TouchableOpacity style={style.albumListHeader} onPress={onPressGoToBack}>
+        <Icon name="arrow-left" size={27} color={colores.negro} />
+        <View style={style.albumListHeaderTextContainer}>
+          <View>
+            <Text style={style.albumListHeaderText}>Álbumes</Text>
+          </View>
+          {selectedImages.length > 0 && (
+            <View>
+              <Text style={style.albumListHeaderText}>
+                {selectedImages.length}/{minQuantity}
+              </Text>
+            </View>
+          )}
         </View>
       </TouchableOpacity>
-      <View style={style.selectAlbumIconContainer}>
+      <View style={style.albumListIconContainer}>
         <TouchableOpacity
           style={
             isSelectedStorage('device')
-              ? style.selectAlbumStorage
-              : style.selectAlbumSocialMediaContainer
+              ? style.albumListStorage
+              : style.albumListSocialMediaContainer
           }>
           <Icon
             name="smartphone"
@@ -109,8 +107,8 @@ function SelectAlbum({dispatch, navigation, format}) {
         <TouchableOpacity
           style={
             isSelectedStorage('facebook')
-              ? style.selectAlbumStorage
-              : style.selectAlbumSocialMediaContainer
+              ? style.albumListStorage
+              : style.albumListSocialMediaContainer
           }>
           <Icon
             name="facebook"
@@ -125,8 +123,8 @@ function SelectAlbum({dispatch, navigation, format}) {
         <TouchableOpacity
           style={
             isSelectedStorage('instagram')
-              ? style.selectAlbumStorage
-              : style.selectAlbumSocialMediaContainer
+              ? style.albumListStorage
+              : style.albumListSocialMediaContainer
           }>
           <Icon
             name="instagram"
@@ -139,9 +137,9 @@ function SelectAlbum({dispatch, navigation, format}) {
           />
         </TouchableOpacity>
       </View>
-      {loading && <Cargando titulo=" " />}
+      {loading && <Cargando titulo=" " loaderColor={colores.logo} />}
       {!loading && albums.length && (
-        <View style={style.selectAlbumAlbumContainer}>
+        <View style={style.albumListAlbumContainer}>
           <FlatList
             data={albums}
             numColumns={2}
@@ -151,29 +149,29 @@ function SelectAlbum({dispatch, navigation, format}) {
         </View>
       )}
       {!loading && !albums.length && (
-        <View style={style.selectAlbumMessageContainer}>
-          <Text style={style.selectAlbumMessage}>
+        <View style={style.albumListMessageContainer}>
+          <Text style={style.albumListMessage}>
             No se pudo acceder a álbumes
           </Text>
         </View>
       )}
     </View>
   );
-}
+};
 
 const style = StyleSheet.create({
-  selectAlbumMainContainer: {
+  albumListMainContainer: {
     height: '100%',
     paddingBottom: 100,
   },
-  selectAlbumHeader: {
+  albumListHeader: {
     height: 60,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 12,
     backgroundColor: colores.blanco,
-    shadowColor: '#000',
+    shadowColor: colores.negro,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -183,37 +181,41 @@ const style = StyleSheet.create({
 
     elevation: 4,
   },
-  selectAlbumHeaderText: {
+  albumListHeaderText: {
     color: 'black',
     fontWeight: '600',
     fontSize: 19,
   },
-  selectAlbumHeaderTextContainer: {
+  albumListHeaderTextContainer: {
+    flexGrow: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginLeft: 12,
+    paddingRight: 20,
     paddingBottom: 1,
   },
-  selectAlbumIconContainer: {
+  albumListIconContainer: {
     height: 50,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.blanco,
   },
-  selectAlbumSocialMediaContainer: {
+  albumListSocialMediaContainer: {
     marginHorizontal: 20,
     paddingBottom: 5,
   },
-  selectAlbumStorage: {
+  albumListStorage: {
     marginHorizontal: 20,
     paddingBottom: 5,
     borderBottomColor: colores.azulNoche,
     borderBottomWidth: 2,
   },
-  selectAlbumAlbumContainer: {
+  albumListAlbumContainer: {
     marginTop: 10,
     paddingVertical: 10,
   },
-  selectAlbumMessageContainer: {
+  albumListMessageContainer: {
     height: 120,
     width: '100%',
     maxWidth: 768,
@@ -221,7 +223,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
   },
-  selectAlbumMessage: {
+  albumListMessage: {
     marginLeft: 20,
     color: 'black',
     fontFamily: tipoDeLetra.bold,
@@ -229,21 +231,4 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (
-  state,
-  {
-    route: {
-      params: {formatId},
-    },
-  },
-) => {
-  const format = state.format.data.find(
-    (searchedFormat) => searchedFormat.id === formatId,
-  );
-
-  return {
-    format,
-  };
-};
-
-export default connect(mapStateToProps)(SelectAlbum);
+export default AlbumList;

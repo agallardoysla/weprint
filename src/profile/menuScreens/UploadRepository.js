@@ -19,14 +19,10 @@ function UploadRepository(){
                         autoCapitalize="none"
                         autoCapitalize="none"
                         placeholderTextColor={colores.button}
-                    />
-                    <TextInput
-                        style={styles.loginInput}
-                        placeholder={'SUBIR PORTADA'}
-                        autoCapitalize="none"
-                        autoCapitalize="none"
-                        placeholderTextColor={colores.button}
-                    />
+                    />                   
+                    <TouchableOpacity style={{width: 330, height: 65,backgroundColor: colores.blanco, textAlign: 'center', justifyContent: 'center',borderRadius: 50, elevation: 2.5}}>
+                            <Text style={{ ...estiloDeLetra.negrita, color: colores.button ,alignSelf:'center'}}>SUBIR PORTADA</Text>
+                    </TouchableOpacity>
                 </View>
               </View>
               <Image style={{width: '80%', height: 180, backgroundColor: 'red', alignSelf: 'center', borderColor: colores.blanco, borderWidth: 10}} /> 

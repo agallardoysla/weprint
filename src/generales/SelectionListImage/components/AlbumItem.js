@@ -1,39 +1,55 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {Text, View, TouchableOpacity, Image, StyleSheet} from 'react-native';
-import Cargando from '../../generales/Cargando';
-import {estiloDeLetra, tipoDeLetra, colores} from '../../constantes/Temas';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
+import isEmpty from 'lodash/isEmpty';
+import Cargando from '../../Cargando';
+import {estiloDeLetra, tipoDeLetra, colores} from '../../../constantes/Temas';
 
-const AlbumItem = ({
-  album,
-  getPhotosByAlbumFromPhone,
-  onPressGoToSelectImagen,
-}) => {
+const AlbumItem = ({album, getPhotosByAlbumFromPhone, onPressSelectAlbum}) => {
   const [loading, setLoading] = useState(true);
   const [placeHolderImg, setPlaceHolderImg] = useState('');
 
   const handleGetImage = useCallback(async () => {
     const response = await getPhotosByAlbumFromPhone(1, album.title);
     setPlaceHolderImg(response.edges[0].node.image.uri);
-    setLoading(false);
   }, [setPlaceHolderImg]);
+
+  const handleOnPress = () => {
+    if (!loading) {
+      onPressSelectAlbum(album.title);
+    }
+  };
+
+  const handleOnLoadSuccess = () => setLoading(false);
 
   useEffect(() => {
     handleGetImage();
   }, [handleGetImage]);
 
-  const handleOnPress = () => onPressGoToSelectImagen(album.title);
-
   return (
     <TouchableOpacity style={style.albumContainer} onPress={handleOnPress}>
-      <View style={style.albumImageContainer}>
-        {loading ? (
+      <View
+        style={{
+          height: 160,
+          width: useWindowDimensions().width / 2 - 20,
+        }}>
+        {loading && (
           <View style={style.albumLoaderContainer}>
-            <Cargando titulo="Cargando..." />
+            <Cargando titulo="" loaderColor={colores.logo} />
           </View>
-        ) : (
+        )}
+
+        {!isEmpty(placeHolderImg) && (
           <Image
             style={style.albumImage}
             resizeMode="cover"
+            onLoadEnd={handleOnLoadSuccess}
             source={{
               uri: placeHolderImg,
             }}
@@ -50,13 +66,8 @@ const AlbumItem = ({
 
 const style = StyleSheet.create({
   albumContainer: {
-    width: 180,
     marginHorizontal: 10,
     marginBottom: 10,
-  },
-  albumImageContainer: {
-    height: 160,
-    width: '100%',
   },
   albumImage: {
     width: '100%',
@@ -74,9 +85,15 @@ const style = StyleSheet.create({
     fontFamily: tipoDeLetra.regular,
   },
   albumLoaderContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    elevation: 0,
     height: 160,
     justifyContent: 'center',
-    backgroundColor: 'white',
   },
 });
 

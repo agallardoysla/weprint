@@ -23,9 +23,11 @@ import AlbumDescription from './home/containers/screens/AlbumDescription'
 
 import CartMainView from './cart/containers/CartMainView' 
 import ConfirmCart from './cart/containers/ConfirmCart'
+
 import Format from './format/containers/Format';
-import SelectAlbum from './selectAlbum/containers/SelectAlbum';
 import SelectImagen from './selectImagen/containers/SelectImagen';
+import CartLayout from './cartLayout/containers/CartLayout';
+import EditCartLayoutImage from './editCartLayoutImage/containers/EditCartLayoutImage';
 
 import {colores} from './constantes/Temas';
 
@@ -45,11 +47,23 @@ const Navegador = (props) => {
 
       <AuthStack.Screen name="Cart" component={CartMainView} />
       <AuthStack.Screen name="ConfirmCart" component={ConfirmCart} options={{headerShown: true, title: ''}} />
-      <AuthStack.Screen name="AlbumList" component={AlbumList} options={{headerShown: true, title: ''}} />
-      <AuthStack.Screen name="AlbumDescription" component={AlbumDescription} options={{headerShown: true, title: ''}} />
+      <AuthStack.Screen
+        name="AlbumList"
+        component={AlbumList}
+        options={{headerShown: true, title: ''}}
+      />
+      <AuthStack.Screen
+        name="AlbumDescription"
+        component={AlbumDescription}
+        options={{headerShown: true, title: ''}}
+      />
       <AuthStack.Screen name="Format" component={Format} />
-      <AuthStack.Screen name="SelectAlbum" component={SelectAlbum} />
       <AuthStack.Screen name="SelectImagen" component={SelectImagen} />
+      <AuthStack.Screen name="CartLayout" component={CartLayout} />
+      <AuthStack.Screen
+        name="EditCartLayoutImage"
+        component={EditCartLayoutImage}
+      />
     </AppDrawer.Navigator>
   );
 
