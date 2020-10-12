@@ -5,62 +5,70 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  useWindowDimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
-const CartLayoutImage = ({page, onGoToEditCartImage}) => {
-  const pageIsOdd = () => page.number % 2 === 0;
-
+const CartLayoutImage = ({
+  page,
+  panResponder,
+  onGoToEditCartImage,
+  onRowHeight,
+}) => {
+  const pageIsOdd = () => page.number % 2 !== 0;
   const handleOnPressImage = () => onGoToEditCartImage(page);
 
   return (
-    <View style={style.cartLayoutImageMainContainer}>
-      <View style={style.cartLayoutImageBg}>
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerXRight
-              : style.cartLayoutIconContainerX
-          }>
-          <Icon name="x" size={15} color={colores.rojo} />
+    <>
+      <View style={style.cartLayoutImageMainContainer} onLayout={onRowHeight}>
+        <View style={style.cartLayoutImageBg}>
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerXRight
+                : style.cartLayoutIconContainerX
+            }>
+            <Icon name="x" size={15} color={colores.rojo} />
+          </View>
+          <View
+            style={style.cartLayoutImageContainer}
+            {...panResponder.panHandlers}>
+            <TouchableOpacity onPress={handleOnPressImage}>
+              <Image
+                source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
+                style={style.cartLayoutImageSize}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableWithoutFeedback>
+            <View
+              style={
+                pageIsOdd()
+                  ? style.cartLayoutIconContainerRight
+                  : style.cartLayoutIconContainer
+              }>
+              <Icon name="move" size={15} color={colores.gris} />
+            </View>
+          </TouchableWithoutFeedback>
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerPlusRight
+                : style.cartLayoutIconContainerPlus
+            }>
+            <Icon name="plus" size={15} color="green" />
+          </View>
         </View>
-        <View style={style.cartLayoutImageContainer}>
-          <TouchableOpacity onPress={handleOnPressImage}>
-            <Image
-              source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
-              style={style.cartLayoutImageSize}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerRight
-              : style.cartLayoutIconContainer
-          }>
-          <Icon name="move" size={15} color={colores.gris} />
-        </View>
-
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerPlusRight
-              : style.cartLayoutIconContainerPlus
-          }>
-          <Icon name="plus" size={15} color="green" />
-        </View>
+        <Text style={style.cartLayoutText}>Pg {page.number}</Text>
       </View>
-      <Text style={style.cartLayoutText}>Pg {page.number}</Text>
-    </View>
+    </>
   );
 };
 
 const style = StyleSheet.create({
   cartLayoutImageMainContainer: {
-    position: 'relative',
     height: 150,
     width: '50%',
   },
@@ -142,7 +150,6 @@ const style = StyleSheet.create({
     borderColor: colores.grisFormatoAlbum,
     elevation: 1,
   },
-
   cartLayoutIconContainerPlus: {
     position: 'absolute',
     bottom: -5,
@@ -154,7 +161,6 @@ const style = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
   },
-
   cartLayoutText: {
     marginTop: 5,
     marginBottom: 30,
