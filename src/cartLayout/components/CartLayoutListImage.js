@@ -13,7 +13,11 @@ import CartLayoutImage from './CartLayoutImage';
 import orderBy from 'lodash/orderBy';
 import {colores} from '../../constantes/Temas';
 
-const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
+const CartLayoutListImage = ({
+  preSelectedCart,
+  onGoToEditCartImage,
+  onSavePages,
+}) => {
   const [showDrag, setShowDrag] = useState(false);
   const [draggingIdx, setDragginIndex] = useState(-1);
   const [pages, setPages] = useState(
@@ -33,17 +37,24 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
   const currentIdx = useRef(null);
   const newIdx = useRef(null);
   const active = useRef(false);
+  const timeoutId = useRef(null);
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
-      onPanResponderStart: (evt, gestureState) => {
+      onPanResponderGrant: (evt, gestureState) => {
+        const row = getRow(gestureState.y0);
+        const column = getColumn(gestureState.x0);
         const xStart =
           gestureState.x0 < rowWidth.current ? 10 : rowWidth.current + 10;
+
+        currentY.current = gestureState.y0;
+        currentX.current = gestureState.x0;
+        currentIdx.current = getIndex(row, column);
 
         Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
           {
@@ -52,22 +63,17 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
           },
           {},
         );
-      },
-      onPanResponderGrant: (evt, gestureState) => {
-        const row = getRow(gestureState.y0);
-        const column = getColumn(gestureState.x0);
-        currentY.current = gestureState.y0;
-        currentX.current = gestureState.x0;
-        currentIdx.current = getIndex(row, column);
 
         active.current = true;
         setDragginIndex(currentIdx.current);
-        setShowDrag(true);
+
+        timeoutId.current = setTimeout(() => {
+          setShowDrag(true);
+        }, 500);
       },
       onPanResponderMove: (evt, gestureState) => {
         currentY.current = gestureState.moveY;
         currentX.current = gestureState.moveX;
-
         Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
           {
             y: gestureState.moveY - rowHeight.current / 2,
@@ -97,6 +103,7 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
     active.current = false;
     setShowDrag(false);
     setDragginIndex(-1);
+    clearTimeout(timeoutId.current);
   };
 
   const getRow = useCallback((y) => {
@@ -169,6 +176,7 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
       newPages[newIdx.current] = {...pageTo, pieces: pageFrom.pieces};
 
       setPages(newPages);
+      onSavePages(newPages);
     }
 
     currentIdx.current = null;
@@ -178,6 +186,12 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
   const handleLayoutFlatlist = (e) => {
     flatlistHeight.current = e.nativeEvent.layout.height;
     flatlistTopOffset.current = e.nativeEvent.layout.y + headerHeight.current;
+  };
+
+  const handleOnScroll = async (e) => {
+    scrollOffset.current = e.nativeEvent.contentOffset.y;
+
+    clearTimeout(timeoutId.current);
   };
 
   const renderPages = ({item: page}) => (
@@ -227,9 +241,7 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
             onHeaderHeight={handleOnHeaderHeight}
           />
         }
-        onScroll={(e) => {
-          scrollOffset.current = e.nativeEvent.contentOffset.y;
-        }}
+        onScroll={handleOnScroll}
         onLayout={handleLayoutFlatlist}
         scrollEventThrottle={20}
         data={pages}

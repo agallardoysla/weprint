@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
@@ -17,11 +10,17 @@ const CartLayoutImage = ({
   onRowHeight,
 }) => {
   const pageIsOdd = () => page.number % 2 !== 0;
-  const handleOnPressImage = () => onGoToEditCartImage(page);
+  const handleOnPressImage = (e) => {
+    e.stopPropagation();
+    onGoToEditCartImage(page);
+  };
 
   return (
     <>
-      <View style={style.cartLayoutImageMainContainer} onLayout={onRowHeight}>
+      <View
+        style={style.cartLayoutImageMainContainer}
+        onLayout={onRowHeight}
+        {...panResponder.panHandlers}>
         <View style={style.cartLayoutImageBg}>
           <View
             style={
@@ -31,9 +30,7 @@ const CartLayoutImage = ({
             }>
             <Icon name="x" size={15} color={colores.rojo} />
           </View>
-          <View
-            style={style.cartLayoutImageContainer}
-            {...panResponder.panHandlers}>
+          <View style={style.cartLayoutImageContainer}>
             <TouchableOpacity onPress={handleOnPressImage}>
               <Image
                 source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
@@ -42,16 +39,15 @@ const CartLayoutImage = ({
               />
             </TouchableOpacity>
           </View>
-          <TouchableWithoutFeedback>
-            <View
-              style={
-                pageIsOdd()
-                  ? style.cartLayoutIconContainerRight
-                  : style.cartLayoutIconContainer
-              }>
-              <Icon name="move" size={15} color={colores.gris} />
-            </View>
-          </TouchableWithoutFeedback>
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerRight
+                : style.cartLayoutIconContainer
+            }>
+            <Icon name="move" size={15} color={colores.gris} />
+          </View>
+
           <View
             style={
               pageIsOdd()

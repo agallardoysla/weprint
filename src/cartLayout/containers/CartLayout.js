@@ -129,6 +129,7 @@ function CartLayout({
         <Cargando titulo="" loaderColor={colores.logo} />
       ) : (
         <CartLayoutListImage
+          onSavePages={handleSavePreSelectedCart}
           onGoToEditCartImage={handleGoToEditCartImage}
           preSelectedCart={preSelectedCart}
           format={format}
