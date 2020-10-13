@@ -5,6 +5,7 @@ import {
   Animated,
   Image,
   PanResponder,
+  Dimensions,
 } from 'react-native';
 import isNull from 'lodash/isNull';
 import CartLayoutCover from './CartLayoutCover';
@@ -24,6 +25,8 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
   const currentX = useRef(0);
   const scrollOffset = useRef(0);
   const flatlistTopOffset = useRef(0);
+  const flatlistHeight = useRef(0);
+  const flatlistRef = useRef();
   const rowHeight = useRef(0);
   const rowWidth = useRef(0);
   const headerHeight = useRef(0);
@@ -33,23 +36,29 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
 
   const panResponder = useRef(
     PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
+      onPanResponderStart: (evt, gestureState) => {
+        const xStart =
+          gestureState.x0 < rowWidth.current ? 10 : rowWidth.current + 10;
+
+        Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
+          {
+            y: gestureState.y0 - rowHeight.current / 2,
+            x: xStart,
+          },
+          {},
+        );
+      },
       onPanResponderGrant: (evt, gestureState) => {
         const row = getRow(gestureState.y0);
         const column = getColumn(gestureState.x0);
         currentY.current = gestureState.y0;
         currentX.current = gestureState.x0;
         currentIdx.current = getIndex(row, column);
-
-        Animated.event([{y: pan.y}], {useNativeDriver: false})(
-          {
-            y: gestureState.y0 - rowHeight.current / 2,
-            x: gestureState.x0,
-          },
-          {},
-        );
 
         active.current = true;
         setDragginIndex(currentIdx.current);
@@ -61,11 +70,15 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
 
         Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
           {
-            y: gestureState.moveY,
+            y: gestureState.moveY - rowHeight.current / 2,
             x: gestureState.moveX,
           },
           {},
         );
+
+        if (currentY.current < 70) {
+          reset();
+        }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderRelease: (evt, gestureState) => {
@@ -117,6 +130,17 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
     if (!active.current) return;
 
     requestAnimationFrame(() => {
+      if (currentY.current + 80 > Dimensions.get('window').height) {
+        flatlistRef.current.scrollToOffset({
+          offset: scrollOffset.current + 20,
+          animated: false,
+        });
+      } else if (currentY.current < 190) {
+        flatlistRef.current.scrollToOffset({
+          offset: scrollOffset.current - 20,
+          animated: false,
+        });
+      }
       const row = getRow(currentY.current);
       const column = getColumn(currentX.current);
       const movedIndex = getIndex(row, column);
@@ -150,6 +174,11 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
     currentIdx.current = null;
     newIdx.current = null;
   }, [pages, setPages]);
+
+  const handleLayoutFlatlist = (e) => {
+    flatlistHeight.current = e.nativeEvent.layout.height;
+    flatlistTopOffset.current = e.nativeEvent.layout.y + headerHeight.current;
+  };
 
   const renderPages = ({item: page}) => (
     <CartLayoutImage
@@ -190,7 +219,7 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
         </Animated.View>
       )}
       <FlatList
-        scrollEnabled={false}
+        scrollEnabled={!showDrag}
         contentContainerStyle={style.listContainer}
         ListHeaderComponent={
           <CartLayoutCover
@@ -201,15 +230,13 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
         onScroll={(e) => {
           scrollOffset.current = e.nativeEvent.contentOffset.y;
         }}
-        onLayout={(e) => {
-          flatlistTopOffset.current =
-            e.nativeEvent.layout.y + headerHeight.current;
-        }}
-        scrollEventThrottle={16}
+        onLayout={handleLayoutFlatlist}
+        scrollEventThrottle={20}
         data={pages}
         numColumns={2}
         renderItem={renderPages}
         keyExtractor={(page) => page.number.toString()}
+        ref={flatlistRef}
       />
     </>
   );
@@ -217,6 +244,7 @@ const CartLayoutListImage = ({preSelectedCart, onGoToEditCartImage}) => {
 
 const style = StyleSheet.create({
   listContainer: {
+    position: 'relative',
     marginTop: 35,
     paddingTop: 5,
     paddingBottom: 30,
