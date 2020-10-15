@@ -4,9 +4,20 @@ import Container from '../../generales/Container';
 import { colores, estiloDeLetra } from '../../constantes/Temas';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { get_repositories } from '../../utils/apis/repository_api'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 function Repositories({route, cover, navigation}){
+  const [data, setData] = useState(null)
+
+  useEffect(() => {
+    console.log("data")
+    const repoData = get_repositories().then((data) =>
+    setData(data.data)
+    );
+    
+  }, []);
+
   console.log(route.params)
   const photo = route.params
   return (

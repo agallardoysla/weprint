@@ -17,6 +17,7 @@ import About from './profile/menuScreens/About';
 import Drafts from './profile/menuScreens/Drafts'
 import Repositories from './profile/menuScreens/Repositories'
 import UploadRepository from './profile/menuScreens/UploadRepository'
+import RepositoryDescription from './profile/menuScreens/RepositoryDescription'
 import EditProfile from './editProfile/containers/EditProfile'
 import AlbumList from './home/containers/screens/AlbumList' 
 import AlbumDescription from './home/containers/screens/AlbumDescription'
@@ -109,6 +110,7 @@ const RepositoriesTabScreen = () => (
     }}>
     <RepositoriesTab.Screen name="Repositories" component={Repositories} />
     <RepositoriesTab.Screen name="UploadRepository" component={UploadRepository} />
+    <RepositoriesTab.Screen name="RepositoryDescription" component={RepositoryDescription} />
   </RepositoriesTab.Navigator>
 );
 

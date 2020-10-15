@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'com.google.gms.google-services' 
 apply plugin: 'ly.img.android.sdk'
 apply plugin: 'kotlin-android'
  
@@ -112,6 +112,26 @@ import com.android.build.OutputFile
 project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
 ]
+
+project.ext {
+  set('react-native', [
+    versions: [
+      // Overriding Build/Android SDK Versions
+      android : [
+        minSdk    : 16,
+        targetSdk : 29,
+        compileSdk: 29,
+        buildTools: "29.0.3"
+      ],
+
+      // Overriding Library SDK Versions
+      firebase: [
+        // Override Firebase SDK Version
+        bom           : "25.7.0"
+      ],
+    ],
+  ])
+}
 
 apply from: "../../node_modules/react-native/react.gradle"
 
@@ -227,6 +247,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation 'com.google.firebase:firebase-analytics'
 
     implementation 'com.facebook.fresco:animated-gif:1.12.0'
     implementation 'com.facebook.fresco:animated-gif:2.0.0' //Gif images

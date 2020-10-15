@@ -11,6 +11,10 @@ import Navigate from './src/Navigate';
 import {store, persistor} from './src/redux/store';
 import CargandoModal from './src/generales/CargandoModal';
 
+import messaging from '@react-native-firebase/messaging';
+
+import AsyncStorage from '@react-native-community/async-storage';
+
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
@@ -21,6 +25,14 @@ const App: () => React$Node = () => {
   useEffect(() => {
     //limpiar persist
     //persistStore(store).purge();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Push notify', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
   }, []);
 
   return (

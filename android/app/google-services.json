@@ -1,0 +1,40 @@
+  {
+  "project_info": {
+    "project_number": "483642607646",
+    "firebase_url": "https://weprint-6ad7c.firebaseio.com",
+    "project_id": "weprint-6ad7c",
+    "storage_bucket": "weprint-6ad7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:483642607646:android:72f50e8329cb294f8d460f",
+        "android_client_info": {
+          "package_name": "com.weprintrn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "483642607646-d2imdjaknip0cisc3hkjpds31n6apvkr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSshswYwPvn1LYEHPOGFvFoO0Oc2CGhJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "483642607646-d2imdjaknip0cisc3hkjpds31n6apvkr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

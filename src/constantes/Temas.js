@@ -28,6 +28,8 @@ export const colores = {
   cartButton: '#23dcb3',
   button: '#EC906D',
   negro: 'black',
+  fondoScreen: '#F5F6FA',
+  grisTransparente: 'rgba(192,192,192,0.5)', 
 };
 
 export const tipoDeLetra = {

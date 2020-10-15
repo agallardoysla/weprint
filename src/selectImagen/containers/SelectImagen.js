@@ -5,6 +5,7 @@ import {actions} from '../../redux';
 import has from 'lodash/has';
 import SelectionListImage from '../../generales/SelectionListImage';
 
+//Seleccionar imagenes
 function SelectImagen({dispatch, navigation, format, route}) {
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -24,6 +25,7 @@ function SelectImagen({dispatch, navigation, format, route}) {
     });
   };
 
+  //(image) => image
   return (
     <SelectionListImage
       minQuantity={format.min_quantity}

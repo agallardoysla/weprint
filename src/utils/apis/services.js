@@ -60,6 +60,8 @@ export const post = async (uri, body) => {
   var myHeaders = await getHeaders();
 
   var raw = JSON.stringify(body);
+  
+  console.log(raw)
 
   var requestOptions = {
     method: 'POST',
@@ -67,6 +69,7 @@ export const post = async (uri, body) => {
     body: raw,
     redirect: 'follow',
   };
+
 
   fetch(`${BASE_API}${uri}`, requestOptions)
     .then((response) => response.text())
