@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, Alert, StyleSheet} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import AlbumList from './components/AlbumList';
@@ -16,6 +16,7 @@ const SelectionListImage = ({
   const [loading, setLoading] = useState(false);
   const [showImagesList, setShowImagesList] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [hasMaxQuantity, setHasMaxQuantity] = useState(false);
 
   const handleOnPressSelectAlbum = (albumTitle) => {
     if (!loading) {
@@ -59,12 +60,10 @@ const SelectionListImage = ({
   };
 
   const hasMinQuantitiy = () => selectedImages.length >= minQuantity;
-  const hasMaxQuantity = () =>
-    maxQuantity > 0 && selectedImages.length == maxQuantity;
 
   const handleSelectImages = (images) => {
     if (!loading) {
-      if (!hasMaxQuantity()) {
+      if (!hasMaxQuantity || images.length < selectedImages.length) {
         setSelectedImages(images);
       } else {
         Alert.alert(
@@ -73,6 +72,14 @@ const SelectionListImage = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (maxQuantity > 0 && selectedImages.length === maxQuantity) {
+      setHasMaxQuantity(true);
+    } else {
+      setHasMaxQuantity(false);
+    }
+  }, [selectedImages, maxQuantity, setHasMaxQuantity]);
 
   return (
     <View style={style.mainContainer}>
@@ -88,6 +95,8 @@ const SelectionListImage = ({
           onSelectImages={handleSelectImages}
           onPressGoToAlbum={handleOnPressGoToAlbumList}
           minQuantity={minQuantity}
+          maxQuantity={maxQuantity}
+          hasMaxQuantity={hasMaxQuantity}
         />
       ) : (
         <AlbumList
