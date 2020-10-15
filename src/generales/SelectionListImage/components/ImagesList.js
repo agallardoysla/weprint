@@ -19,6 +19,8 @@ const ImagesList = ({
   albumTitle,
   selectedImages,
   minQuantity,
+  maxQuantity,
+  hasMaxQuantity,
   onSelectImages,
   onPressGoToAlbum,
 }) => {
@@ -114,6 +116,7 @@ const ImagesList = ({
       <ImageItem
         uri={edge.node.image.uri}
         isSelected={isSelected}
+        hasMaxQuantity={hasMaxQuantity}
         onPressCheckImage={handleOnPressCheckImage}
       />
     );
@@ -143,14 +146,16 @@ const ImagesList = ({
           <View>
             <Text style={style.imagesListAlbumText}>{albumTitle}</Text>
           </View>
-          <TouchableHighlight
-            style={style.imagesListButton}
-            onPress={handleOnPressSelectAll}
-            underlayColor={colores.blanco}>
-            <Text style={style.imagesListButtonText}>
-              {selectAll ? 'Deseleccionar' : 'Seleccionar todo'}
-            </Text>
-          </TouchableHighlight>
+          {maxQuantity === 0 && (
+            <TouchableHighlight
+              style={style.imagesListButton}
+              onPress={handleOnPressSelectAll}
+              underlayColor={colores.blanco}>
+              <Text style={style.imagesListButtonText}>
+                {selectAll ? 'Deseleccionar' : 'Seleccionar todo'}
+              </Text>
+            </TouchableHighlight>
+          )}
         </View>
       )}
 
