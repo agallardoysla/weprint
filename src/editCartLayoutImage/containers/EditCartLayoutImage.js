@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {PhotoEditorModal, Configuration} from 'react-native-photoeditorsdk';
 import {
   Text,
@@ -7,18 +7,33 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {actions} from '../../redux';
-import Cargando from '../../generales/Cargando';
 import {get_layout_api} from '../../utils/apis/layout_api';
+import EditCartLayoutCover from '../components/EditCartLayoutCover';
+import EditCartLayoutList from '../components/EditCartLayoutList';
+import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
+import SelectionListImage from '../../generales/SelectionListImage';
 
-function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
+function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
+  const searchPage = (numberPage) =>
+    pages.find((pageSearched) => pageSearched.number === numberPage);
+
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const [imagesAdded, setImagesAdded] = useState([]);
+  const [showSelectImage, setShowSelectImage] = useState(false);
+  const [selectedLayout, setSelectedLayout] = useState(1);
+  const maxQuantity = useRef(1);
+  const minQuantity = useRef(1);
+  const [selectedPage, setSelectedPage] = useState(
+    searchPage(route.params.numberPage),
+  );
 
   const loadLayouts = useCallback(async () => {
     setLayoutLoading(true);
@@ -51,80 +66,63 @@ function EditCartLayoutImage({dispatch, navigation, page, layouts}) {
     loadData();
   }, [loadData]);
 
-  const handleOnPressEditImage = () => {
-    setShowEdit(true);
+  const handleSelectedLayout = (layoutId) => setSelectedLayout(layoutId);
+
+  const handleShowListImage = (min = 1) => {
+    console.warn('min', min);
+    minQuantity.current = 1;
+    //minQuantity.current = min;
+    //maxQuantity.current = max;
+    handleToggleListImage();
   };
 
-  const renderLayouts = ({item: layout}) => {
-    return (
-      <Image
-        source={{uri: layout.preview}}
-        style={style.editCartImageLayoutSize}
-      />
-    );
+  const handleToggleListImage = () => setShowSelectImage(!showSelectImage);
+  const handleResponseImage = (images) => {
+    handleToggleListImage();
+    setImagesAdded(images);
   };
 
   return (
-    <View style={style.editCartLayoutMainContainer}>
-      <PhotoEditorModal
-        visible={showEdit}
-        image={`data:image/gif;base64,${page.pieces[0].file}`}
-        onExport={(result) => {
-          console.log('resul', result);
-        }}
-      />
-      <TouchableOpacity style={style.editCartLayoutImageHeader}>
-        <Icon name="arrow-left" size={27} color={colores.negro} />
-        <Text style={style.editCartLayoutImageHeaderText}>
-          Página {page.number}
-        </Text>
-      </TouchableOpacity>
-      <View style={style.editCartLayoutImageMainContainer}>
-        <View style={style.editCartImageDeleteTextContainer}>
-          <Text style={style.editCartImageDeleteText}>Borrar diseño</Text>
-        </View>
-        <View style={style.editCartContainerImage}>
-          <TouchableOpacity onPress={handleOnPressEditImage}>
-            <Image
-              source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
-              style={style.editCartImageSize}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {layoutError && (
-        <View style={style.editCartImageBox}>
-          <Text style={style.editCartImageErrorMessage}>
-            No se pudieron cargar los layouts :C
-          </Text>
-        </View>
-      )}
-      {layoutLoading && (
-        <View style={style.editCartImageLoadinContainer}>
-          <Cargando titulo="" loaderColor={colores.logo} />
-        </View>
-      )}
-
-      {layouts.length > 0 && (
-        <>
-          <View style={style.editCartImageLayoutPrompMainContainer}>
-            <View style={style.editCartImageLayoutPrompContainer}>
-              <Text style={style.editCartImageLayoutPrompText}>
-                Selecciona layout
-              </Text>
-            </View>
-          </View>
-          <FlatList
-            contentContainerStyle={style.editCartImageLayoutList}
-            horizontal
-            data={layouts}
-            renderItem={renderLayouts}
-            keyExtractor={(layout) => layout.id.toString()}
+    <>
+      {showSelectImage ? (
+        <SelectionListImage
+          minQuantity={minQuantity.current}
+          maxQuantity={maxQuantity.current}
+          onPressGoToBack={handleToggleListImage}
+          onResponse={handleResponseImage}
+        />
+      ) : (
+        <View style={style.editCartLayoutMainContainer}>
+          <PhotoEditorModal
+            visible={showEdit}
+            image={`data:image/gif;base64,${selectedPage.pieces[0].file}`}
+            onExport={(result) => {
+              console.log('resul', result);
+            }}
           />
-        </>
+          <TouchableOpacity style={style.editCartLayoutImageHeader}>
+            <Icon name="arrow-left" size={27} color={colores.negro} />
+            <Text style={style.editCartLayoutImageHeaderText}>
+              Página {selectedPage.number}
+            </Text>
+          </TouchableOpacity>
+          <EditCartLayoutCover
+            onShowListImage={handleShowListImage}
+            selectedLayout={selectedLayout}
+            selectedPage={selectedPage}
+            imagesAdded={imagesAdded}
+          />
+          <EditCartLayoutList
+            error={layoutError}
+            loading={layoutLoading}
+            layouts={layouts}
+            selectedLayout={selectedLayout}
+            onSelectedLayout={handleSelectedLayout}
+          />
+          <EditCartLayoutFooter />
+        </View>
       )}
-    </View>
+    </>
   );
 }
 
@@ -188,62 +186,21 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colores.blanco,
   },
-  editCartImageErrorMessage: {
-    marginLeft: 20,
-    color: colores.negro,
-    fontFamily: tipoDeLetra.bold,
-    fontSize: 20,
-  },
-  editCartImageLoadinContainer: {
-    position: 'absolute',
-    bottom: 50,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  editCartImageLayoutSize: {
-    marginHorizontal: 5,
-    height: 110,
-    width: 100,
-  },
-  editCartImageLayoutList: {
-    position: 'absolute',
-    bottom: 45,
-  },
-  editCartImageLayoutPrompMainContainer: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  editCartImageLayoutPrompContainer: {
-    marginTop: 30,
-    width: 200,
-    height: 40,
-    backgroundColor: colores.blanco,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editCartImageLayoutPrompText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colores.grisFormatoAlbum,
-  },
 });
 
 const mapStateToProps = (
   state,
   {
     route: {
-      params: {storageId, numberPage},
+      params: {storageId},
     },
   },
 ) => {
   const layouts = state.layout.data;
   const preSelectedCart = state.cart.shortlisted[storageId];
-  const page = preSelectedCart.pages.find(
-    (pageSearched) => pageSearched.number === numberPage,
-  );
 
   return {
-    page,
+    pages: preSelectedCart.pages,
     layouts,
   };
 };
