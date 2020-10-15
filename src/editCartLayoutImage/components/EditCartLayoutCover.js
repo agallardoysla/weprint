@@ -3,10 +3,11 @@ import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import fill from 'lodash/fill';
 import concat from 'lodash/concat';
+import isNull from 'lodash/isNull';
 import {colores} from '../../constantes/Temas';
 
-const BasicCartLayout = ({selectedPage, onShowListImage}) => {
-  const {pieces} = selectedPage;
+const BasicCartLayout = ({onShowListImage, getSelectedImages}) => {
+  const pieces = getSelectedImages(1);
   const handleShowListImage = () => onShowListImage();
 
   return (
@@ -34,14 +35,16 @@ const BasicCartLayout = ({selectedPage, onShowListImage}) => {
   );
 };
 
-const TwoCartLayout = ({selectedPage, onShowListImage, getSelectedImages}) => {
-  const {pieces} = selectedPage;
-  const selectedPieces = getSelectedImages(pieces, 2);
-  const handleShowListImage = () => onShowListImage();
+const TwoCartLayout = ({onShowListImage, getSelectedImages}) => {
+  const pieces = getSelectedImages(2);
+  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file)).length;
+
+  const handleShowListImage = () =>
+    onShowListImage(offsetSelectImg, offsetSelectImg);
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
-      {selectedPieces.map((piece, index) => (
+      {pieces.map((piece, index) => (
         <View style={style.layoutLargeItem} key={index}>
           {piece.file ? (
             <Image
@@ -66,17 +69,18 @@ const TwoCartLayout = ({selectedPage, onShowListImage, getSelectedImages}) => {
   );
 };
 
-const ThreeCartLayout = ({
-  selectedPage,
-  onShowListImage,
-  getSelectedImages,
-}) => {
-  const {pieces} = selectedPage;
-  const firstColumnPiece = pieces.length ? pieces[0] : {file: null};
-  const secondColumnPieces = getSelectedImages(
-    selectedPage.pieces.slice(1, 4),
-    3,
-  );
+const ThreeCartLayout = ({onShowListImage, getSelectedImages}) => {
+  const pieces = getSelectedImages(4);
+  const firstColumnPiece = pieces[0];
+  const secondColumnPieces = pieces.slice(1, 4);
+
+  const offsetSelectImg = concat(
+    [firstColumnPiece],
+    secondColumnPieces,
+  ).filter((piece) => isNull(piece.file)).length;
+
+  const handleShowListImage = () =>
+    onShowListImage(offsetSelectImg, offsetSelectImg);
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
@@ -92,7 +96,7 @@ const ThreeCartLayout = ({
         ) : (
           <TouchableOpacity
             style={style.selectImageWrapper}
-            onPress={onShowListImage}>
+            onPress={handleShowListImage}>
             <View style={style.wrapperIcon}>
               <Icon name="plus" size={15} color={colores.verde} />
             </View>
@@ -113,7 +117,7 @@ const ThreeCartLayout = ({
             ) : (
               <TouchableOpacity
                 style={style.selectImageWrapper}
-                onPress={onShowListImage}>
+                onPress={handleShowListImage}>
                 <View style={style.wrapperIcon}>
                   <Icon name="plus" size={15} color={colores.verde} />
                 </View>
@@ -126,21 +130,25 @@ const ThreeCartLayout = ({
   );
 };
 
-const FourthCartLayout = ({
-  selectedPage,
-  getSelectedImages,
-  onShowListImage,
-}) => {
-  const {pieces} = selectedPage;
+const FourthCartLayout = ({getSelectedImages, onShowListImage}) => {
+  const pieces = getSelectedImages(3);
 
-  const firstColumnPieces = getSelectedImages(pieces.slice(1, 3), 2);
-  const secondColumnPiece = pieces.length ? pieces[0] : {file: null};
+  const firstColumnPieces = pieces.slice(1, 3);
+  const secondColumnPiece = pieces[0];
+
+  const offsetSelectImg = concat(firstColumnPieces, [
+    secondColumnPiece,
+  ]).filter((piece) => isNull(piece.file)).length;
+
+  const handleShowListImage = () =>
+    onShowListImage(offsetSelectImg, offsetSelectImg);
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {firstColumnPieces.map((piece) => (
+        {firstColumnPieces.map((piece, index) => (
           <View
+            key={index}
             style={{
               ...style.layoutSquareItem,
               height: '45%',
@@ -156,7 +164,7 @@ const FourthCartLayout = ({
             ) : (
               <TouchableOpacity
                 style={style.selectImageWrapper}
-                onPress={onShowListImage}>
+                onPress={handleShowListImage}>
                 <View style={style.wrapperIcon}>
                   <Icon name="plus" size={15} color={colores.verde} />
                 </View>
@@ -177,7 +185,7 @@ const FourthCartLayout = ({
         ) : (
           <TouchableOpacity
             style={style.selectImageWrapper}
-            onPress={onShowListImage}>
+            onPress={handleShowListImage}>
             <View style={style.wrapperIcon}>
               <Icon name="plus" size={15} color={colores.verde} />
             </View>
@@ -188,18 +196,22 @@ const FourthCartLayout = ({
   );
 };
 
-const FiveCartLayout = ({selectedPage, getSelectedImages, onShowListImage}) => {
-  const {pieces} = selectedPage;
-  const allPieces = getSelectedImages(pieces.slice(0, 2), 4);
+const FiveCartLayout = ({getSelectedImages, onShowListImage}) => {
+  const pieces = getSelectedImages(4);
 
-  const firstColumnPieces = allPieces.slice(0, 2);
-  const secondColumnPieces = allPieces.slice(2, 4);
+  const firstColumnPieces = pieces.slice(0, 2);
+  const secondColumnPieces = pieces.slice(2, 4);
+  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file)).length;
+
+  const handleShowListImage = () =>
+    onShowListImage(offsetSelectImg, offsetSelectImg);
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {firstColumnPieces.map((piece) => (
+        {firstColumnPieces.map((piece, index) => (
           <View
+            key={index}
             style={{
               ...style.layoutSquareItem,
               height: '45%',
@@ -215,7 +227,7 @@ const FiveCartLayout = ({selectedPage, getSelectedImages, onShowListImage}) => {
             ) : (
               <TouchableOpacity
                 style={style.selectImageWrapper}
-                onPress={onShowListImage}>
+                onPress={handleShowListImage}>
                 <View style={style.wrapperIcon}>
                   <Icon name="plus" size={15} color={colores.verde} />
                 </View>
@@ -225,8 +237,9 @@ const FiveCartLayout = ({selectedPage, getSelectedImages, onShowListImage}) => {
         ))}
       </View>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {secondColumnPieces.map((piece) => (
+        {secondColumnPieces.map((piece, index) => (
           <View
+            key={index}
             style={{
               ...style.layoutSquareItem,
               height: '45%',
@@ -242,7 +255,7 @@ const FiveCartLayout = ({selectedPage, getSelectedImages, onShowListImage}) => {
             ) : (
               <TouchableOpacity
                 style={style.selectImageWrapper}
-                onPress={onShowListImage}>
+                onPress={handleShowListImage}>
                 <View style={style.wrapperIcon}>
                   <Icon name="plus" size={15} color={colores.verde} />
                 </View>
@@ -261,27 +274,25 @@ const EditCartLayoutCover = ({
   imagesAdded,
   onShowListImage,
 }) => {
-  const getSelectedImages = (pieces, maxCount) => {
-    if (pieces.length < maxCount) {
-      const offsetImg = maxCount - pieces.length;
+  const getSelectedImages = (amountImagesNeeded) => {
+    if (imagesAdded.length < amountImagesNeeded) {
+      const images = imagesAdded.slice(0, amountImagesNeeded);
 
-      const images = imagesAdded
-        .slice(0, offsetImg)
-        .map((img) => ({file: img.base64}));
+      const totalSpace = amountImagesNeeded - imagesAdded.length;
 
-      const offsetSpace = maxCount - pieces.length - images.length;
-      const fillEmptySpace = fill(Array(offsetSpace), {file: null});
+      const fillEmptySpace = fill(Array(totalSpace), {file: null});
       const imagesSelected = concat(images, fillEmptySpace);
-      return concat(pieces, imagesSelected);
+
+      return imagesSelected;
     }
-    return pieces;
+    return imagesAdded.slice(0, amountImagesNeeded);
   };
   const renderLayout = (layoutId) => {
     if (layoutId === 1) {
       return (
         <BasicCartLayout
           onShowListImage={onShowListImage}
-          selectedPage={selectedPage}
+          getSelectedImages={getSelectedImages}
         />
       );
     } else if (layoutId === 2) {
@@ -289,7 +300,6 @@ const EditCartLayoutCover = ({
         <TwoCartLayout
           onShowListImage={onShowListImage}
           getSelectedImages={getSelectedImages}
-          selectedPage={selectedPage}
         />
       );
     } else if (layoutId === 3) {
@@ -297,7 +307,6 @@ const EditCartLayoutCover = ({
         <ThreeCartLayout
           onShowListImage={onShowListImage}
           getSelectedImages={getSelectedImages}
-          selectedPage={selectedPage}
         />
       );
     } else if (layoutId === 4) {
@@ -305,7 +314,6 @@ const EditCartLayoutCover = ({
         <FourthCartLayout
           onShowListImage={onShowListImage}
           getSelectedImages={getSelectedImages}
-          selectedPage={selectedPage}
         />
       );
     } else if (layoutId === 5) {

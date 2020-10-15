@@ -1,5 +1,9 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
-import {PhotoEditorModal, Configuration} from 'react-native-photoeditorsdk';
+import {
+  PhotoEditorModal,
+  PESDK,
+  Configuration,
+} from 'react-native-photoeditorsdk';
 import {
   Text,
   Image,
@@ -9,6 +13,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import concat from 'lodash/concat';
 import {connect} from 'react-redux';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -26,13 +31,15 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [imagesAdded, setImagesAdded] = useState([]);
   const [showSelectImage, setShowSelectImage] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(1);
   const maxQuantity = useRef(1);
   const minQuantity = useRef(1);
   const [selectedPage, setSelectedPage] = useState(
     searchPage(route.params.numberPage),
+  );
+  const [imagesAdded, setImagesAdded] = useState(
+    selectedPage.pieces.map((piece) => ({file: piece.file})),
   );
 
   const loadLayouts = useCallback(async () => {
@@ -68,19 +75,23 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
 
   const handleSelectedLayout = (layoutId) => setSelectedLayout(layoutId);
 
-  const handleShowListImage = (min = 1) => {
-    console.warn('min', min);
-    minQuantity.current = 1;
-    //minQuantity.current = min;
-    //maxQuantity.current = max;
+  const handleShowListImage = (min = 1, max = 1) => {
+    minQuantity.current = min;
+    maxQuantity.current = max;
     handleToggleListImage();
   };
 
   const handleToggleListImage = () => setShowSelectImage(!showSelectImage);
+
   const handleResponseImage = (images) => {
+    const newImages = images.map((img) => ({file: img.base64}));
+    const allImages = concat(imagesAdded, newImages);
+
     handleToggleListImage();
-    setImagesAdded(images);
+    setImagesAdded(allImages);
   };
+
+  PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
 
   return (
     <>
@@ -97,7 +108,7 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
             visible={showEdit}
             image={`data:image/gif;base64,${selectedPage.pieces[0].file}`}
             onExport={(result) => {
-              console.log('resul', result);
+              setPhoto(result.image);
             }}
           />
           <TouchableOpacity style={style.editCartLayoutImageHeader}>
