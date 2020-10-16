@@ -17,6 +17,7 @@ import concat from 'lodash/concat';
 import {connect} from 'react-redux';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
+import RNFetchBlob from 'rn-fetch-blob';
 import {actions} from '../../redux';
 import {get_layout_api} from '../../utils/apis/layout_api';
 import EditCartLayoutCover from '../components/EditCartLayoutCover';
@@ -24,22 +25,30 @@ import EditCartLayoutList from '../components/EditCartLayoutList';
 import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
 import SelectionListImage from '../../generales/SelectionListImage';
 
-function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
-  const searchPage = (numberPage) =>
-    pages.find((pageSearched) => pageSearched.number === numberPage);
-
+function EditCartLayoutImage({
+  dispatch,
+  navigation,
+  route,
+  preSelectedCart,
+  layouts,
+}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
+  const [selectedPages, setSelectedPages] = useState(
+    concat(preSelectedCart.pages),
+  );
   const [showEdit, setShowEdit] = useState(false);
+  const [photoEdit, setPhotoEdit] = useState('');
   const [showSelectImage, setShowSelectImage] = useState(false);
   const [selectedLayout, setSelectedLayout] = useState(1);
   const maxQuantity = useRef(1);
   const minQuantity = useRef(1);
+
+  const searchPage = (numberPage) =>
+    selectedPages.find((pageSearched) => pageSearched.number === numberPage);
+
   const [selectedPage, setSelectedPage] = useState(
     searchPage(route.params.numberPage),
-  );
-  const [imagesAdded, setImagesAdded] = useState(
-    selectedPage.pieces.map((piece) => ({file: piece.file})),
   );
 
   const loadLayouts = useCallback(async () => {
@@ -83,12 +92,58 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
 
   const handleToggleListImage = () => setShowSelectImage(!showSelectImage);
 
+  const handleUpdatePage = (pieces) => {
+    const positionPage = selectedPages.findIndex(
+      (page) => page.number === selectedPage.number,
+    );
+
+    const pages = concat(selectedPages);
+    const page = {...selectedPage, pieces};
+
+    pages[positionPage] = page;
+
+    setSelectedPage(page);
+    setSelectedPages(pages);
+  };
+
   const handleResponseImage = (images) => {
     const newImages = images.map((img) => ({file: img.base64}));
-    const allImages = concat(imagesAdded, newImages);
+    const selectedImages = concat(selectedPage.pieces, newImages);
 
+    const pieces = selectedImages.map((piece, index) => ({
+      ...piece,
+      order: index,
+    }));
+
+    handleUpdatePage(pieces);
     handleToggleListImage();
-    setImagesAdded(allImages);
+  };
+
+  const handleOnEditPhoto = (file) => {
+    const selectedPhoto = selectedPage.pieces.find(
+      (piece) => piece.file === file,
+    );
+
+    setPhotoEdit(selectedPhoto.file);
+    setShowEdit(true);
+  };
+
+  const handleCancelEditPhoto = () => {
+    setPhotoEdit('');
+    setShowEdit(false);
+  };
+
+  const handleExport = async (result) => {
+    const position = selectedPage.pieces.findIndex(
+      (piece) => piece.file === photoEdit,
+    );
+    const base64 = await RNFetchBlob.fs.readFile(result.image, 'base64');
+    const pieces = concat(selectedPage.pieces);
+    pieces[position] = {file: base64};
+
+    handleUpdatePage(pieces);
+    setShowEdit(false);
+    setPhotoEdit('');
   };
 
   PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
@@ -106,10 +161,9 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
         <View style={style.editCartLayoutMainContainer}>
           <PhotoEditorModal
             visible={showEdit}
-            image={`data:image/gif;base64,${selectedPage.pieces[0].file}`}
-            onExport={(result) => {
-              setPhoto(result.image);
-            }}
+            image={`data:image/gif;base64,${photoEdit}`}
+            onCancel={handleCancelEditPhoto}
+            onExport={handleExport}
           />
           <TouchableOpacity style={style.editCartLayoutImageHeader}>
             <Icon name="arrow-left" size={27} color={colores.negro} />
@@ -119,9 +173,9 @@ function EditCartLayoutImage({dispatch, navigation, route, pages, layouts}) {
           </TouchableOpacity>
           <EditCartLayoutCover
             onShowListImage={handleShowListImage}
+            onEditPhoto={handleOnEditPhoto}
             selectedLayout={selectedLayout}
             selectedPage={selectedPage}
-            imagesAdded={imagesAdded}
           />
           <EditCartLayoutList
             error={layoutError}
@@ -211,7 +265,7 @@ const mapStateToProps = (
   const preSelectedCart = state.cart.shortlisted[storageId];
 
   return {
-    pages: preSelectedCart.pages,
+    preSelectedCart,
     layouts,
   };
 };

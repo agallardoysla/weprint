@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import fill from 'lodash/fill';
@@ -6,21 +6,24 @@ import concat from 'lodash/concat';
 import isNull from 'lodash/isNull';
 import {colores} from '../../constantes/Temas';
 
-const BasicCartLayout = ({onShowListImage, getSelectedImages}) => {
+const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(1);
   const handleShowListImage = () => onShowListImage();
+  const handleEditPhoto = () => onEditPhoto(pieces[0].file);
 
   return (
     <>
       <View style={style.basicLayoutItem}>
         {pieces.length ? (
-          <Image
-            style={style.basicLayoutItem}
-            source={{
-              uri: `data:image/gif;base64,${pieces[0].file}`,
-            }}
-            resizeMode="cover"
-          />
+          <TouchableOpacity onPress={handleEditPhoto}>
+            <Image
+              style={style.basicLayoutItem}
+              source={{
+                uri: `data:image/gif;base64,${pieces[0].file}`,
+              }}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={style.selectImageWrapper}
@@ -35,7 +38,7 @@ const BasicCartLayout = ({onShowListImage, getSelectedImages}) => {
   );
 };
 
-const TwoCartLayout = ({onShowListImage, getSelectedImages}) => {
+const TwoCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(2);
   const offsetSelectImg = pieces.filter((piece) => isNull(piece.file)).length;
 
@@ -44,32 +47,37 @@ const TwoCartLayout = ({onShowListImage, getSelectedImages}) => {
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
-      {pieces.map((piece, index) => (
-        <View style={style.layoutLargeItem} key={index}>
-          {piece.file ? (
-            <Image
-              style={style.basicLayoutItem}
-              source={{
-                uri: `data:image/gif;base64,${piece.file}`,
-              }}
-              resizeMode="cover"
-            />
-          ) : (
-            <TouchableOpacity
-              style={style.selectImageWrapper}
-              onPress={handleShowListImage}>
-              <View style={style.wrapperIcon}>
-                <Icon name="plus" size={15} color={colores.verde} />
-              </View>
-            </TouchableOpacity>
-          )}
-        </View>
-      ))}
+      {pieces.map((piece, index) => {
+        const handleEditPhoto = () => onEditPhoto(piece.file);
+        return (
+          <View style={style.layoutLargeItem} key={index}>
+            {piece.file ? (
+              <TouchableOpacity onPress={handleEditPhoto}>
+                <Image
+                  style={style.basicLayoutItem}
+                  source={{
+                    uri: `data:image/gif;base64,${piece.file}`,
+                  }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={style.selectImageWrapper}
+                onPress={handleShowListImage}>
+                <View style={style.wrapperIcon}>
+                  <Icon name="plus" size={15} color={colores.verde} />
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+        );
+      })}
     </View>
   );
 };
 
-const ThreeCartLayout = ({onShowListImage, getSelectedImages}) => {
+const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(4);
   const firstColumnPiece = pieces[0];
   const secondColumnPieces = pieces.slice(1, 4);
@@ -82,17 +90,21 @@ const ThreeCartLayout = ({onShowListImage, getSelectedImages}) => {
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
 
+  const handleOnEditFirstImage = () => onEditPhoto(firstColumnPiece.file);
+
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={(style.layoutLargeItem, {width: '60%', marginBottom: 10})}>
         {firstColumnPiece.file ? (
-          <Image
-            style={style.basicLayoutItem}
-            source={{
-              uri: `data:image/gif;base64,${firstColumnPiece.file}`,
-            }}
-            resizeMode="cover"
-          />
+          <TouchableOpacity onPress={handleOnEditFirstImage}>
+            <Image
+              style={style.basicLayoutItem}
+              source={{
+                uri: `data:image/gif;base64,${firstColumnPiece.file}`,
+              }}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={style.selectImageWrapper}
@@ -104,33 +116,42 @@ const ThreeCartLayout = ({onShowListImage, getSelectedImages}) => {
         )}
       </View>
       <View style={(style.layoutLargeItem, {width: '35%'})}>
-        {secondColumnPieces.map((piece, index) => (
-          <View style={style.layoutSquareItem} key={index}>
-            {piece.file ? (
-              <Image
-                style={style.basicLayoutItem}
-                source={{
-                  uri: `data:image/gif;base64,${piece.file}`,
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <TouchableOpacity
-                style={style.selectImageWrapper}
-                onPress={handleShowListImage}>
-                <View style={style.wrapperIcon}>
-                  <Icon name="plus" size={15} color={colores.verde} />
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
+        {secondColumnPieces.map((piece, index) => {
+          const handleEditPhoto = () => onEditPhoto(piece.file);
+          return (
+            <View style={style.layoutSquareItem} key={index}>
+              {piece.file ? (
+                <TouchableOpacity onPress={handleEditPhoto}>
+                  <Image
+                    style={style.basicLayoutItem}
+                    source={{
+                      uri: `data:image/gif;base64,${piece.file}`,
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.selectImageWrapper}
+                  onPress={handleShowListImage}>
+                  <View style={style.wrapperIcon}>
+                    <Icon name="plus" size={15} color={colores.verde} />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        })}
       </View>
     </View>
   );
 };
 
-const FourthCartLayout = ({getSelectedImages, onShowListImage}) => {
+const FourthCartLayout = ({
+  getSelectedImages,
+  onEditPhoto,
+  onShowListImage,
+}) => {
   const pieces = getSelectedImages(3);
 
   const firstColumnPieces = pieces.slice(1, 3);
@@ -143,45 +164,54 @@ const FourthCartLayout = ({getSelectedImages, onShowListImage}) => {
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
 
+  const handleEditPhotoSecondColumn = () => onEditPhoto(secondColumnPiece.file);
+
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {firstColumnPieces.map((piece, index) => (
-          <View
-            key={index}
-            style={{
-              ...style.layoutSquareItem,
-              height: '45%',
-            }}>
-            {piece.file ? (
-              <Image
-                style={style.basicLayoutItem}
-                source={{
-                  uri: `data:image/gif;base64,${piece.file}`,
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <TouchableOpacity
-                style={style.selectImageWrapper}
-                onPress={handleShowListImage}>
-                <View style={style.wrapperIcon}>
-                  <Icon name="plus" size={15} color={colores.verde} />
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
+        {firstColumnPieces.map((piece, index) => {
+          const handleEditPhoto = () => onEditPhoto(piece.file);
+          return (
+            <View
+              key={index}
+              style={{
+                ...style.layoutSquareItem,
+                height: '45%',
+              }}>
+              {piece.file ? (
+                <TouchableOpacity onPress={handleEditPhoto}>
+                  <Image
+                    style={style.basicLayoutItem}
+                    source={{
+                      uri: `data:image/gif;base64,${piece.file}`,
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.selectImageWrapper}
+                  onPress={handleShowListImage}>
+                  <View style={style.wrapperIcon}>
+                    <Icon name="plus" size={15} color={colores.verde} />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        })}
       </View>
       <View style={(style.layoutLargeItem, {width: '50%', marginBottom: 10})}>
         {secondColumnPiece.file ? (
-          <Image
-            style={style.basicLayoutItem}
-            source={{
-              uri: `data:image/gif;base64,${secondColumnPiece.file}`,
-            }}
-            resizeMode="cover"
-          />
+          <TouchableOpacity onPress={handleEditPhotoSecondColumn}>
+            <Image
+              style={style.basicLayoutItem}
+              source={{
+                uri: `data:image/gif;base64,${secondColumnPiece.file}`,
+              }}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         ) : (
           <TouchableOpacity
             style={style.selectImageWrapper}
@@ -196,7 +226,7 @@ const FourthCartLayout = ({getSelectedImages, onShowListImage}) => {
   );
 };
 
-const FiveCartLayout = ({getSelectedImages, onShowListImage}) => {
+const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
   const pieces = getSelectedImages(4);
 
   const firstColumnPieces = pieces.slice(0, 2);
@@ -209,60 +239,71 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage}) => {
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {firstColumnPieces.map((piece, index) => (
-          <View
-            key={index}
-            style={{
-              ...style.layoutSquareItem,
-              height: '45%',
-            }}>
-            {piece.file ? (
-              <Image
-                style={style.basicLayoutItem}
-                source={{
-                  uri: `data:image/gif;base64,${piece.file}`,
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <TouchableOpacity
-                style={style.selectImageWrapper}
-                onPress={handleShowListImage}>
-                <View style={style.wrapperIcon}>
-                  <Icon name="plus" size={15} color={colores.verde} />
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
+        {firstColumnPieces.map((piece, index) => {
+          const handleEditPhoto = () => onEditPhoto(piece.file);
+          return (
+            <View
+              key={index}
+              style={{
+                ...style.layoutSquareItem,
+                height: '45%',
+              }}>
+              {piece.file ? (
+                <TouchableOpacity onPress={handleEditPhoto}>
+                  <Image
+                    style={style.basicLayoutItem}
+                    source={{
+                      uri: `data:image/gif;base64,${piece.file}`,
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.selectImageWrapper}
+                  onPress={handleShowListImage}>
+                  <View style={style.wrapperIcon}>
+                    <Icon name="plus" size={15} color={colores.verde} />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        })}
       </View>
       <View style={(style.layoutLargeItem, {width: '45%'})}>
-        {secondColumnPieces.map((piece, index) => (
-          <View
-            key={index}
-            style={{
-              ...style.layoutSquareItem,
-              height: '45%',
-            }}>
-            {piece.file ? (
-              <Image
-                style={style.basicLayoutItem}
-                source={{
-                  uri: `data:image/gif;base64,${piece.file}`,
-                }}
-                resizeMode="cover"
-              />
-            ) : (
-              <TouchableOpacity
-                style={style.selectImageWrapper}
-                onPress={handleShowListImage}>
-                <View style={style.wrapperIcon}>
-                  <Icon name="plus" size={15} color={colores.verde} />
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
+        {secondColumnPieces.map((piece, index) => {
+          const handleEditPhoto = () => onEditPhoto(piece.file);
+
+          return (
+            <View
+              key={index}
+              style={{
+                ...style.layoutSquareItem,
+                height: '45%',
+              }}>
+              {piece.file ? (
+                <TouchableOpacity onPress={handleEditPhoto}>
+                  <Image
+                    style={style.basicLayoutItem}
+                    source={{
+                      uri: `data:image/gif;base64,${piece.file}`,
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={style.selectImageWrapper}
+                  onPress={handleShowListImage}>
+                  <View style={style.wrapperIcon}>
+                    <Icon name="plus" size={15} color={colores.verde} />
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -271,27 +312,28 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage}) => {
 const EditCartLayoutCover = ({
   selectedLayout,
   selectedPage,
-  imagesAdded,
   onShowListImage,
+  onEditPhoto,
 }) => {
   const getSelectedImages = (amountImagesNeeded) => {
-    if (imagesAdded.length < amountImagesNeeded) {
-      const images = imagesAdded.slice(0, amountImagesNeeded);
+    if (selectedPage.pieces.length < amountImagesNeeded) {
+      const images = selectedPage.pieces.slice(0, amountImagesNeeded);
 
-      const totalSpace = amountImagesNeeded - imagesAdded.length;
+      const totalSpace = amountImagesNeeded - selectedPage.pieces.length;
 
       const fillEmptySpace = fill(Array(totalSpace), {file: null});
       const imagesSelected = concat(images, fillEmptySpace);
 
       return imagesSelected;
     }
-    return imagesAdded.slice(0, amountImagesNeeded);
+    return selectedPage.pieces.slice(0, amountImagesNeeded);
   };
   const renderLayout = (layoutId) => {
     if (layoutId === 1) {
       return (
         <BasicCartLayout
           onShowListImage={onShowListImage}
+          onEditPhoto={onEditPhoto}
           getSelectedImages={getSelectedImages}
         />
       );
@@ -299,6 +341,7 @@ const EditCartLayoutCover = ({
       return (
         <TwoCartLayout
           onShowListImage={onShowListImage}
+          onEditPhoto={onEditPhoto}
           getSelectedImages={getSelectedImages}
         />
       );
@@ -306,6 +349,7 @@ const EditCartLayoutCover = ({
       return (
         <ThreeCartLayout
           onShowListImage={onShowListImage}
+          onEditPhoto={onEditPhoto}
           getSelectedImages={getSelectedImages}
         />
       );
@@ -313,6 +357,7 @@ const EditCartLayoutCover = ({
       return (
         <FourthCartLayout
           onShowListImage={onShowListImage}
+          onEditPhoto={onEditPhoto}
           getSelectedImages={getSelectedImages}
         />
       );
@@ -320,8 +365,8 @@ const EditCartLayoutCover = ({
       return (
         <FiveCartLayout
           onShowListImage={onShowListImage}
+          onEditPhoto={onEditPhoto}
           getSelectedImages={getSelectedImages}
-          selectedPage={selectedPage}
         />
       );
     }
