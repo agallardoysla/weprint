@@ -9,7 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const EditCartLayoutFooter = ({pages, page, onSelectPage}) => {
+const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
   const renderStrArrowLeft = () => {
     const {number} = page;
     const beforePage = number > 0 ? number - 1 : number;
@@ -53,7 +53,7 @@ const EditCartLayoutFooter = ({pages, page, onSelectPage}) => {
           <Text style={style.arrowText}>{renderStrArrowLeft()}</Text>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableOpacity style={style.button}>
+      <TouchableOpacity style={style.button} onPress={onSaveChanges}>
         <Text
           style={{
             ...style.arrowText,

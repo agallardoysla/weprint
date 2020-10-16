@@ -152,6 +152,17 @@ function EditCartLayoutImage({
     setSelectedLayout(1);
   };
 
+  const handleSaveChanges = () => {
+    dispatch(
+      actions.agregarCartPreseleccionado(route.params.storageId, {
+        ...preSelectedCart,
+        pages: selectedPages,
+      }),
+    );
+
+    navigation.goBack();
+  };
+
   PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
 
   return (
@@ -192,6 +203,7 @@ function EditCartLayoutImage({
           />
           <EditCartLayoutFooter
             onSelectPage={handleSelectPage}
+            onSaveChanges={handleSaveChanges}
             pages={selectedPages}
             page={selectedPage}
           />
