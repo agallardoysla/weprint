@@ -146,6 +146,12 @@ function EditCartLayoutImage({
     setPhotoEdit('');
   };
 
+  const handleSelectPage = (numberPage) => {
+    const page = searchPage(numberPage);
+    setSelectedPage(page);
+    setSelectedLayout(1);
+  };
+
   PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
 
   return (
@@ -184,7 +190,11 @@ function EditCartLayoutImage({
             selectedLayout={selectedLayout}
             onSelectedLayout={handleSelectedLayout}
           />
-          <EditCartLayoutFooter />
+          <EditCartLayoutFooter
+            onSelectPage={handleSelectPage}
+            pages={selectedPages}
+            page={selectedPage}
+          />
         </View>
       )}
     </>

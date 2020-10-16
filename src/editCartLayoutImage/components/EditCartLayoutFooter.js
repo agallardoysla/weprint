@@ -1,15 +1,58 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const EditCartLayoutFooter = () => {
+const EditCartLayoutFooter = ({pages, page, onSelectPage}) => {
+  const renderStrArrowLeft = () => {
+    const {number} = page;
+    const beforePage = number > 0 ? number - 1 : number;
+    let pg = `Pg ${beforePage}`;
+
+    if (number === beforePage) {
+      pg = 'Fin';
+    } else if (beforePage === 0) {
+      pg = 'Portada';
+    }
+
+    return pg;
+  };
+
+  const renderStrArrowRight = () => {
+    const {number} = page;
+    const endPage = pages.length - 1;
+    const afterPage = number + 1;
+
+    return number === endPage ? 'Fin' : `Pg ${afterPage}`;
+  };
+
+  const handleOnPressArrowLeft = () => {
+    if (renderStrArrowLeft() !== 'Fin') {
+      const numberPage = page.number - 1;
+      onSelectPage(numberPage);
+    }
+  };
+
+  const handleOnPressArrowRight = () => {
+    if (renderStrArrowRight() !== 'Fin') {
+      const numberPage = page.number + 1;
+      onSelectPage(numberPage);
+    }
+  };
   return (
     <View style={style.footerContainer}>
-      <View style={style.arrowContainer}>
-        <Icon name="chevron-left" size={45} color={colores.blanco} />
-        <Text style={style.arrowText}>Pag 1</Text>
-      </View>
+      <TouchableWithoutFeedback onPress={handleOnPressArrowLeft}>
+        <View style={style.arrowContainer}>
+          <Icon name="chevron-left" size={45} color={colores.blanco} />
+          <Text style={style.arrowText}>{renderStrArrowLeft()}</Text>
+        </View>
+      </TouchableWithoutFeedback>
       <TouchableOpacity style={style.button}>
         <Text
           style={{
@@ -20,11 +63,12 @@ const EditCartLayoutFooter = () => {
           Guardar cambios
         </Text>
       </TouchableOpacity>
-      <View style={style.arrowContainer}>
-        <Text style={style.arrowText}>Pag 3</Text>
-
-        <Icon name="chevron-right" size={45} color={colores.blanco} />
-      </View>
+      <TouchableWithoutFeedback onPress={handleOnPressArrowRight}>
+        <View style={style.arrowContainer}>
+          <Text style={style.arrowText}>{renderStrArrowRight()}</Text>
+          <Icon name="chevron-right" size={45} color={colores.blanco} />
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   );
 };
