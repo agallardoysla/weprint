@@ -40,12 +40,14 @@ function CartLayout({
     return pages;
   }, []);
 
+
   const handleSavePreSelectedCart = useCallback((pages) => {
     const basePreSelectedCart = {
       format_id: format.id,
-      name: preSelectedCart ? preSelectedCart.name : '',
-      description: preSelectedCart ? preSelectedCart.description : '',
+      name: preSelectedCart ? preSelectedCart.name : format.name,
+      description: preSelectedCart ? preSelectedCart.description : format.description,
       pages,
+      price: pages.length === 24 ? format.min_price : (format.min_price + (pages.length-24)*format.price_unit)
     };
 
     dispatch(

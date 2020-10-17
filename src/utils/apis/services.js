@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import mime from "mime";
 
 export const BEARER_TOKEN_NAME = 'bearer_token_api';
 export const BASE_API = 'http://52.9.49.89';
@@ -36,8 +37,8 @@ export const put = async (uri, body) => {
   };
 
   fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.text())
-    .then((result) => console.log('result: ' + result))
+    .then((response) => response.json())
+    .then((response) => console.log(response))
     .catch((error) => console.log('error', error));
 };
 
@@ -51,7 +52,32 @@ export const del = async (uri) => {
   };
 
   fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.text())
+    .then((response) => response.json())
+    .catch((error) => console.log('error', error));
+};
+
+export const postFormData = async (uri, body) => {
+  let token = await getAuthorization();
+
+  var myHeaders = new Headers();
+  
+  myHeaders.append('Authorization', `Bearer ${token}`);
+  let formData = new FormData()
+  formData.append('file', {
+    uri : body,
+    type: mime.getType(body),
+    name: body.split("/").pop()
+   }, body.split("/").pop());
+  
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: formData,
+    redirect: 'follow',
+  };
+
+  fetch(`${BASE_API}${uri}`, requestOptions)
+    .then((response) => response.json())
     .then((result) => console.log(result))
     .catch((error) => console.log('error', error));
 };
@@ -72,7 +98,8 @@ export const post = async (uri, body) => {
 
 
   fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.text())
+    .then((response) => response.json())
+    .then((result) => console.log(result))
     .then((result) => console.log(result))
     .catch((error) => console.log('error', error));
 };

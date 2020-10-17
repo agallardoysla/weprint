@@ -6,14 +6,16 @@ import { RFPercentage } from 'react-native-responsive-fontsize';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SelectionListImage from '../../generales/SelectionListImage'
 import { ImageRepository } from './components/ImageRepository'
+import { upload_image } from '../../utils/apis/project_api'
+import CargandoModal from '../../generales/CargandoModal';
 
-
-function RepositoryDescription(){
+function RepositoryDescription({route}){
     const [images, setImages] = useState(null)
     const [sendImages, setSendImages] = useState(false)
     const [showListImage, setShowListImage] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    console.log(images)
+    //console.log(images)
 
     const handleDeleteImage = (index) => {
         const newImageArray = images
@@ -40,6 +42,24 @@ function RepositoryDescription(){
         }
     }, [images])
 
+    const handleUploadToRepository = () => {
+        const uri = images[0].uri
+            //folder: "user",
+            //repository: route.params.repoName
+        
+
+
+        if(images && images.length !== 0){
+            //setLoading(true);
+            upload_image(images[0].uri, images[0].base64).then((response) => {
+                console.log("RESPONSE:");
+                console.log(response);
+                setLoading(false);
+                //response.errors && setError(true);
+             });
+        }
+    }
+
     return (
           <Container footer={false}>
             <View style={{backgroundColor: colores.fondoScreen, height: '100%'}}>
@@ -59,7 +79,7 @@ function RepositoryDescription(){
                             </View>
                         ) : (
                             <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 10}}>
-                                <TouchableOpacity onPress={() => setShowListImage(true)}>
+                                <TouchableOpacity onPress={handleUploadToRepository}>
                                     <View style={{padding: 20, backgroundColor: colores.button, width: 190, borderRadius: 50, margin: 5}}>
                                         <Text style={{...estiloDeLetra.negrita, color: colores.blanco, textAlign:'center',fontSize: RFPercentage(1.5)}}>ACEPTAR</Text>
                                     </View>
@@ -79,7 +99,8 @@ function RepositoryDescription(){
                         onPressGoToBack={() => setShowListImage(false)} 
                     />
                 </Modal>       
-            </View> 
+            </View>
+            <CargandoModal title="Cargando" show={loading} /> 
           </Container>
     );
 }

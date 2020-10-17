@@ -37,10 +37,10 @@ function UploadRepository({navigation}){
         if (validateData === true) {
             setloading(true);
             create_repository(body).then((response) => {
-            console.log(response);
-            //response.errors && setError(true);
-            setloading(false);
-            navigation.navigate("RepositoryDescription")
+              console.log(response);
+              //response.errors && setError(true);
+              setloading(false);
+              navigation.navigate("RepositoryDescription", {repoName: data.repoName})
           });
         }
       };

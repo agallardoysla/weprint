@@ -18,10 +18,6 @@ import {get_profile_api} from '../../utils/apis/login_api'
 
 function EditProfile({navigation, route}) {
 
-  useEffect(() => {
-    
-  }, [])
-
   return (
     <Container footer={false}>
       <SafeAreaView>
@@ -52,23 +48,7 @@ function EditProfile({navigation, route}) {
                 />
               </View>
             </View>
-            <View
-              style={{
-                borderRadius: 150,
-                borderWidth: 10,
-                borderColor: colores.blanco,
-                overflow: 'hidden',
-                margin: 40,
-              }}>
-              <Image
-                resizeMode="cover"
-                style={{height: 220, width: 220}}
-                source={{
-                  uri:
-                    'https://www.mundodeportivo.com/r/GODO/MD/p5/MasQueDeporte/Imagenes/2018/10/24/Recortada/img_femartinez_20181010-125104_imagenes_md_otras_fuentes_captura-kcOG-U452531892714hYG-980x554@MundoDeportivo-Web.JPG',
-                }}
-              />
-            </View>
+            
             <MainForm data={route.params} />
           </View>
         </ScrollView>

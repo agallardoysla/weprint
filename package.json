@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^5.7.1",
     "axios": "^0.20.0",
     "lodash": "^4.17.20",
+    "mime": "^2.4.6",
     "nanoid": "^3.1.12",
     "query-string": "^6.13.2",
     "react": "16.13.1",
