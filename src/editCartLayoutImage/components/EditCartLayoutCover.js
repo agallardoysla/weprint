@@ -8,18 +8,19 @@ import {colores} from '../../constantes/Temas';
 
 const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(1);
+  const piece = pieces[0];
   const handleShowListImage = () => onShowListImage();
-  const handleEditPhoto = () => onEditPhoto(pieces[0].file);
+  const handleEditPhoto = () => onEditPhoto(piece.file);
 
   return (
     <>
       <View style={style.basicLayoutItem}>
-        {pieces.length ? (
+        {piece.file ? (
           <TouchableOpacity onPress={handleEditPhoto}>
             <Image
               style={style.basicLayoutItem}
               source={{
-                uri: `data:image/gif;base64,${pieces[0].file}`,
+                uri: `data:image/gif;base64,${piece.file}`,
               }}
               resizeMode="cover"
             />
@@ -326,6 +327,7 @@ const EditCartLayoutCover = ({
 
       return imagesSelected;
     }
+
     return selectedPage.pieces.slice(0, amountImagesNeeded);
   };
   const renderLayout = (layoutId) => {

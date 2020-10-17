@@ -5,8 +5,8 @@ import {
   Image,
   FlatList,
   Dimensions,
-  TouchableWithoutFeedback,
   StyleSheet,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Cargando from '../../generales/Cargando';
 import {colores, tipoDeLetra} from '../../constantes/Temas';

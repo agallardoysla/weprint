@@ -24,6 +24,7 @@ export const colores = {
   grisClaro: '#e5e6e8',
   grisBgIconCart: '#f6f8fa',
   grisWrapperImage: '#9b9b9b',
+  grisWrapperEmptyImage: '#f8f8f8',
   azulNoche: '#051441',
   logo: '#f98364',
   negro: 'black',

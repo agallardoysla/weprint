@@ -180,13 +180,12 @@ const CartLayoutListImage = ({
       newPages[currentIdx.current] = {...pageFrom, pieces: pageTo.pieces};
       newPages[newIdx.current] = {...pageTo, pieces: pageFrom.pieces};
 
-      setPages(newPages);
       onSavePages(newPages);
     }
 
     currentIdx.current = null;
     newIdx.current = null;
-  }, [pages, setPages]);
+  }, [pages]);
 
   const handleLayoutFlatlist = (e) => {
     flatlistHeight.current = e.nativeEvent.layout.height;
@@ -223,7 +222,7 @@ const CartLayoutListImage = ({
       number: index,
     }));
 
-    setPages(newPages);
+    onSavePages(newPages);
   };
 
   const renderPages = ({item: page}) => (

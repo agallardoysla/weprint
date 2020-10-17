@@ -1,29 +1,19 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
-import {
-  PhotoEditorModal,
-  PESDK,
-  Configuration,
-} from 'react-native-photoeditorsdk';
-import {
-  Text,
-  Image,
-  View,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import {PhotoEditorModal, PESDK} from 'react-native-photoeditorsdk';
+import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import concat from 'lodash/concat';
 import {connect} from 'react-redux';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
-import Icon from 'react-native-vector-icons/dist/Feather';
-import RNFetchBlob from 'rn-fetch-blob';
 import {actions} from '../../redux';
 import {get_layout_api} from '../../utils/apis/layout_api';
+import {colores, tipoDeLetra} from '../../constantes/Temas';
+import isNull from 'lodash/isNull';
+import Icon from 'react-native-vector-icons/dist/Feather';
+import RNFetchBlob from 'rn-fetch-blob';
 import EditCartLayoutCover from '../components/EditCartLayoutCover';
 import EditCartLayoutList from '../components/EditCartLayoutList';
 import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
 import SelectionListImage from '../../generales/SelectionListImage';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 function EditCartLayoutImage({
   dispatch,
@@ -34,15 +24,11 @@ function EditCartLayoutImage({
 }) {
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const [photoEdit, setPhotoEdit] = useState('');
   const [selectedPages, setSelectedPages] = useState(
     concat(preSelectedCart.pages),
   );
-  const [showEdit, setShowEdit] = useState(false);
-  const [photoEdit, setPhotoEdit] = useState('');
-  const [showSelectImage, setShowSelectImage] = useState(false);
-  const [selectedLayout, setSelectedLayout] = useState(1);
-  const maxQuantity = useRef(1);
-  const minQuantity = useRef(1);
 
   const searchPage = (numberPage) =>
     selectedPages.find((pageSearched) => pageSearched.number === numberPage);
@@ -50,6 +36,12 @@ function EditCartLayoutImage({
   const [selectedPage, setSelectedPage] = useState(
     searchPage(route.params.numberPage),
   );
+  const [showSelectImage, setShowSelectImage] = useState(false);
+  const [selectedLayout, setSelectedLayout] = useState(
+    selectedPage.layout_id || 1,
+  );
+  const maxQuantity = useRef(1);
+  const minQuantity = useRef(1);
 
   const loadLayouts = useCallback(async () => {
     setLayoutLoading(true);
@@ -74,16 +66,6 @@ function EditCartLayoutImage({
     }
   }, [loadLayouts, setLayoutLoading]);
 
-  useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const handleSelectedLayout = (layoutId) => setSelectedLayout(layoutId);
-
   const handleShowListImage = (min = 1, max = 1) => {
     minQuantity.current = min;
     maxQuantity.current = max;
@@ -92,13 +74,19 @@ function EditCartLayoutImage({
 
   const handleToggleListImage = () => setShowSelectImage(!showSelectImage);
 
-  const handleUpdatePage = (pieces) => {
+  const getPositionCurrentPage = () => {
     const positionPage = selectedPages.findIndex(
       (page) => page.number === selectedPage.number,
     );
 
+    return positionPage;
+  };
+
+  const handleUpdatePage = (pieces) => {
+    const positionPage = getPositionCurrentPage();
+
     const pages = concat(selectedPages);
-    const page = {...selectedPage, pieces};
+    const page = {...selectedPage, layout_id: selectedLayout, pieces};
 
     pages[positionPage] = page;
 
@@ -106,9 +94,25 @@ function EditCartLayoutImage({
     setSelectedPages(pages);
   };
 
+  const handleSelectedLayout = (layoutId) => {
+    const positionPage = getPositionCurrentPage();
+
+    const pages = concat(selectedPages);
+    const page = {...selectedPage, layout_id: layoutId};
+
+    pages[positionPage] = page;
+
+    setSelectedPage(page);
+    setSelectedPages(pages);
+    setSelectedLayout(layoutId);
+  };
+
   const handleResponseImage = (images) => {
+    const prevImages = selectedPage.pieces.filter(
+      (piece) => !isNull(piece.file),
+    );
     const newImages = images.map((img) => ({file: img.base64}));
-    const selectedImages = concat(selectedPage.pieces, newImages);
+    const selectedImages = concat(prevImages, newImages);
 
     const pieces = selectedImages.map((piece, index) => ({
       ...piece,
@@ -139,7 +143,7 @@ function EditCartLayoutImage({
     );
     const base64 = await RNFetchBlob.fs.readFile(result.image, 'base64');
     const pieces = concat(selectedPage.pieces);
-    pieces[position] = {file: base64};
+    pieces[position] = {...pieces[position], file: base64};
 
     handleUpdatePage(pieces);
     setShowEdit(false);
@@ -149,7 +153,7 @@ function EditCartLayoutImage({
   const handleSelectPage = (numberPage) => {
     const page = searchPage(numberPage);
     setSelectedPage(page);
-    setSelectedLayout(1);
+    setSelectedLayout(page.layout_id || 1);
   };
 
   const handleSaveChanges = () => {
@@ -163,7 +167,17 @@ function EditCartLayoutImage({
     navigation.goBack();
   };
 
+  const handleOnPressDelete = () => handleUpdatePage([]);
+
   PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
+
+  useEffect(() => {
+    dispatch(actions.actualizarNavigation(navigation));
+  }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   return (
     <>
@@ -188,6 +202,9 @@ function EditCartLayoutImage({
               Página {selectedPage.number}
             </Text>
           </TouchableOpacity>
+          <TouchableWithoutFeedback onPress={handleOnPressDelete}>
+            <Text>borrar diseño</Text>
+          </TouchableWithoutFeedback>
           <EditCartLayoutCover
             onShowListImage={handleShowListImage}
             onEditPhoto={handleOnEditPhoto}
