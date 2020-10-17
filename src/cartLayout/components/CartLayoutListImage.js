@@ -4,12 +4,16 @@ import {
   StyleSheet,
   Animated,
   Image,
+  View,
+  TouchableOpacity,
   PanResponder,
   Dimensions,
 } from 'react-native';
+import concat from 'lodash/concat';
 import isNull from 'lodash/isNull';
 import CartLayoutCover from './CartLayoutCover';
 import CartLayoutImage from './CartLayoutImage';
+import Icon from 'react-native-vector-icons/dist/Feather';
 import orderBy from 'lodash/orderBy';
 import {colores} from '../../constantes/Temas';
 
@@ -194,6 +198,28 @@ const CartLayoutListImage = ({
     clearTimeout(timeoutId.current);
   };
 
+  const handleAddPage = (numberPage) => {
+    const defaultPage = {
+      layout_id: null,
+      number: numberPage,
+      pieces: [{order: numberPage, file: null}],
+    };
+
+    const selectedPages = concat(pages);
+    selectedPages.splice(numberPage, 0, defaultPage);
+
+    handleEditPages(selectedPages);
+  };
+
+  const handleEditPages = (selectedPages) => {
+    const newPages = selectedPages.map((selectedPage, index) => ({
+      ...selectedPage,
+      number: index,
+    }));
+
+    setPages(newPages);
+  };
+
   const renderPages = ({item: page}) => (
     <CartLayoutImage
       page={page}
@@ -203,6 +229,22 @@ const CartLayoutListImage = ({
     />
   );
 
+  const renderSeparator = ({leadingItem}) => {
+    const handleOnPress = () => {
+      handleAddPage(leadingItem[1].number);
+    };
+
+    return (
+      <View style={{marginLeft: 4}}>
+        <TouchableOpacity
+          style={style.cartLayoutIconContainer}
+          onPress={handleOnPress}>
+          <Icon name="plus" size={15} color={colores.verde} />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   useEffect(() => {
     if (showDrag) {
       handleChangeIndex();
@@ -210,6 +252,10 @@ const CartLayoutListImage = ({
       handleChangePages();
     }
   }, [handleChangeIndex, handleChangePages, showDrag]);
+
+  useEffect(() => {
+    setPages(orderBy(preSelectedCart.pages, ['number', 'asc']));
+  }, [preSelectedCart, setPages]);
 
   return (
     <>
@@ -241,6 +287,7 @@ const CartLayoutListImage = ({
             onHeaderHeight={handleOnHeaderHeight}
           />
         }
+        ItemSeparatorComponent={renderSeparator}
         onScroll={handleOnScroll}
         onLayout={handleLayoutFlatlist}
         scrollEventThrottle={20}
@@ -285,6 +332,18 @@ const style = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    elevation: 1,
+  },
+  cartLayoutIconContainer: {
+    position: 'absolute',
+    bottom: 35,
+    width: 20,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colores.grisBgIconCart,
+    borderWidth: 0.5,
+    borderColor: colores.grisFormatoAlbum,
     elevation: 1,
   },
 });

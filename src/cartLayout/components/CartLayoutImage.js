@@ -47,15 +47,6 @@ const CartLayoutImage = ({
             }>
             <Icon name="move" size={15} color={colores.gris} />
           </View>
-
-          <View
-            style={
-              pageIsOdd()
-                ? style.cartLayoutIconContainerPlusRight
-                : style.cartLayoutIconContainerPlus
-            }>
-            <Icon name="plus" size={15} color="green" />
-          </View>
         </View>
         <Text style={style.cartLayoutText}>Pg {page.number}</Text>
       </View>
@@ -133,29 +124,6 @@ const style = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
     elevation: 4,
-  },
-  cartLayoutIconContainerPlusRight: {
-    position: 'absolute',
-    bottom: -5,
-    left: -9,
-    width: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colores.grisBgIconCart,
-    borderWidth: 0.5,
-    borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
-  },
-  cartLayoutIconContainerPlus: {
-    position: 'absolute',
-    bottom: -5,
-    right: -14,
-    width: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colores.grisBgIconCart,
-    borderWidth: 0.5,
-    borderColor: colores.grisFormatoAlbum,
   },
   cartLayoutText: {
     marginTop: 5,
