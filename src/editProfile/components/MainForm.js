@@ -246,7 +246,7 @@ export const MainForm = ({data}) => {
 
       <Modal visible={showImagePicker} hardwareAccelerated={true} animationType="slide" >
           <SelectionListImage maxQuantity={1} minQuantity={1} onResponse={(images) => {setShowImagePicker(false); setUserData({...userData, avatar: images[0]}); console.log(images[0])}} 
-              onPressGoToBack={() => setShowListImage(false)} 
+              onPressGoToBack={() => setShowImagePicker(false)} 
           />
       </Modal>  
     </View>

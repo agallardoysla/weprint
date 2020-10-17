@@ -30,6 +30,9 @@ export const colores = {
   negro: 'black',
   fondoScreen: '#F5F6FA',
   grisTransparente: 'rgba(192,192,192,0.5)', 
+  loginInput: 'rgba(52,52,52,0.8)',
+  cargandoModal: '#484848',
+  cargandoModalFondo: 'rgba(0,0,0,0.5)'
 };
 
 export const tipoDeLetra = {

@@ -4,8 +4,6 @@ import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist'; //NO BORRAR
-
-import Cargando from './src/generales/Cargando';
 import Navigate from './src/Navigate';
 
 import {store, persistor} from './src/redux/store';
@@ -18,7 +16,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
-      <CargandoModal />
+      <CargandoModal transparentBackground={false} />
     </View>
   );
 
