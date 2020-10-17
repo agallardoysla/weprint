@@ -2,11 +2,11 @@ import React from 'react';
 import {View, Text, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const CartLayoutCover = ({uri}) => {
+const CartLayoutCover = ({uri, onHeaderHeight}) => {
   const widthCover = Math.floor((useWindowDimensions().width * 60) / 100);
 
   return (
-    <View style={style.cartLayoutCoverMainContainer}>
+    <View style={style.cartLayoutCoverMainContainer} onLayout={onHeaderHeight}>
       <View
         style={{
           ...style.cartLayoutCoverContainerBg,
@@ -39,7 +39,6 @@ const style = StyleSheet.create({
     borderWidth: 1,
     borderColor: colores.grisFormatoAlbum,
     backgroundColor: colores.blanco,
-    elevation: 1,
   },
   cartLayoutConverContainer: {
     position: 'absolute',

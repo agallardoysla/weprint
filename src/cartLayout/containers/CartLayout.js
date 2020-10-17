@@ -27,7 +27,7 @@ function CartLayout({
 
   const getPages = useCallback(() => {
     const pages = preSelectedImages.map((img, index) => ({
-      number: index + 1,
+      number: index,
       layout_id: null,
       pieces: [
         {
@@ -131,6 +131,7 @@ function CartLayout({
         <Cargando titulo="" loaderColor={colores.logo} />
       ) : (
         <CartLayoutListImage
+          onSavePages={handleSavePreSelectedCart}
           onGoToEditCartImage={handleGoToEditCartImage}
           preSelectedCart={preSelectedCart}
           format={format}

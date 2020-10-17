@@ -1,66 +1,70 @@
 import React from 'react';
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  useWindowDimensions,
-} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
-const CartLayoutImage = ({page, onGoToEditCartImage}) => {
-  const pageIsOdd = () => page.number % 2 === 0;
-
-  const handleOnPressImage = () => onGoToEditCartImage(page);
+const CartLayoutImage = ({
+  page,
+  panResponder,
+  onGoToEditCartImage,
+  onRowHeight,
+}) => {
+  const pageIsOdd = () => page.number % 2 !== 0;
+  const handleOnPressImage = (e) => {
+    e.stopPropagation();
+    onGoToEditCartImage(page);
+  };
 
   return (
-    <View style={style.cartLayoutImageMainContainer}>
-      <View style={style.cartLayoutImageBg}>
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerXRight
-              : style.cartLayoutIconContainerX
-          }>
-          <Icon name="x" size={15} color={colores.rojo} />
-        </View>
-        <View style={style.cartLayoutImageContainer}>
-          <TouchableOpacity onPress={handleOnPressImage}>
-            <Image
-              source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
-              style={style.cartLayoutImageSize}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerRight
-              : style.cartLayoutIconContainer
-          }>
-          <Icon name="move" size={15} color={colores.gris} />
-        </View>
+    <>
+      <View
+        style={style.cartLayoutImageMainContainer}
+        onLayout={onRowHeight}
+        {...panResponder.panHandlers}>
+        <View style={style.cartLayoutImageBg}>
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerXRight
+                : style.cartLayoutIconContainerX
+            }>
+            <Icon name="x" size={15} color={colores.rojo} />
+          </View>
+          <View style={style.cartLayoutImageContainer}>
+            <TouchableOpacity onPress={handleOnPressImage}>
+              <Image
+                source={{uri: `data:image/gif;base64,${page.pieces[0].file}`}}
+                style={style.cartLayoutImageSize}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerRight
+                : style.cartLayoutIconContainer
+            }>
+            <Icon name="move" size={15} color={colores.gris} />
+          </View>
 
-        <View
-          style={
-            pageIsOdd()
-              ? style.cartLayoutIconContainerPlusRight
-              : style.cartLayoutIconContainerPlus
-          }>
-          <Icon name="plus" size={15} color="green" />
+          <View
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerPlusRight
+                : style.cartLayoutIconContainerPlus
+            }>
+            <Icon name="plus" size={15} color="green" />
+          </View>
         </View>
+        <Text style={style.cartLayoutText}>Pg {page.number}</Text>
       </View>
-      <Text style={style.cartLayoutText}>Pg {page.number}</Text>
-    </View>
+    </>
   );
 };
 
 const style = StyleSheet.create({
   cartLayoutImageMainContainer: {
-    position: 'relative',
     height: 150,
     width: '50%',
   },
@@ -142,7 +146,6 @@ const style = StyleSheet.create({
     borderColor: colores.grisFormatoAlbum,
     elevation: 1,
   },
-
   cartLayoutIconContainerPlus: {
     position: 'absolute',
     bottom: -5,
@@ -154,7 +157,6 @@ const style = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
   },
-
   cartLayoutText: {
     marginTop: 5,
     marginBottom: 30,
