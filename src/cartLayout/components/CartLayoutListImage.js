@@ -71,9 +71,10 @@ const CartLayoutListImage = ({
         active.current = true;
         setDragginIndex(currentIdx.current);
 
+        clearTimeout(timeoutId.current);
         timeoutId.current = setTimeout(() => {
           setShowDrag(true);
-        }, 500);
+        }, 900);
       },
       onPanResponderMove: (evt, gestureState) => {
         currentY.current = gestureState.moveY;
@@ -211,6 +212,11 @@ const CartLayoutListImage = ({
     handleEditPages(selectedPages);
   };
 
+  const handleDeletePage = (numberPage) => {
+    const selectedPages = pages.filter((page) => page.number !== numberPage);
+    handleEditPages(selectedPages);
+  };
+
   const handleEditPages = (selectedPages) => {
     const newPages = selectedPages.map((selectedPage, index) => ({
       ...selectedPage,
@@ -225,6 +231,7 @@ const CartLayoutListImage = ({
       page={page}
       panResponder={panResponder}
       onGoToEditCartImage={onGoToEditCartImage}
+      onDeletePage={handleDeletePage}
       onRowHeight={handleOnRowSize}
     />
   );
@@ -307,8 +314,7 @@ const style = StyleSheet.create({
     marginTop: 35,
     paddingTop: 5,
     paddingBottom: 30,
-    paddingHorizontal: 8,
-    elevation: 1,
+    paddingHorizontal: 12,
   },
   cartLayoutImageAnimatedContainer: {
     position: 'absolute',

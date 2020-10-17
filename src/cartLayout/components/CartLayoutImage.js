@@ -7,6 +7,7 @@ const CartLayoutImage = ({
   page,
   panResponder,
   onGoToEditCartImage,
+  onDeletePage,
   onRowHeight,
 }) => {
   const pageIsOdd = () => page.number % 2 !== 0;
@@ -15,21 +16,12 @@ const CartLayoutImage = ({
     onGoToEditCartImage(page);
   };
 
+  const handleOnPressDelete = () => onDeletePage(page.number);
+
   return (
     <>
-      <View
-        style={style.cartLayoutImageMainContainer}
-        onLayout={onRowHeight}
-        {...panResponder.panHandlers}>
+      <View style={style.cartLayoutImageMainContainer} onLayout={onRowHeight}>
         <View style={style.cartLayoutImageBg}>
-          <View
-            style={
-              pageIsOdd()
-                ? style.cartLayoutIconContainerXRight
-                : style.cartLayoutIconContainerX
-            }>
-            <Icon name="x" size={15} color={colores.rojo} />
-          </View>
           <View style={style.cartLayoutImageContainer}>
             <TouchableOpacity onPress={handleOnPressImage}>
               <Image
@@ -47,6 +39,16 @@ const CartLayoutImage = ({
             }>
             <Icon name="move" size={15} color={colores.gris} />
           </View>
+
+          <TouchableOpacity
+            onPress={handleOnPressDelete}
+            style={
+              pageIsOdd()
+                ? style.cartLayoutIconContainerXRight
+                : style.cartLayoutIconContainerX
+            }>
+            <Icon name="x" size={15} color={colores.rojo} />
+          </TouchableOpacity>
         </View>
         <Text style={style.cartLayoutText}>Pg {page.number}</Text>
       </View>
@@ -56,6 +58,7 @@ const CartLayoutImage = ({
 
 const style = StyleSheet.create({
   cartLayoutImageMainContainer: {
+    position: 'relative',
     height: 150,
     width: '50%',
   },
@@ -81,6 +84,8 @@ const style = StyleSheet.create({
     position: 'absolute',
     top: 100,
     left: -5,
+    height: 18,
+
     width: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -93,6 +98,7 @@ const style = StyleSheet.create({
     position: 'absolute',
     top: 100,
     right: -3,
+    height: 18,
     width: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -104,7 +110,8 @@ const style = StyleSheet.create({
   cartLayoutIconContainerX: {
     position: 'absolute',
     top: -5,
-    left: -5,
+    left: -3,
+    height: 18,
     width: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -116,7 +123,8 @@ const style = StyleSheet.create({
   cartLayoutIconContainerXRight: {
     position: 'absolute',
     top: -5,
-    right: -3,
+    right: 0,
+    height: 18,
     width: 20,
     justifyContent: 'center',
     alignItems: 'center',
