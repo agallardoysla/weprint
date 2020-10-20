@@ -10,7 +10,7 @@ import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {colores} from '../../../constantes/Temas';
 
-const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
+const ImagenItem = ({node, onPressCheckImage, isSelected, hasMaxQuantity}) => {
   const [loading, setLoading] = useState(true);
   const [check, setCheck] = useState(isSelected);
 
@@ -18,8 +18,11 @@ const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
   const handleOnPressSelectImage = () => {
     const isCheck = !check;
 
-    onPressCheckImage(uri, isCheck);
-    setCheck(isCheck);
+    onPressCheckImage(node, isCheck);
+
+    if (!isCheck || (!hasMaxQuantity && isCheck)) {
+      setCheck(isCheck);
+    }
   };
 
   useEffect(() => {
@@ -42,7 +45,7 @@ const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
         )}
 
         <Image
-          source={{uri}}
+          source={{uri: node.image.uri}}
           style={style.imagenItem}
           resizeMode="cover"
           onLoadEnd={handleOnLoadEndImage}
