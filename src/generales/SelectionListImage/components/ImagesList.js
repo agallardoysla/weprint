@@ -40,58 +40,62 @@ const ImagesList = ({
     setLoading(false);
   }, [albumTitle, setEdges, setLoading]);
 
-  const getUrisFromEdges = useCallback(
-    () => edges.map((edge) => edge.node.image.uri),
-    [edges],
-  );
+  const getNodesFromEdges = useCallback(() => edges.map((edge) => edge.node), [
+    edges,
+  ]);
 
   useEffect(() => {
     loadImages();
   }, [loadImages]);
 
   useEffect(() => {
-    const imagesFromAlbum = getUrisFromEdges();
+    const nodes = getNodesFromEdges();
 
-    const isSelectedAll = imagesFromAlbum.every((imageFromAlbum) =>
-      selectedImages.some((selectedImage) => selectedImage === imageFromAlbum),
+    const isSelectedAll = nodes.every((node) =>
+      selectedImages.some(
+        (selectedImage) => selectedImage.uri === node.image.uri,
+      ),
     );
 
     setSelectAll(isSelectedAll);
-  }, [selectedImages, getUrisFromEdges, setSelectAll]);
+  }, [selectedImages, getNodesFromEdges, setSelectAll]);
 
-  const handleAddImage = (uri) => {
-    const images = concat(selectedImages, [uri]);
+  const handleAddImage = (node) => {
+    const images = concat(selectedImages, [{uri: node.image.uri, node}]);
     onSelectImages(images);
   };
 
-  const handleRemoveImage = (uri) => {
+  const handleRemoveImage = (node) => {
     const images = selectedImages.filter(
-      (selectedImage) => selectedImage !== uri,
+      (selectedImage) => selectedImage.uri !== node.image.uri,
     );
     onSelectImages(images);
   };
 
-  const handleOnPressCheckImage = (uri, isCheck) => {
+  const handleOnPressCheckImage = (node, isCheck) => {
     if (isCheck) {
-      handleAddImage(uri);
+      handleAddImage(node);
     } else {
-      handleRemoveImage(uri);
+      handleRemoveImage(node);
     }
   };
 
   const onSelectAll = () => {
-    const imagesFromAlbum = getUrisFromEdges();
+    const nodes = getNodesFromEdges();
+    const imagesFromAlbum = nodes.map((node) => ({
+      node,
+      uri: node.image.uri,
+    }));
+
     const images = concat(selectedImages, imagesFromAlbum);
     onSelectImages(uniq(images));
   };
 
   const onDeselectAll = () => {
-    const imagesFromAlbum = getUrisFromEdges();
+    const nodes = getNodesFromEdges();
     const images = selectedImages.filter(
       (selectedImage) =>
-        !imagesFromAlbum.some(
-          (imageFromAlbum) => imageFromAlbum === selectedImage,
-        ),
+        !nodes.some((node) => node.image.uri === selectedImage.uri),
     );
 
     onSelectImages(images);
@@ -106,15 +110,14 @@ const ImagesList = ({
   };
 
   const handleImageIsSelected = (uri) =>
-    selectedImages.some((selectedImage) => selectedImage === uri);
+    selectedImages.some((selectedImage) => selectedImage.uri === uri);
 
   const renderImage = ({item: edge}) => {
-    const uri = edge.node.image.uri;
-    const isSelected = handleImageIsSelected(uri);
+    const isSelected = handleImageIsSelected(edge.node.image.uri);
 
     return (
       <ImageItem
-        uri={edge.node.image.uri}
+        node={edge.node}
         isSelected={isSelected}
         hasMaxQuantity={hasMaxQuantity}
         onPressCheckImage={handleOnPressCheckImage}

@@ -74,7 +74,7 @@ const CartLayoutListImage = ({
         clearTimeout(timeoutId.current);
         timeoutId.current = setTimeout(() => {
           setShowDrag(true);
-        }, 900);
+        }, 200);
       },
       onPanResponderMove: (evt, gestureState) => {
         currentY.current = gestureState.moveY;
@@ -296,7 +296,7 @@ const CartLayoutListImage = ({
         ItemSeparatorComponent={renderSeparator}
         onScroll={handleOnScroll}
         onLayout={handleLayoutFlatlist}
-        scrollEventThrottle={20}
+        scrollEventThrottle={16}
         data={pages}
         numColumns={2}
         renderItem={renderPages}

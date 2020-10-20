@@ -32,11 +32,14 @@ const SelectionListImage = ({
     }
   };
 
-  const getImageToBase64 = (uri) => {
+  const getImageToBase64 = (selectedImage) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const base64 = await RNFetchBlob.fs.readFile(uri, 'base64');
-        resolve({uri, base64});
+        const base64 = await RNFetchBlob.fs.readFile(
+          selectedImage.uri,
+          'base64',
+        );
+        resolve({...selectedImage, base64});
       } catch (error) {
         reject(error);
       }
