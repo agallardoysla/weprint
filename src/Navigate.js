@@ -14,7 +14,7 @@ import Profile from './profile/containers/Profile';
 
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
-import Drafts from './profile/menuScreens/Drafts'
+import Drafts from './profile/menuScreens/Drafts';
 import Repositories from './profile/menuScreens/Repositories'
 import UploadRepository from './profile/menuScreens/UploadRepository'
 import RepositoryDescription from './profile/menuScreens/RepositoryDescription'
@@ -29,6 +29,9 @@ import Format from './format/containers/Format';
 import SelectImagen from './selectImagen/containers/SelectImagen';
 import CartLayout from './cartLayout/containers/CartLayout';
 import EditCartLayoutImage from './editCartLayoutImage/containers/EditCartLayoutImage';
+
+import Album from './profile/menuScreens/Album'
+import AlbumRequest from './profile/menuScreens/AlbumRequest'
 
 import {colores} from './constantes/Temas';
 
@@ -95,6 +98,7 @@ const ProfileNavigator = () => (
     <ProfileTab.Screen name="Profile" component={Profile} />
     <ProfileTab.Screen name="Policy" component={Policy} />
     <ProfileTab.Screen name="Drafts" component={Drafts} />
+    <ProfileTab.Screen name="Album" component={AlbumsTabScreen} />
     <ProfileTab.Screen name="Repositories" component={RepositoriesTabScreen} />
     <ProfileTab.Screen name="About" component={About} />
     <ProfileTab.Screen name="EditProfile" component={EditProfile} />
@@ -112,6 +116,18 @@ const RepositoriesTabScreen = () => (
     <RepositoriesTab.Screen name="UploadRepository" component={UploadRepository} />
     <RepositoriesTab.Screen name="RepositoryDescription" component={RepositoryDescription} />
   </RepositoriesTab.Navigator>
+);
+
+const AlbumsTab = createStackNavigator();
+const AlbumsTabScreen = () => (
+  <AlbumsTab.Navigator
+    initialRouteName="Album"
+    screenOptions={{
+      headerShown: false,
+    }}>
+    <AlbumsTab.Screen name="Album" component={Album} />
+    <AlbumsTab.Screen name="AlbumRequest" component={AlbumRequest} />
+  </AlbumsTab.Navigator>
 );
 
 const mapStateToProps = (state) => ({

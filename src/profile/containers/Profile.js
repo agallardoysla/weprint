@@ -49,7 +49,7 @@ function Profile({navigation, dispatch}) {
               name="Mis Albunes compartidos"
               icon="insert-photo"
               color="#5d58e0"
-              
+              onPressFunction={() => navigation.navigate('Album')}
             />
             <MenuItem 
               name="Mis repositorios" 

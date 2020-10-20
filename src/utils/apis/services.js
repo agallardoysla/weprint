@@ -56,29 +56,37 @@ export const del = async (uri) => {
     .catch((error) => console.log('error', error));
 };
 
-export const postFormData = async (uri, body) => {
-  let token = await getAuthorization();
+export const postUpload = async (uri, body) => {
+  let myHeaders = await getHeaders('form');
 
-  var myHeaders = new Headers();
-  
-  myHeaders.append('Authorization', `Bearer ${token}`);
-  let formData = new FormData()
-  formData.append('file', {
-    uri : body,
-    type: mime.getType(body),
-    name: body.split("/").pop()
-   }, body.split("/").pop());
-  
+  body = body.file;
+
+  const data = new FormData();
+  data.append('file', {
+    name: body.image.filename,
+    type: body.type,
+    uri:
+      Platform.OS === 'android'
+        ? body.image.uri
+        : body.image.uri.replace('file://', ''),
+  });
+  data.append('folder', 'user');
+
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
-    body: formData,
+    body: data,
     redirect: 'follow',
   };
 
-  fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
+  return fetch(`${BASE_API}${uri}`, requestOptions)
+    .then((response) => {
+      console.log('postUpload response', response);
+      return response.text();
+    })
+    .then((result) => {
+      return result;
+    })
     .catch((error) => console.log('error', error));
 };
 
@@ -96,11 +104,8 @@ export const post = async (uri, body) => {
     redirect: 'follow',
   };
 
-
-  fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => console.log(result))
-    .then((result) => console.log(result))
+  return fetch(`${BASE_API}${uri}`, requestOptions)
+    .then(async(response) => await response.json())
     .catch((error) => console.log('error', error));
 };
 
@@ -157,14 +162,15 @@ export const getAuthorization = () => {
   return null;
 };
 
-export const getHeaders = async () => {
+export const getHeaders = async (form) => {
   let token = await getAuthorization();
 
   var myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  myHeaders.append('Authorization', `Bearer ${token}`);
 
-  console.log('getHeaders', myHeaders);
+  myHeaders.append('Authorization', `Bearer ${token}`);
+  form === 'form'
+    ? myHeaders.append('Content-Type', 'multipart/form-data')
+    : myHeaders.append('Content-Type', 'application/json');
 
   return myHeaders;
 };
