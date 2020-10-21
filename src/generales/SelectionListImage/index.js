@@ -129,13 +129,14 @@ const style = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 8,
     width: '100%',
     alignItems: 'center',
   },
   button: {
     position: 'relative',
-    width: 400,
+    width: '80%',
+    marginHorizontal: '20%',
     paddingVertical: 10,
     alignItems: 'center',
     borderRadius: 290486,

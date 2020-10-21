@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {PureComponent, useEffect, useState, useCallback} from 'react';
 import {
   Text,
   View,
@@ -15,168 +15,232 @@ import Cargando from '../../Cargando';
 import ImageItem from './ImageItem';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
-const ImagesList = ({
-  albumTitle,
-  selectedImages,
-  minQuantity,
-  maxQuantity,
-  hasMaxQuantity,
-  onSelectImages,
-  onPressGoToAlbum,
-}) => {
-  const [edges, setEdges] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectAll, setSelectAll] = useState(false);
+class ImagesList extends PureComponent {
+  state = {
+    edges: [],
+    pageInfo: {
+      hasNextPage: true,
+      after: '0',
+    },
+    loading: false,
+    loadingAll: false,
+    selectAll: false,
+  };
 
-  const loadImages = useCallback(async () => {
-    const photos = await CameraRoll.getPhotos({
-      assetType: 'Photos',
-      first: 500,
-      groupName: albumTitle,
-      include: ['filename', 'location'],
-    });
+  loadImages = async () => {
+    const {albumTitle} = this.props;
+    const {edges, pageInfo, loading} = this.state;
 
-    setEdges(photos.edges);
-    setLoading(false);
-  }, [albumTitle, setEdges, setLoading]);
+    if (pageInfo.hasNextPage && !loading) {
+      this.setState({...this.state, loading: true});
 
-  const getNodesFromEdges = useCallback(() => edges.map((edge) => edge.node), [
-    edges,
-  ]);
+      const photos = await CameraRoll.getPhotos({
+        assetType: 'Photos',
+        first: 24,
+        after: pageInfo.after,
+        groupName: albumTitle,
+        include: ['filename'],
+      });
 
-  useEffect(() => {
-    loadImages();
-  }, [loadImages]);
+      const data = concat(edges, photos.edges);
 
-  useEffect(() => {
-    const nodes = getNodesFromEdges();
+      const nextPageInfo = {
+        after: photos.page_info.end_cursor,
+        hasNextPage: photos.page_info.has_next_page,
+      };
 
-    const isSelectedAll = nodes.every((node) =>
-      selectedImages.some(
-        (selectedImage) => selectedImage.uri === node.image.uri,
-      ),
+      this.setState({
+        ...this.state,
+        loading: false,
+        edges: data,
+        pageInfo: nextPageInfo,
+      });
+    }
+  };
+
+  getNodesFromEdges = () => this.state.edges.map((edge) => edge.node);
+
+  handleSelectedAll = () => {
+    const {selectedImages, albumTitle} = this.props;
+
+    const selectAll = selectedImages.some(
+      (selectedImage) => selectedImage.node.group_name === albumTitle,
     );
 
-    setSelectAll(isSelectedAll);
-  }, [selectedImages, getNodesFromEdges, setSelectAll]);
+    this.setState({...this.state, selectAll});
+  };
 
-  const handleAddImage = (node) => {
+  async componentDidMount() {
+    await this.loadImages();
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.edges !== this.props.edges) {
+      this.handleSelectedAll();
+    }
+  }
+
+  handleAddImage = (node) => {
+    const {selectedImages, onSelectImages} = this.props;
     const images = concat(selectedImages, [{uri: node.image.uri, node}]);
     onSelectImages(images);
   };
 
-  const handleRemoveImage = (node) => {
+  handleRemoveImage = (node) => {
+    const {selectedImages, onSelectImages} = this.props;
     const images = selectedImages.filter(
       (selectedImage) => selectedImage.uri !== node.image.uri,
     );
+
     onSelectImages(images);
   };
 
-  const handleOnPressCheckImage = (node, isCheck) => {
+  handleOnPressCheckImage = (node, isCheck) => {
     if (isCheck) {
-      handleAddImage(node);
+      this.handleAddImage(node);
     } else {
-      handleRemoveImage(node);
+      this.handleRemoveImage(node);
     }
   };
 
-  const onSelectAll = () => {
-    const nodes = getNodesFromEdges();
+  onSelectAll = () => {
+    const {selectedImages, minQuantity, onSelectImages} = this.props;
+    const offset = minQuantity - selectedImages.length;
+    const nodes = this.getNodesFromEdges().slice(0, offset);
+
     const imagesFromAlbum = nodes.map((node) => ({
       node,
       uri: node.image.uri,
     }));
 
     const images = concat(selectedImages, imagesFromAlbum);
+
     onSelectImages(uniq(images));
   };
 
-  const onDeselectAll = () => {
-    const nodes = getNodesFromEdges();
+  onDeselectAll = () => {
+    const {selectedImages, onSelectImages, albumTitle} = this.props;
     const images = selectedImages.filter(
-      (selectedImage) =>
-        !nodes.some((node) => node.image.uri === selectedImage.uri),
+      (selectedImage) => selectedImage.node.group_name !== albumTitle,
     );
 
     onSelectImages(images);
   };
 
-  const handleOnPressSelectAll = () => {
+  handleOnPressSelectAll = () => {
+    const {selectAll} = this.state;
+
     if (selectAll) {
-      onDeselectAll();
+      this.onDeselectAll();
     } else {
-      onSelectAll();
+      this.onSelectAll();
     }
   };
 
-  const handleImageIsSelected = (uri) =>
-    selectedImages.some((selectedImage) => selectedImage.uri === uri);
+  handleImageIsSelected = (uri) => {
+    const {selectedImages} = this.props;
+    return selectedImages.some((selectedImage) => selectedImage.uri === uri);
+  };
 
-  const renderImage = ({item: edge}) => {
-    const isSelected = handleImageIsSelected(edge.node.image.uri);
+  disabledButtonAll = () => {
+    const {minQuantity, selectedImages} = this.props;
+    const {selectAll} = this.state;
+
+    return selectedImages.length >= minQuantity && !selectAll;
+  };
+
+  renderImage = ({item: edge}) => {
+    const {hasMaxQuantity} = this.props;
+    const isSelected = this.handleImageIsSelected(edge.node.image.uri);
 
     return (
       <ImageItem
         node={edge.node}
         isSelected={isSelected}
         hasMaxQuantity={hasMaxQuantity}
-        onPressCheckImage={handleOnPressCheckImage}
+        onPressCheckImage={this.handleOnPressCheckImage}
       />
     );
   };
 
-  return (
-    <View style={style.imagesListMainContainer}>
-      <TouchableOpacity
-        style={style.imagesListHeader}
-        onPress={onPressGoToAlbum}>
-        <Icon name="arrow-left" size={27} color={colores.negro} />
-        <View style={style.imagesListHeaderTextContainer}>
-          <View>
-            <Text style={style.imagesListHeaderText}> Imágenes</Text>
-          </View>
-          {minQuantity > 0 && (
-            <View>
-              <Text style={style.imagesListHeaderText}>
-                {selectedImages.length}/{minQuantity}
-              </Text>
-            </View>
-          )}
-        </View>
-      </TouchableOpacity>
-      {edges.length > 0 && (
-        <View style={style.imageListButtonContainer}>
-          <View>
-            <Text style={style.imagesListAlbumText}>{albumTitle}</Text>
-          </View>
-          {maxQuantity === 0 && (
-            <TouchableHighlight
-              style={style.imagesListButton}
-              onPress={handleOnPressSelectAll}
-              underlayColor={colores.blanco}>
-              <Text style={style.imagesListButtonText}>
-                {selectAll ? 'Deseleccionar' : 'Seleccionar todo'}
-              </Text>
-            </TouchableHighlight>
-          )}
-        </View>
-      )}
+  renderFooter = () =>
+    this.state.loading ? (
+      <Cargando titulo="" loaderColor={colores.logo} />
+    ) : null;
 
-      <View style={style.imagesListContainer}>
-        {loading ? (
-          <Cargando titulo="" loaderColor={colores.logo} />
-        ) : (
-          <FlatList
-            data={edges}
-            numColumns={3}
-            renderItem={renderImage}
-            keyExtractor={(edge) => edge.node.image.uri}
-          />
+  render() {
+    const {
+      albumTitle,
+      minQuantity,
+      maxQuantity,
+      hasMaxQuantity,
+      selectedImages,
+      onPressGoToAlbum,
+    } = this.props;
+
+    const {edges, selectAll} = this.state;
+
+    return (
+      <View style={style.imagesListMainContainer}>
+        <TouchableOpacity
+          style={style.imagesListHeader}
+          onPress={onPressGoToAlbum}>
+          <Icon name="arrow-left" size={27} color={colores.negro} />
+          <View style={style.imagesListHeaderTextContainer}>
+            <View>
+              <Text style={style.imagesListHeaderText}> Imágenes</Text>
+            </View>
+            {minQuantity > 0 && (
+              <View>
+                <Text style={style.imagesListHeaderText}>
+                  {selectedImages.length}/{minQuantity}
+                </Text>
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
+        {edges.length > 0 && (
+          <View style={style.imageListButtonContainer}>
+            <View>
+              <Text style={style.imagesListAlbumText}>{albumTitle}</Text>
+            </View>
+            {maxQuantity === 0 && (
+              <TouchableHighlight
+                disabled={this.disabledButtonAll()}
+                style={{
+                  ...style.imagesListButton,
+                  opacity: this.disabledButtonAll() ? 0.5 : 1,
+                }}
+                onPress={this.handleOnPressSelectAll}
+                underlayColor={colores.blanco}>
+                <Text style={style.imagesListButtonText}>
+                  {selectAll ? 'Deseleccionar' : 'Seleccionar todo'}
+                </Text>
+              </TouchableHighlight>
+            )}
+          </View>
         )}
+
+        <View style={style.imagesListContainer}>
+          {false ? (
+            <Cargando titulo="" loaderColor={colores.logo} />
+          ) : (
+            <FlatList
+              data={edges}
+              numColumns={3}
+              renderItem={this.renderImage}
+              hasMaxQuantity={hasMaxQuantity}
+              keyExtractor={(edge) => edge.node.image.uri}
+              onEndReachedThreshold={0.4}
+              onEndReached={this.loadImages}
+              ListFooterComponent={this.renderFooter}
+            />
+          )}
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 const style = StyleSheet.create({
   imagesListMainContainer: {
