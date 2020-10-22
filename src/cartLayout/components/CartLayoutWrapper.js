@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {colores} from '../../constantes/Temas';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
+import {colores} from '../../constantes/Temas';
+import GeneralImage from '../../generales/GeneralImage';
 
 const defaultImg = require('../../assets/img/default.jpg');
 
@@ -13,14 +14,10 @@ const BasicLayout = ({getSelectedImages, onPressImage}) => {
 
   return (
     <TouchableOpacity style={style.basicWrapper} onPress={onPressImage}>
-      <Image
-        style={style.imageSize}
-        source={
-          isNull(piece.file)
-            ? defaultImg
-            : {uri: `data:image/gif;base64,${piece.file}`}
-        }
-        resizeMode="cover"
+      <GeneralImage
+        base64={piece.file.base64}
+        uri={piece.file.uri}
+        styleImg={style.imageSize}
       />
     </TouchableOpacity>
   );
@@ -37,14 +34,10 @@ const TwoLayouts = ({getSelectedImages, onPressImage}) => {
             style={style.largeWrapper}
             onPress={onPressImage}
             key={piece.order.toString()}>
-            <Image
-              style={style.imageSize}
-              source={
-                isNull(piece.file)
-                  ? defaultImg
-                  : {uri: `data:image/gif;base64,${piece.file}`}
-              }
-              resizeMode="cover"
+            <GeneralImage
+              base64={piece.file.base64}
+              uri={piece.file.uri}
+              styleImg={style.imageSize}
             />
           </TouchableOpacity>
         );
@@ -61,14 +54,10 @@ const ThirdLayout = ({getSelectedImages, onPressImage}) => {
   return (
     <View style={style.twoColumnsWrapper}>
       <TouchableOpacity style={style.largeWrapper} onPress={onPressImage}>
-        <Image
-          style={style.imageSize}
-          source={
-            isNull(firstColumnPiece.file)
-              ? defaultImg
-              : {uri: `data:image/gif;base64,${firstColumnPiece.file}`}
-          }
-          resizeMode="cover"
+        <GeneralImage
+          base64={firstColumnPiece.file.base64}
+          uri={firstColumnPiece.file.uri}
+          styleImg={style.imageSize}
         />
       </TouchableOpacity>
       <View style={style.largeWrapper}>
@@ -77,14 +66,10 @@ const ThirdLayout = ({getSelectedImages, onPressImage}) => {
             style={style.minWrapper}
             onPress={onPressImage}
             key={piece.order.toString()}>
-            <Image
-              style={style.imageSize}
-              source={
-                isNull(piece.file)
-                  ? defaultImg
-                  : {uri: `data:image/gif;base64,${piece.file}`}
-              }
-              resizeMode="cover"
+            <GeneralImage
+              base64={piece.file.base64}
+              uri={piece.file.uri}
+              styleImg={style.imageSize}
             />
           </TouchableOpacity>
         ))}
@@ -106,27 +91,19 @@ const FourthLayout = ({getSelectedImages, onPressImage}) => {
             style={style.squareWrapper}
             onPress={onPressImage}
             key={piece.order.toString()}>
-            <Image
-              style={style.imageSize}
-              source={
-                isNull(piece.file)
-                  ? defaultImg
-                  : {uri: `data:image/gif;base64,${piece.file}`}
-              }
-              resizeMode="cover"
+            <GeneralImage
+              base64={piece.file.base64}
+              uri={piece.file.uri}
+              styleImg={style.imageSize}
             />
           </TouchableOpacity>
         ))}
       </View>
       <TouchableOpacity style={style.largeWrapper} onPress={onPressImage}>
-        <Image
-          style={style.imageSize}
-          source={
-            isNull(secondColumnPiece.file)
-              ? defaultImg
-              : {uri: `data:image/gif;base64,${secondColumnPiece.file}`}
-          }
-          resizeMode="cover"
+        <GeneralImage
+          base64={secondColumnPiece.file.base64}
+          uri={secondColumnPiece.file.uri}
+          styleImg={style.imageSize}
         />
       </TouchableOpacity>
     </View>
@@ -180,8 +157,9 @@ const FifthLayout = ({getSelectedImages, onPressImage}) => {
   );
 };
 
-const CartLayoutWrapper = ({page, onPressImage}) => {
-  const getSelectedImages = (amountImagesNeeded) => {
+class CartLayoutWrapper extends PureComponent {
+  getSelectedImages = (amountImagesNeeded) => {
+    const {page} = this.props;
     if (page.pieces.length < amountImagesNeeded) {
       const currentPieces = page.pieces.slice(0, amountImagesNeeded);
 
@@ -201,34 +179,35 @@ const CartLayoutWrapper = ({page, onPressImage}) => {
     return page.pieces.slice(0, amountImagesNeeded);
   };
 
-  const renderWrapper = () => {
-    const {layout_id: layoutId, pieces} = page;
+  renderWrapper = () => {
+    const {onPressImage, page} = this.props;
+    const {layout_id: layoutId} = page;
 
     if (isNull(layoutId) || layoutId === 1) {
       return (
         <BasicLayout
-          getSelectedImages={getSelectedImages}
+          getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
         />
       );
     } else if (layoutId === 2) {
       return (
         <TwoLayouts
-          getSelectedImages={getSelectedImages}
+          getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
         />
       );
     } else if (layoutId === 3) {
       return (
         <ThirdLayout
-          getSelectedImages={getSelectedImages}
+          getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
         />
       );
     } else if (layoutId === 4) {
       return (
         <FourthLayout
-          getSelectedImages={getSelectedImages}
+          getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
         />
       );
@@ -242,8 +221,10 @@ const CartLayoutWrapper = ({page, onPressImage}) => {
     }
   };
 
-  return <View style={style.mainWrapper}>{renderWrapper()}</View>;
-};
+  render() {
+    return <View style={style.mainWrapper}>{this.renderWrapper()}</View>;
+  }
+}
 
 const style = StyleSheet.create({
   mainWrapper: {

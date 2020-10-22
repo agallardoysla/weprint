@@ -32,7 +32,7 @@ function CartLayout({
       pieces: [
         {
           order: 0,
-          file: img.base64,
+          file: {...img},
         },
       ],
     }));
