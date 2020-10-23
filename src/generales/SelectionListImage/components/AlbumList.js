@@ -141,6 +141,7 @@ const AlbumList = ({
       {!loading && albums.length && (
         <View style={style.albumListAlbumContainer}>
           <FlatList
+            contentContainerStyle={style.albumListContent}
             data={albums}
             numColumns={2}
             renderItem={renderAlbums}
@@ -200,6 +201,9 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.blanco,
+  },
+  albumListContent: {
+    paddingBottom: 40,
   },
   albumListSocialMediaContainer: {
     marginHorizontal: 20,
