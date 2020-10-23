@@ -27,9 +27,9 @@ export const RequestView = ({username, fullName, onPressFunction}) => (
         }}
       />
     </View>
-    <View style={{marginLeft: 10}}>
+    <View style={{marginLeft: 10, width: '45%'}}>
       <Text style={{...estiloDeLetra.negrita, fontSize: RFPercentage(1.75)}}>
-        Fiesta de cumpleaños
+        Insertar Nombre
       </Text>
       <Text
         style={{

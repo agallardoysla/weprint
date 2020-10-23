@@ -20,8 +20,8 @@ function SelectImagen({dispatch, navigation, format, route}) {
     dispatch(actions.actualizarImagenes(storageId, images));
 
     navigation.navigate('CartLayout', {
-      storageId,
-      formatId: format.id,
+      storageId,            //formatId
+      formatId: format.id, //cartId
     });
   };
 

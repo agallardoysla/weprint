@@ -21,6 +21,9 @@ function Profile({navigation, dispatch}) {
       setLoading(false)
     });
   }, [])
+
+  console.log(userData)
+
   return (
     <Container>
       <CargandoModal title="Cargando" show={loading} />

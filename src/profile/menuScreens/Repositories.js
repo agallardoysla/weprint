@@ -47,6 +47,14 @@ function Repositories({route, cover, navigation}) {
       {cancelable: false},
     );
   };
+
+  const handleGoToRepository = (id, name, code) => {
+    navigation.navigate('RepositoryDescription', {
+      repoName: name,
+      repoCode: code,
+      repoId: id
+  })
+  }
   console.log(route.params);
   const photo = route.params;
   return (
@@ -80,7 +88,7 @@ function Repositories({route, cover, navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("RepositoryRequest")}>
           <View
             style={{
               padding: 20,
@@ -113,6 +121,13 @@ function Repositories({route, cover, navigation}) {
                   coverPhoto={repository.lastImage}
                   available={repository.available === 1 ? true : false}
                   onPressDelete={() => handleDeleteRepository(repository.id)}
+                  onPressFunction={() =>
+                    handleGoToRepository(
+                      repository.id,
+                      repository.name,
+                      repository.code,
+                    )
+                  }
                 />
               )}
           </View>

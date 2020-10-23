@@ -6,6 +6,6 @@ export const get_format_by_project = async (projectId) =>
   get(`/project/${projectId}/format`);
 
 
-export const upload_image = async (body) => {
-  return postUpload('/upload', body);
+export const upload_image = async (file, repoName) => {
+  return postUpload('/upload', file, repoName);
 };

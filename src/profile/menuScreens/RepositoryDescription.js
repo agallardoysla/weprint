@@ -18,17 +18,20 @@ import SelectionListImage from '../../generales/SelectionListImage';
 import {ImageRepository} from './components/ImageRepository';
 import {upload_image} from '../../utils/apis/project_api';
 import CargandoModal from '../../generales/CargandoModal';
+import {get_pieces_from_repository} from '../../utils/apis/repository_api';
+import navigation from '../../redux/reducer/navigation';
 
-function RepositoryDescription({route}) {
-  const [images, setImages] = useState(null);
+function RepositoryDescription({route, navigation}) {
+  const [imagesFromRepo, setImagesFromRepo] = useState(null);
+  const [imagesToSend, setImagesToSend] = useState(null);
   const [sendImages, setSendImages] = useState(false);
   const [showListImage, setShowListImage] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(route.params.repoId ? true : false);
 
   console.log(route)
 
   const handleDeleteImage = (index) => {
-    const newImageArray = images;
+    const newImageArray = imagesToSend;
     Alert.alert(
       'Borrar Imagen',
       'Deseas eliminar esta imagen de tu repositorio ?',
@@ -40,7 +43,7 @@ function RepositoryDescription({route}) {
         {
           text: 'Aceptar',
           onPress: () => {
-            setImages(newImageArray.filter((val, idx) => idx !== index));
+            setImagesToSend(newImageArray.filter((val, idx) => idx !== index));
           },
         },
       ],
@@ -49,18 +52,28 @@ function RepositoryDescription({route}) {
   };
 
   useEffect(() => {
-    if (images && images.length === 0) {
+    if (imagesToSend && imagesToSend.length === 0) {
       setSendImages(false);
-      setImages(null);
+      setImagesToSend(null);
     }
-  }, [images]);
+  }, [imagesToSend]);
+
+  useEffect(() => {
+    route.params.repoId &&
+      get_pieces_from_repository(route.params.repoId).then((data) => {
+        setImagesFromRepo(data.data);
+        setLoading(false);
+      });
+  }, [loading]);
 
   const handleUploadToRepository = () => {
-    const uri = images[0].uri;
-    //folder: "user",
-    //repository: route.params.repoName
-
-    console.log(images)
+    const repositoryCode = route.params.repoCode;
+    setLoading(true);
+    imagesToSend.map((image, index) => {
+      upload_image({file: image.node}, repositoryCode);
+    });
+    setLoading(false);
+    setSendImages(false);
   };
 
   return (
@@ -94,7 +107,12 @@ function RepositoryDescription({route}) {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('RepositoryRequest', {
+                  repoId: route.params.repoId,
+                })
+              }>
               <View
                 style={{
                   padding: 20,
@@ -154,8 +172,17 @@ function RepositoryDescription({route}) {
               justifyContent: 'flex-start',
               flexWrap: 'wrap',
             }}>
-            {images &&
-              images.map((image, index) => (
+            {imagesFromRepo &&
+              imagesFromRepo.map((image, index) => (
+                <ImageRepository
+                  key={index}
+                  imageLink={image.file}
+                  base64={false}
+                  deleteView={false}
+                />
+              ))}
+            {imagesToSend &&
+              imagesToSend.map((image, index) => (
                 <ImageRepository
                   key={index}
                   imageLink={image.base64}
@@ -172,7 +199,7 @@ function RepositoryDescription({route}) {
             minQuantity={1}
             onResponse={(images) => {
               setShowListImage(false);
-              setImages(images);
+              setImagesToSend(images);
               setSendImages(true);
             }}
             onPressGoToBack={() => setShowListImage(false)}

@@ -30,9 +30,9 @@ function UploadRepository({navigation}) {
   const [error, setError] = useState(false)
 
   const createRepositoryHandle = async () => {
-    const {repoName, coverPage} = data;
+    const {repoName} = data;
 
-    if (!data.repoName && !data.coverPage) {
+    if (!data.repoName) {
       setValidateData(false);
       return false;
     }
@@ -43,12 +43,13 @@ function UploadRepository({navigation}) {
     if (validateData === true) {
       setloading(true);
       create_repository(body).then((result) => {
+        console.log(result)
         setloading(false)
         result.errors ? setError(true)
           : navigation.navigate('RepositoryDescription', {
               repoName: data.repoName,
               repoCode: result.data[0].code,
-        
+              repoId: result.data[0].id,
         });
     })
   }};

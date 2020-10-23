@@ -36,8 +36,8 @@ export const put = async (uri, body) => {
     redirect: 'follow',
   };
 
-  fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.json())
+  return fetch(`${BASE_API}${uri}`, requestOptions)
+    .then(async(response) => await response.json())
     .then((response) => console.log(response))
     .catch((error) => console.log('error', error));
 };
@@ -56,7 +56,7 @@ export const del = async (uri) => {
     .catch((error) => console.log('error', error));
 };
 
-export const postUpload = async (uri, body) => {
+export const postUpload = async (uri, body, repository) => {
   let myHeaders = await getHeaders('form');
 
   body = body.file;
@@ -71,6 +71,7 @@ export const postUpload = async (uri, body) => {
         : body.image.uri.replace('file://', ''),
   });
   data.append('folder', 'user');
+  repository && data.append('repository', repository);
 
   var requestOptions = {
     method: 'POST',

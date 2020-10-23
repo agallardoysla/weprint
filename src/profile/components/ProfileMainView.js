@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 export const ProfileMainView = ({data, navigation}) => {
   console.log(nickname)
 
-  const {nickname, district_name, country_name, photo, birthdate} = data
+  const {nickname, district_name, country_name, avatar, birthdate} = data
 
   function getAge(dateString) {
       var today = new Date();
@@ -34,7 +34,7 @@ export const ProfileMainView = ({data, navigation}) => {
         justifyContent: 'center',
       }}>
       <Image
-        source={{uri: photo}}
+        source={{uri: avatar}}
         style={{
           height: 90,
           width: 90,

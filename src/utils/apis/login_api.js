@@ -42,7 +42,3 @@ export const update_user_api = async (body) => {
 export const get_profile_api = async () => {
   return get('/profile');
 };
-
-export const del_repository_api = async () => {
-  del('/repository/1');
-};

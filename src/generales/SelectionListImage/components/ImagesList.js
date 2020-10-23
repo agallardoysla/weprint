@@ -14,7 +14,6 @@ import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Cargando from '../../Cargando';
 import ImageItem from './ImageItem';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import {upload_image} from '../../../utils/apis/project_api';
 
 const ImagesList = ({
   albumTitle,
