@@ -1,18 +1,11 @@
-import React, {
-  PureComponent,
-  createRef,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, {PureComponent, createRef} from 'react';
 import {
   FlatList,
   StyleSheet,
   Animated,
-  Image,
   View,
   TouchableOpacity,
+  TouchableHighlight,
   PanResponder,
   Dimensions,
 } from 'react-native';
@@ -218,6 +211,29 @@ class CartLayoutListImage extends PureComponent {
     this.headerHeight = e.nativeEvent.layout.height;
   };
 
+  handleAddPage = (numberPage) => {
+    const {onSavePages} = this.props;
+    const {pages} = this.state;
+
+    const defaultPage = {
+      layout_id: null,
+      number: numberPage,
+      pieces: [
+        {order: numberPage, file: {uri: null, base64: null, node: null}},
+      ],
+    };
+
+    const selectedPages = concat(pages);
+    selectedPages.splice(numberPage, 0, defaultPage);
+
+    const orderedPages = selectedPages.map((page, index) => ({
+      ...page,
+      number: index,
+    }));
+
+    onSavePages(orderedPages);
+  };
+
   handleDeletePage = (numberPage) => {
     const {onSavePages} = this.props;
     const {pages} = this.state;
@@ -252,6 +268,23 @@ class CartLayoutListImage extends PureComponent {
     return column === 0 ? firstColumnIndex : secondColumnIndex;
   };
 
+  renderSeparator = ({leadingItem}) => {
+    const handleOnPress = () => {
+      this.handleAddPage(leadingItem[1].number);
+    };
+
+    return (
+      <View style={{marginLeft: 4}}>
+        <TouchableHighlight
+          underlayColor={'rgba(0, 0, 0, 0.5)'}
+          activeOpacity={0.2}
+          style={style.cartLayoutIconContainer}
+          onPress={handleOnPress}>
+          <Icon name="plus" size={15} color={colores.verde} />
+        </TouchableHighlight>
+      </View>
+    );
+  };
   renderPages = ({item: page}) => {
     const {onGoToEditCartImage} = this.props;
 
@@ -296,7 +329,7 @@ class CartLayoutListImage extends PureComponent {
               onHeaderHeight={this.handleOnHeaderHeight}
             />
           }
-          ///ItemSeparatorComponent={renderSeparator}
+          ItemSeparatorComponent={this.renderSeparator}
           onScroll={this.handleOnScroll}
           onLayout={this.handleLayoutFlatlist}
           scrollEventThrottle={16}
@@ -639,14 +672,15 @@ const style = StyleSheet.create({
   cartLayoutIconContainer: {
     position: 'absolute',
     bottom: 35,
-    width: 20,
+    width: 25,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 999,
+    zIndex: 999,
   },
 });
 

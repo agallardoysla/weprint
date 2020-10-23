@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableHighlight,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -61,11 +60,12 @@ class CartLayoutImage extends PureComponent {
                     ...style.modalOptionItem,
                     borderRightWidth: 0.5,
                     borderRightColor: colores.grisFormatoAlbum,
+                    borderBottomLeftRadius: 5,
                   }}>
                   <Text style={{color: colores.azulMedio}}>No</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={style.modalOptionItem}
+                  style={{...style.modalOptionItem, borderBottomRightRadius: 5}}
                   onPress={this.handleOnPressDelete}>
                   <Text style={{color: colores.rojo}}>Eliminar</Text>
                 </TouchableOpacity>
@@ -89,17 +89,17 @@ class CartLayoutImage extends PureComponent {
             }>
             <Icon name="move" size={15} color={colores.gris} />
           </View>
+          <TouchableHighlight
+            underlayColor={colores.blanco}
+            onPress={this.handleToggleModal}
+            style={
+              this.pageIsOdd()
+                ? style.cartLayoutIconContainerXRight
+                : style.cartLayoutIconContainerX
+            }>
+            <Icon name="x" size={15} color={colores.rojo} />
+          </TouchableHighlight>
         </View>
-        <TouchableHighlight
-          underlayColor={colores.blanco}
-          onPress={this.handleToggleModal}
-          style={
-            this.pageIsOdd()
-              ? style.cartLayoutIconContainerXRight
-              : style.cartLayoutIconContainerX
-          }>
-          <Icon name="x" size={15} color={colores.rojo} />
-        </TouchableHighlight>
       </>
     );
   }
@@ -123,9 +123,8 @@ const style = StyleSheet.create({
   cartLayoutIconContainer: {
     position: 'absolute',
     top: 100,
-    left: -5,
+    left: 0,
     height: 18,
-
     width: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -137,7 +136,7 @@ const style = StyleSheet.create({
   cartLayoutIconContainerRight: {
     position: 'absolute',
     top: 100,
-    right: -3,
+    right: 0,
     height: 18,
     width: 20,
     justifyContent: 'center',
@@ -145,12 +144,12 @@ const style = StyleSheet.create({
     backgroundColor: '#F6F8FA',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 4,
+    elevation: 1,
   },
   cartLayoutIconContainerX: {
     position: 'absolute',
     top: -5,
-    left: -3,
+    left: 0,
     height: 18,
     width: 20,
     justifyContent: 'center',
@@ -158,7 +157,8 @@ const style = StyleSheet.create({
     backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 4,
+    elevation: 999,
+    zIndex: 999,
   },
   cartLayoutIconContainerXRight: {
     position: 'absolute',
@@ -171,7 +171,8 @@ const style = StyleSheet.create({
     backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 4,
+    elevation: 999,
+    zIndex: 999,
   },
   cartLayoutText: {
     marginTop: 5,
