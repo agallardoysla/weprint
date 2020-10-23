@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -41,6 +42,8 @@ class ImagenItem extends PureComponent {
 
     if (!check || (!hasMaxQuantity && check)) {
       this.setState({...this.state, check});
+    } else {
+      Alert.alert(`Ya tiene el máximo de imágenes permitidas`);
     }
   };
 

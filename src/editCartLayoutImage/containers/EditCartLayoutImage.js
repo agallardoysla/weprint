@@ -25,7 +25,7 @@ function EditCartLayoutImage({
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [photoEdit, setPhotoEdit] = useState('');
+  const [photoEdit, setPhotoEdit] = useState(null);
   const [selectedPages, setSelectedPages] = useState(
     concat(preSelectedCart.pages),
   );
@@ -107,14 +107,14 @@ function EditCartLayoutImage({
     setSelectedLayout(layoutId);
   };
 
-  const handleResponseImage = (images) => {
-    const prevImages = selectedPage.pieces.filter(
-      (piece) => !isNull(piece.file),
+  const handleResponseImage = (newPieces) => {
+    const prevPieces = selectedPage.pieces.filter(
+      (piece) => !isNull(piece.file.uri),
     );
-    const newImages = images.map((img) => ({file: img.base64}));
-    const selectedImages = concat(prevImages, newImages);
+    const fusedPieces = newPieces.map((piece) => ({file: {...piece}}));
+    const selectedPieces = concat(prevPieces, fusedPieces);
 
-    const pieces = selectedImages.map((piece, index) => ({
+    const pieces = selectedPieces.map((piece, index) => ({
       ...piece,
       order: index,
     }));
@@ -123,27 +123,32 @@ function EditCartLayoutImage({
     handleToggleListImage();
   };
 
-  const handleOnEditPhoto = (file) => {
+  const handleOnEditPhoto = async (file) => {
     const selectedPhoto = selectedPage.pieces.find(
-      (piece) => piece.file === file,
+      (piece) => piece.file.uri === file.uri,
     );
 
-    setPhotoEdit(selectedPhoto.file);
+    const base64 = `data:image/gif;base64,${selectedPhoto.file.base64}`;
+    const uriExits = await RNFetchBlob.fs.exists(selectedPhoto.file.uri);
+
+    const source = uriExits ? selectedPhoto.file.uri : base64;
+
+    setPhotoEdit({source, uri: selectedPhoto.file.uri});
     setShowEdit(true);
   };
 
   const handleCancelEditPhoto = () => {
-    setPhotoEdit('');
+    setPhotoEdit(null);
     setShowEdit(false);
   };
 
   const handleExport = async (result) => {
     const position = selectedPage.pieces.findIndex(
-      (piece) => piece.file === photoEdit,
+      (piece) => piece.file.uri === photoEdit.uri,
     );
     const base64 = await RNFetchBlob.fs.readFile(result.image, 'base64');
     const pieces = concat(selectedPage.pieces);
-    pieces[position] = {...pieces[position], file: base64};
+    pieces[position] = {...pieces[position], file: {base64, uri: result.image}};
 
     handleUpdatePage(pieces);
     setShowEdit(false);
@@ -157,14 +162,34 @@ function EditCartLayoutImage({
   };
 
   const handleSaveChanges = () => {
+    const pages = selectedPages.map((page) => {
+      const pieces = getSelectedPieces(page.layout_id, page.pieces);
+      return {
+        ...page,
+        pieces,
+      };
+    });
+
     dispatch(
       actions.agregarCartPreseleccionado(route.params.storageId, {
         ...preSelectedCart,
-        pages: selectedPages,
+        pages,
       }),
     );
 
     navigation.goBack();
+  };
+
+  const getSelectedPieces = (layoutId, pieces) => {
+    if (!layoutId || layoutId === 1) {
+      return pieces.slice(0, 1);
+    } else if (layoutId === 2) {
+      return pieces.slice(0, 2);
+    } else if (layoutId === 3 || layoutId === 5) {
+      return pieces.slice(0, 4);
+    } else if (layoutId === 4) {
+      return pieces.slice(0, 3);
+    }
   };
 
   const handleOnPressDelete = () => handleUpdatePage([]);
@@ -192,7 +217,7 @@ function EditCartLayoutImage({
         <View style={style.editCartLayoutMainContainer}>
           <PhotoEditorModal
             visible={showEdit}
-            image={`data:image/gif;base64,${photoEdit}`}
+            image={photoEdit && photoEdit.source}
             onCancel={handleCancelEditPhoto}
             onExport={handleExport}
           />

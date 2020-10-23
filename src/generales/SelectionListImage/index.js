@@ -68,10 +68,6 @@ const SelectionListImage = ({
     if (!loading) {
       if (!hasMaxQuantity || images.length < selectedImages.length) {
         setSelectedImages(images);
-      } else {
-        Alert.alert(
-          `Solo tiene un máximo permitido de ${maxQuantity} imágenes`,
-        );
       }
     }
   };

@@ -34,7 +34,6 @@ const GeneralImage = ({styleImg, uri, base64}) => {
       <Image
         style={styleImg}
         source={source}
-        //defaultSource={defaultImg}
         resizeMode="cover"
         onLoadEnd={handleLoadEnd}
         onError={handleOnError}

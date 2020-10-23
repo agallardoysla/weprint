@@ -1,12 +1,10 @@
-import React, {PureComponent} from 'react';
-import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
+import React, {Component} from 'react';
+import {TouchableOpacity, View, StyleSheet, Text} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
 import {colores} from '../../constantes/Temas';
 import GeneralImage from '../../generales/GeneralImage';
-
-const defaultImg = require('../../assets/img/default.jpg');
 
 const BasicLayout = ({getSelectedImages, onPressImage}) => {
   const pieces = getSelectedImages(1);
@@ -16,7 +14,7 @@ const BasicLayout = ({getSelectedImages, onPressImage}) => {
     <TouchableOpacity style={style.basicWrapper} onPress={onPressImage}>
       <GeneralImage
         base64={piece.file.base64}
-        uri={piece.file.uri}
+        uri={piece.file.base64}
         styleImg={style.imageSize}
       />
     </TouchableOpacity>
@@ -28,7 +26,28 @@ const TwoLayouts = ({getSelectedImages, onPressImage}) => {
 
   return (
     <View style={style.twoColumnsWrapper}>
-      {pieces.map((piece) => {
+      <TouchableOpacity
+        style={style.largeWrapper}
+        onPress={onPressImage}
+        key={pieces[0].order.toString()}>
+        <GeneralImage
+          base64={pieces[0].file.base64}
+          uri={pieces[0].file.uri}
+          styleImg={style.imageSize}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={style.largeWrapper}
+        onPress={onPressImage}
+        key={pieces[1].order.toString()}>
+        <GeneralImage
+          base64={pieces[1].file.base64}
+          uri={pieces[1].file.uri}
+          styleImg={style.imageSize}
+        />
+      </TouchableOpacity>
+
+      {/*pieces.map((piece) => {
         return (
           <TouchableOpacity
             style={style.largeWrapper}
@@ -41,7 +60,7 @@ const TwoLayouts = ({getSelectedImages, onPressImage}) => {
             />
           </TouchableOpacity>
         );
-      })}
+      })*/}
     </View>
   );
 };
@@ -123,14 +142,10 @@ const FifthLayout = ({getSelectedImages, onPressImage}) => {
             style={style.squareWrapper}
             onPress={onPressImage}
             key={piece.order.toString()}>
-            <Image
-              style={style.imageSize}
-              source={
-                isNull(piece.file)
-                  ? defaultImg
-                  : {uri: `data:image/gif;base64,${piece.file}`}
-              }
-              resizeMode="cover"
+            <GeneralImage
+              base64={piece.file.base64}
+              uri={piece.file.uri}
+              styleImg={style.imageSize}
             />
           </TouchableOpacity>
         ))}
@@ -141,14 +156,10 @@ const FifthLayout = ({getSelectedImages, onPressImage}) => {
             style={style.squareWrapper}
             onPress={onPressImage}
             key={piece.order.toString()}>
-            <Image
-              style={style.imageSize}
-              source={
-                isNull(piece.file)
-                  ? defaultImg
-                  : {uri: `data:image/gif;base64,${piece.file}`}
-              }
-              resizeMode="cover"
+            <GeneralImage
+              base64={piece.file.base64}
+              uri={piece.file.uri}
+              styleImg={style.imageSize}
             />
           </TouchableOpacity>
         ))}
@@ -157,14 +168,20 @@ const FifthLayout = ({getSelectedImages, onPressImage}) => {
   );
 };
 
-class CartLayoutWrapper extends PureComponent {
+class CartLayoutWrapper extends Component {
   getSelectedImages = (amountImagesNeeded) => {
     const {page} = this.props;
+
     if (page.pieces.length < amountImagesNeeded) {
       const currentPieces = page.pieces.slice(0, amountImagesNeeded);
 
       const totalEmpty = amountImagesNeeded - page.pieces.length;
-      const fillEmptySpace = fill(Array(totalEmpty), {file: null});
+      const fillEmptySpace = fill(Array(totalEmpty), {
+        file: {
+          base64: null,
+          uri: null,
+        },
+      });
 
       const piecesSelected = concat(currentPieces, fillEmptySpace).map(
         (piece, index) => ({
@@ -214,7 +231,7 @@ class CartLayoutWrapper extends PureComponent {
     } else if (layoutId === 5) {
       return (
         <FifthLayout
-          getSelectedImages={getSelectedImages}
+          getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
         />
       );
@@ -225,6 +242,10 @@ class CartLayoutWrapper extends PureComponent {
     return <View style={style.mainWrapper}>{this.renderWrapper()}</View>;
   }
 }
+
+CartLayoutWrapper.defaultProps = {
+  onPressImage: () => {},
+};
 
 const style = StyleSheet.create({
   mainWrapper: {
