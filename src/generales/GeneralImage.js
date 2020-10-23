@@ -4,9 +4,10 @@ import Cargando from './Cargando';
 import {colores} from '../constantes/Temas';
 
 const GeneralImage = ({styleImg, uri, base64}) => {
-  const [loading, setLoading] = useState(true);
-  const [source, setSource] = useState({uri});
   const defaultImg = require('../assets/img/default.jpg');
+
+  const [loading, setLoading] = useState(true);
+  const [source, setSource] = useState(uri ? {uri} : defaultImg);
 
   const handleLoadEnd = () => setLoading(false);
 
@@ -14,11 +15,13 @@ const GeneralImage = ({styleImg, uri, base64}) => {
     if (e.nativeEvent.error && base64) {
       setLoading(true);
       setSource({uri: `data:image/gif;base64,${base64}`});
+    } else {
+      setSource(defaultImg);
     }
   };
 
   useEffect(() => {
-    setSource({uri});
+    setSource(uri ? {uri} : defaultImg);
   }, [uri]);
 
   return (
@@ -31,7 +34,7 @@ const GeneralImage = ({styleImg, uri, base64}) => {
       <Image
         style={styleImg}
         source={source}
-        defaultSource={defaultImg}
+        //defaultSource={defaultImg}
         resizeMode="cover"
         onLoadEnd={handleLoadEnd}
         onError={handleOnError}
