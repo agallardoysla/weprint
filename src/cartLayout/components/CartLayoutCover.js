@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, useWindowDimensions} from 'react-native';
+import GeneralImage from '../../generales/GeneralImage';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-const CartLayoutCover = ({uri, onHeaderHeight}) => {
+const CartLayoutCover = ({piece, onHeaderHeight}) => {
   const widthCover = Math.floor((useWindowDimensions().width * 60) / 100);
 
   return (
@@ -17,10 +18,10 @@ const CartLayoutCover = ({uri, onHeaderHeight}) => {
             ...style.cartLayoutConverContainer,
             width: widthCover - 6,
           }}>
-          <Image
-            source={{uri: `data:image/gif;base64,${uri}`}}
-            style={style.cartLayoutImage}
-            resizeMode="cover"
+          <GeneralImage
+            base64={piece.file.base64}
+            uri={piece.file.uri}
+            styleImg={style.cartLayoutImage}
           />
         </View>
       </View>

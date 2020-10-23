@@ -1,69 +1,93 @@
-import React, {useState, useEffect} from 'react';
+import React, {PureComponent} from 'react';
 import {
   Image,
   View,
   StyleSheet,
-  TouchableWithoutFeedback,
-  useWindowDimensions,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
 } from 'react-native';
 import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {colores} from '../../../constantes/Temas';
 
-const ImagenItem = ({uri, onPressCheckImage, isSelected}) => {
-  const [loading, setLoading] = useState(true);
-  const [check, setCheck] = useState(isSelected);
+class ImagenItem extends PureComponent {
+  constructor(props) {
+    super(props);
 
-  const handleOnLoadEndImage = () => setLoading(false);
-  const handleOnPressSelectImage = () => {
-    const isCheck = !check;
+    this.state = {
+      loading: true,
+      check: props.isSelected,
+    };
+  }
 
-    onPressCheckImage(uri, isCheck);
-    setCheck(isCheck);
+  componentDidUpdate(prevProps, prevState) {
+    const {isSelected, node, onPressCheckImage} = this.props;
+    const {check} = this.state;
+
+    if (prevProps.isSelected !== isSelected && isSelected !== check) {
+      this.setState({...this.state, check: isSelected});
+    }
+
+    if (prevState.check !== check && check !== isSelected) {
+      onPressCheckImage(node, check);
+    }
+  }
+
+  handleOnLoadEndImage = () => this.setState({...this.state, loading: false});
+
+  handleOnPressSelectImage = () => {
+    const {hasMaxQuantity} = this.props;
+    const check = !this.state.check;
+
+    if (!check || (!hasMaxQuantity && check)) {
+      this.setState({...this.state, check});
+    } else {
+      Alert.alert(`Ya tiene el máximo de imágenes permitidas`);
+    }
   };
 
-  useEffect(() => {
-    setCheck(isSelected);
-  }, [isSelected, setCheck]);
+  render() {
+    const {loading, check} = this.state;
+    const {node} = this.props;
 
-  return (
-    <TouchableWithoutFeedback
-      onPress={handleOnPressSelectImage}
-      disabled={loading}>
-      <View
-        style={{
-          ...style.imagenItemMainContainer,
-          width: useWindowDimensions().width / 3 - 8,
-        }}>
-        {loading && (
-          <View style={style.imagenItemLoadingContainer}>
-            <Cargando titulo="" loaderColor={colores.logo} />
-          </View>
-        )}
+    return (
+      <TouchableOpacity onPress={this.handleOnPressSelectImage}>
+        <View
+          style={{
+            ...style.imagenItemMainContainer,
+            width: Dimensions.get('window').width / 3 - 8,
+          }}>
+          {loading && (
+            <View style={style.imagenItemLoadingContainer}>
+              <Cargando titulo="" loaderColor={colores.logo} />
+            </View>
+          )}
 
-        <Image
-          source={{uri}}
-          style={style.imagenItem}
-          resizeMode="cover"
-          onLoadEnd={handleOnLoadEndImage}
-        />
-        {check || loading ? <View style={style.imagenItemOverlay} /> : null}
-        {check && (
-          <View style={style.imagenItemCheckContainer}>
-            <Icon name="check" size={27} color={colores.blanco} />
-          </View>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
-  );
-};
+          <Image
+            source={{uri: node.image.uri}}
+            style={style.imagenItem}
+            resizeMode="cover"
+            onLoadEnd={this.handleOnLoadEndImage}
+          />
+          {check || loading ? <View style={style.imagenItemOverlay} /> : null}
+          {check && (
+            <View style={style.imagenItemCheckContainer}>
+              <Icon name="check" size={27} color={colores.blanco} />
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
 
 const style = StyleSheet.create({
   imagenItemMainContainer: {
     position: 'relative',
-    height: 130,
+    height: 110,
     marginHorizontal: 4,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   imagenItemOverlay: {
     position: 'absolute',

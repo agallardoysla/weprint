@@ -32,7 +32,7 @@ function CartLayout({
       pieces: [
         {
           order: 0,
-          file: img.base64,
+          file: {...img},
         },
       ],
     }));
@@ -53,22 +53,12 @@ function CartLayout({
     dispatch(
       actions.agregarCartPreseleccionado(storageId, basePreSelectedCart),
     );
-
-    navigation.navigate('CartLayout', {
-      formatId: format.id,
-      storageId,
-    });
-
     setLoading(false);
   }, []);
 
   const handlePreSelectedCart = useCallback(() => {
-    if (!preSelectedCart) {
-      const pages = getPages();
-      handleSavePreSelectedCart(pages);
-    } else {
-      setLoading(false);
-    }
+    const pages = getPages();
+    handleSavePreSelectedCart(pages);
   }, [getPages, handleSavePreSelectedCart, setLoading]);
 
   const handleGoToEditCartImage = (page) =>
