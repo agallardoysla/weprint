@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import GeneralImage from '../../generales/GeneralImage';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {colores} from '../../constantes/Temas';
 
@@ -10,16 +11,7 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
     <TouchableOpacity
       onPress={handleOnPress}
       style={style.projectCardContainer}>
-      <Image
-        source={{
-          uri: project.image,
-        }}
-        resizeMode="cover"
-        style={{
-          width: style.projectCardImage.width,
-          height: style.projectCardImage.height,
-        }}
-      />
+      <GeneralImage uri={project.image} styleImg={style.projectCardImage} />
       <View style={style.projectCardOverlay}>
         <Text style={style.projectCardOverlayText}>{project.name}</Text>
       </View>
@@ -30,12 +22,9 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
 const style = StyleSheet.create({
   projectCardContainer: {
     position: 'relative',
-    width: '100%',
     height: 300,
-    maxWidth: 768,
-    marginBottom: 15,
-    marginLeft: 10,
-    marginRight: 10,
+    width: '100%',
+    marginBottom: 10,
     borderRadius: 8,
     overflow: 'hidden',
   },

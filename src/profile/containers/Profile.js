@@ -51,7 +51,12 @@ function Profile({navigation, dispatch}) {
               color="#5d58e0"
               
             />
-            <MenuItem name="Mis repositorios" icon="folder" color="#e0bb2e" />
+            <MenuItem 
+              name="Mis repositorios" 
+              icon="folder" 
+              color="#e0bb2e" 
+              onPressFunction={() => navigation.navigate('Repositories')}
+            />
             <MenuItem
               name="Politicas de Privacidad"
               icon="policy"

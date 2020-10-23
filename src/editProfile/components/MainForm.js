@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, TextInput, StyleSheet, Text, Keyboard} from 'react-native';
+import {View, TextInput, StyleSheet, Text, Modal, Image} from 'react-native';
 import {colores, estiloDeLetra, tipoDeLetra} from '../../constantes/Temas';
 import {
   TouchableOpacity,
@@ -10,8 +10,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import {Picker} from '@react-native-community/picker';
 import {getDiscricts, getProvinces} from '../../utils/apis/location_api'
+import {upload_image} from '../../utils/apis/project_api'
 import {update_user_api} from '../../utils/apis/login_api'
-
+import SelectionListImage from '../../generales/SelectionListImage'
+import CargandoModal from '../../generales/CargandoModal'
 
 export const MainForm = ({data}) => {
   const [userData, setUserData] = useState(data)
@@ -20,12 +22,12 @@ export const MainForm = ({data}) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [locationSelector, setLocationSelector] = useState(data.district_name);
   const [success, setSuccess] = useState(false)
-
-  console.log(userData)
-
+  const [showImagePicker, setShowImagePicker] = useState(false)
+  //const [loading, setloading] = useState(false);
   const [discrictLocation, setDiscrictLocation] = useState([]);
   const [provinceLocation, setProvinceLocation] = useState([]);
 
+  console.log(data)
 
   useEffect(() => {
     const provinceData = getProvinces().then((data) =>
@@ -64,7 +66,21 @@ export const MainForm = ({data}) => {
     }));
   };
 
+  const uplaodImage = (uri) => {
+    upload_image(uri).then((response) => {
+      setUserData({
+        ...userData,
+        avatar: response.data
+      });
+      response.success && setSuccess(true)
+      response.errors && setError(true);
+    });
+  }
+
   const editProfileHandle = async () => {
+    if(userData.avatar.uri && userData.avatar.base64){
+      uplaodImage(userData.avatar.uri)
+    }
     let body = {
       nickname: userData.nickname,
       firstname: userData.firstname,
@@ -73,18 +89,43 @@ export const MainForm = ({data}) => {
       address: `${userData.address}, ${userData.comuna}, ${userData.province}`,
       birthdate: userData.birthdate,
       district_id: userData.district_id,
-      avatar: ''
+      avatar: userData.avatar
     };
+    //setloading(true)
     update_user_api(body).then((response) => {
-      console.log(response);
+      console.log("res: "+response);
       response.success && setSuccess(true)
       response.errors && setError(true);
+      //setloading(false)
     });
   };
 
 
   return (
     <View style={{width: '90%', marginVertical: 25}}>
+      
+      <TouchableOpacity onPress={() => setShowImagePicker(true)} >
+        <View
+          style={{
+            borderRadius: 150,
+            borderWidth: 10,
+            borderColor: colores.blanco,
+            overflow: 'hidden',
+            margin: 40,
+            width: 220,
+            alignSelf: 'center',
+            height: 210
+          }}>
+          <Image
+            resizeMode="cover"
+            style={{height: 220, width: 220}}
+            source={{
+              uri: userData.avatar ? `data:image/jpeg;base64,${userData.avatar.base64}` :
+                'https://www.mundodeportivo.com/r/GODO/MD/p5/MasQueDeporte/Imagenes/2018/10/24/Recortada/img_femartinez_20181010-125104_imagenes_md_otras_fuentes_captura-kcOG-U452531892714hYG-980x554@MundoDeportivo-Web.JPG',
+            }}
+          />
+        </View>
+      </TouchableOpacity>
       <TextInput
         placeholder="Nombre"
         style={styles.input}
@@ -202,6 +243,12 @@ export const MainForm = ({data}) => {
             </Text>
           </Animatable.View>
       } 
+
+      <Modal visible={showImagePicker} hardwareAccelerated={true} animationType="slide" >
+          <SelectionListImage maxQuantity={1} minQuantity={1} onResponse={(images) => {setShowImagePicker(false); setUserData({...userData, avatar: images[0]}); console.log(images[0])}} 
+              onPressGoToBack={() => setShowImagePicker(false)} 
+          />
+      </Modal>  
     </View>
   );
 }

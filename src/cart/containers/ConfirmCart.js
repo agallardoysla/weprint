@@ -7,10 +7,16 @@ import { RFPercentage } from 'react-native-responsive-fontsize';
 import {estiloDeLetra, colores} from '../../constantes/Temas'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-function ConfirmCart({dispatch, navigation, data}) {
-  
-    const totalPrice = data.reduce((totalPrice, item) => totalPrice + item.price, 0)
+function ConfirmCart({dispatch, navigation, route}) {
+    const data = route.params.itemData
+
+    const sumValues = (list, key) => {
+        return list.reduce((a, b) => a + (b[key] || 0), 0);
+    }
     const shippingPrice = 25
+    let totalPrice = sumValues(data,'price') + shippingPrice
+
+    console.log(totalPrice)
 
     useEffect(() => {
       dispatch(actions.actualizarNavigation(navigation));
@@ -63,49 +69,3 @@ function ConfirmCart({dispatch, navigation, data}) {
 
 const mapStateToProps = (state) => ({login: state.login});
 export default connect(mapStateToProps)(ConfirmCart);
-
-ConfirmCart.defaultProps = {
-    data: [
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        {
-            name: 'Tapa Dura',
-            price: 5.00,
-        },
-        
-    ]
-}

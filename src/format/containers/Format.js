@@ -2,10 +2,10 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
-import Cargando from '../../generales/Cargando';
-import {tipoDeLetra} from '../../constantes/Temas';
-import FormatCardView from '../components/FormatCardView';
+import {tipoDeLetra, colores} from '../../constantes/Temas';
 import {get_format_by_project} from '../../utils/apis/project_api';
+import Cargando from '../../generales/Cargando';
+import FormatCardView from '../components/FormatCardView';
 import orderBy from 'lodash/orderBy';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
@@ -51,7 +51,7 @@ function Format({dispatch, navigation, route, formats}) {
   const handleOnPressGoToBack = () => navigation.navigate('Home');
 
   const handleOnPressGoToSelectImage = (formatId) =>
-    navigation.navigate('SelectAlbum', {formatId});
+    navigation.navigate('SelectImagen', {formatId});
 
   const isEmptyFormats = () =>
     !loadingFormat && !formatError && !formats.length;
@@ -68,9 +68,9 @@ function Format({dispatch, navigation, route, formats}) {
       <TouchableOpacity
         style={style.formatHeader}
         onPress={handleOnPressGoToBack}>
-        <Icon name="arrow-left" size={27} color="#000" />
+        <Icon name="arrow-left" size={27} color={colores.negro} />
       </TouchableOpacity>
-      {loadingFormat && <Cargando titulo="" />}
+      {loadingFormat && <Cargando titulo="" loaderColor={colores.logo} />}
       {formatError && (
         <View style={style.formatGeneralMessageContainer}>
           <Text style={style.formatGeneralMessage}>

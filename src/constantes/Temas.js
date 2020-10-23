@@ -22,9 +22,20 @@ export const colores = {
   menuSelect: '#666666',
   grisFormatoAlbum: '#737373',
   grisClaro: '#e5e6e8',
+  grisBgIconCart: '#f6f8fa',
+  grisWrapperImage: '#9b9b9b',
+  grisWrapperEmptyImage: '#f8f8f8',
   azulNoche: '#051441',
+  azulMedio: '#3987B5',
   logo: '#f98364',
-  cartButton: '#23dcb3'
+  cartButton: '#23dcb3',
+  button: '#EC906D',
+  negro: 'black',
+  fondoScreen: '#F5F6FA',
+  grisTransparente: 'rgba(192,192,192,0.5)', 
+  loginInput: 'rgba(52,52,52,0.8)',
+  cargandoModal: '#484848',
+  cargandoModalFondo: 'rgba(0,0,0,0.5)'
 };
 
 export const tipoDeLetra = {

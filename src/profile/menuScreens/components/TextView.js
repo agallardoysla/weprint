@@ -120,8 +120,8 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
   },
   text: {
-    fontWeight: 'bold',
-    fontFamily: tipoDeLetra.bold,
+    fontWeight: 'normal',
+    fontFamily: tipoDeLetra.medium,
   },
 });
 
