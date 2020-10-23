@@ -20,12 +20,20 @@ function Drafts({profilePhoto, route, items}) {
   console.log("route.params");
   console.log(items)
 
+    //INSERT DRAFTS
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f5f6fa'}}>
       <ScrollView>
         <Container footer={false}>
           <Header />
-         
+          {
+            items.shortedlisted.map((draft) => (
+              <DraftCard
+                photo={draft.pages[0].pieces}
+                available={true}
+              />
+          }
         </Container>
       </ScrollView>
     </SafeAreaView>
