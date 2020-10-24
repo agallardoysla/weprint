@@ -16,31 +16,50 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
-function Drafts({profilePhoto, route, items}) {
-  console.log("route.params");
-  console.log(items)
+function Drafts({profilePhoto, route, items, navigation}) {
+  console.log('route.params');
+  console.log(items.shortlisted);
+  const draftList = Object.values(items.shortlisted);
 
-    //INSERT DRAFTS
+    console.log(Object.keys(items.shortlisted))
+
+  //INSERT DRAFTS
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f5f6fa'}}>
       <ScrollView>
         <Container footer={false}>
           <Header />
-          {
-            items.shortedlisted.map((draft) => (
-              <DraftCard
-                photo={draft.pages[0].pieces}
-                available={true}
-              />
-          }
+          {draftList.map((draft,index) => (
+            <DraftCard
+              photo={draft.pages[0].pieces[0].file.base64}
+              available={true}
+              name={draft.name}
+              description={draft.description}
+              onPressFunction={() => navigation.navigate('CartLayout', {
+                  storageId: Object.keys(items.shortlisted)[index],
+                  formatId: draft.format,
+              })}
+              price={draft.price}
+              pages={draft.pages.length}
+              format={draft.format}
+            />
+          ))}
         </Container>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const DraftCard = ({photo, available}) => (
+const DraftCard = ({
+  name,
+  photo,
+  available,
+  description,
+  onPressFunction,
+  price,
+  pages,
+}) => (
   <View
     style={{
       width: '90%',
@@ -53,32 +72,36 @@ const DraftCard = ({photo, available}) => (
     }}>
     <Image
       width="100%"
-      source={{uri: photo}}
-      style={{backgroundColor: 'blue', height: 275}}
+      source={{uri: `data:image/png;base64,${photo}`}}
+      style={{backgroundColor: colores.blanco, height: 275}}
     />
     <View style={{padding: 25}}>
-      <Text style={{color: colores.gris}}>Album: 20 paginas $15000</Text>
+      <Text style={{color: colores.gris}}>
+        Album: {pages} paginas {price}
+      </Text>
       <Text
         style={{
           fontSize: RFPercentage(3),
           marginVertical: 10,
           ...estiloDeLetra.negrita,
         }}>
-        Vacaciones en Bali
+        {name}
       </Text>
-      <View
-        style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>
-        <Icon
-          name="calendar"
-          style={{marginRight: 15, alignSelf: 'flex-start'}}
-          size={20}
-        />
-        <Text>23 de Mayo de 2020</Text>
-      </View>
-      <Text style={{...estiloDeLetra.negrita, color: colores.gris}}>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500
+      {/*
+          <View
+            style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>
+                <Icon
+                name="calendar"
+                style={{marginRight: 15, alignSelf: 'flex-start'}}
+                size={20}
+                />
+                <Text>{date}</Text>
+            </View>
+
+            Agregar fecha para luego hacer el mapeo y pegar ahi
+      */}
+      <Text style={{...estiloDeLetra.negrita, color: colores.gris}} numberOfLines={4}>
+        {description}
       </Text>
     </View>
     {available === true ? (
@@ -107,7 +130,7 @@ const DraftCard = ({photo, available}) => (
             elevation: 4,
             borderRadius: 8,
           }}>
-          <TouchableOpacity onPress={() => console.log('hello')}>
+          <TouchableOpacity onPress={onPressFunction}>
             <Text
               style={{
                 textAlign: 'center',
