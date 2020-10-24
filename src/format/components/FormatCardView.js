@@ -1,5 +1,6 @@
 import React from 'react';
-import {Text, View, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import GeneralImage from '../../generales/GeneralImage';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
 const FormatCardView = ({format, onPressGoToSelectImage}) => {
@@ -8,13 +9,7 @@ const FormatCardView = ({format, onPressGoToSelectImage}) => {
   return (
     <TouchableOpacity onPress={handleOnPress} style={style.formatContainer}>
       <View style={style.formatImgContainer}>
-        <Image
-          style={style.formatImg}
-          source={{
-            uri: format.image,
-          }}
-          resizeMode="cover"
-        />
+        <GeneralImage uri={format.image} styleImg={style.formatImg} />
       </View>
       <View style={style.formatInfoContainer}>
         <Text style={style.formatInfoTitle}>{format.name}</Text>
@@ -33,11 +28,11 @@ const style = StyleSheet.create({
     width: '100%',
     maxWidth: 768,
     marginBottom: 20,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
   },
   formatImgContainer: {
     width: '100%',
-    height: 250,
+    height: 240,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
@@ -71,14 +66,14 @@ const style = StyleSheet.create({
     fontSize: 20,
   },
   fomatInfoSmallText: {
-    marginVertical: 14,
+    paddingVertical: 12,
     color: colores.grisFormatoAlbum,
     fontFamily: tipoDeLetra.regular,
     fontSize: 14,
   },
   formatInfoBigText: {
-    marginTop: 14,
-    marginBottom: 10,
+    paddingTop: 10,
+    paddingBottom: 5,
     color: colores.grisFormatoAlbum,
     fontFamily: tipoDeLetra.regular,
     fontSize: 22,

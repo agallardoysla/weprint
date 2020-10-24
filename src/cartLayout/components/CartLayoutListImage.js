@@ -1,11 +1,11 @@
-import React, {useState, useRef, useEffect, useCallback} from 'react';
+import React, {PureComponent, createRef} from 'react';
 import {
   FlatList,
   StyleSheet,
   Animated,
-  Image,
   View,
   TouchableOpacity,
+  TouchableHighlight,
   PanResponder,
   Dimensions,
 } from 'react-native';
@@ -15,297 +15,337 @@ import CartLayoutCover from './CartLayoutCover';
 import CartLayoutImage from './CartLayoutImage';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import orderBy from 'lodash/orderBy';
+import CartLayoutWrapper from './CartLayoutWrapper';
 import {colores} from '../../constantes/Temas';
 
-const CartLayoutListImage = ({
-  preSelectedCart,
-  onGoToEditCartImage,
-  onSavePages,
-}) => {
-  const [showDrag, setShowDrag] = useState(false);
-  const [draggingIdx, setDragginIndex] = useState(-1);
-  const [pages, setPages] = useState(
-    orderBy(preSelectedCart.pages, ['number', 'asc']),
-  );
+class CartLayoutListImage extends PureComponent {
+  point = new Animated.ValueXY();
+  currentY = 0;
+  currentX = 0;
 
-  const pan = useRef(new Animated.ValueXY()).current;
-  const currentY = useRef(0);
-  const currentX = useRef(0);
-  const scrollOffset = useRef(0);
-  const flatlistTopOffset = useRef(0);
-  const flatlistHeight = useRef(0);
-  const flatlistRef = useRef();
-  const rowHeight = useRef(0);
-  const rowWidth = useRef(0);
-  const headerHeight = useRef(0);
-  const currentIdx = useRef(null);
-  const newIdx = useRef(null);
-  const active = useRef(false);
-  const timeoutId = useRef(null);
+  scrollOffset = 0;
+  flatlistTopOffset = 0;
+  flatlistHeight = 0;
+  flatlistRef = createRef();
+  rowHeight = 0;
+  rowWidth = 0;
+  headerHeight = 0;
+  currentIdx = -1;
+  newIdx = -1;
+  active = false;
+  timeoutId = null;
+  moveTimeOutId = null;
 
-  const panResponder = useRef(
-    PanResponder.create({
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dragging: false,
+      draggingIdx: -1,
+      pages: props.preSelectedCart.pages,
+    };
+
+    this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
 
       onPanResponderGrant: (evt, gestureState) => {
-        const row = getRow(gestureState.y0);
-        const column = getColumn(gestureState.x0);
-        const xStart =
-          gestureState.x0 < rowWidth.current ? 10 : rowWidth.current + 10;
+        this.currentY = gestureState.y0;
+        this.currentX = gestureState.x0;
+        const row = this.getRow(this.currentY);
+        const column = this.getColumn(this.currentX, 30);
+        const xStart = column < 1 ? 0 : this.rowWidth;
 
-        currentY.current = gestureState.y0;
-        currentX.current = gestureState.x0;
-        currentIdx.current = getIndex(row, column);
-
-        Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
+        Animated.event([{y: this.point.y, x: this.point.x}], {
+          useNativeDriver: false,
+        })(
           {
-            y: gestureState.y0 - rowHeight.current / 2,
+            y: gestureState.y0 - this.rowHeight / 2,
             x: xStart,
           },
           {},
         );
 
-        active.current = true;
-        setDragginIndex(currentIdx.current);
+        this.timeoutId = setTimeout(() => {
+          this.currentIdx = this.getCurrentIndex(row, column);
+          this.active = true;
 
-        clearTimeout(timeoutId.current);
-        timeoutId.current = setTimeout(() => {
-          setShowDrag(true);
-        }, 200);
+          this.setState({
+            ...this.state,
+            dragging: true,
+            draggingIdx: this.currentIdx,
+          });
+        }, 400);
       },
       onPanResponderMove: (evt, gestureState) => {
-        currentY.current = gestureState.moveY;
-        currentX.current = gestureState.moveX;
-        Animated.event([{y: pan.y, x: pan.x}], {useNativeDriver: false})(
-          {
-            y: gestureState.moveY - rowHeight.current / 2,
-            x: gestureState.moveX,
-          },
-          {},
-        );
+        this.currentY = gestureState.moveY;
+        this.currentX = gestureState.moveX;
 
-        if (currentY.current < 70) {
-          reset();
-        }
+        this.moveTimeOutId = setTimeout(() => {
+          Animated.event([{y: this.point.y, x: this.point.x}], {
+            useNativeDriver: false,
+          })(
+            {
+              y: this.currentY,
+              x: this.currentX,
+            },
+            {},
+          );
+        }, 100);
       },
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderRelease: (evt, gestureState) => {
-        reset();
+        this.reset();
       },
       onPanResponderTerminate: (evt, gestureState) => {
-        reset();
+        this.reset();
       },
       onShouldBlockNativeResponder: (evt, gestureState) => {
         return true;
       },
-    }),
-  ).current;
-
-  const reset = () => {
-    active.current = false;
-    setShowDrag(false);
-    setDragginIndex(-1);
-    clearTimeout(timeoutId.current);
-  };
-
-  const getRow = useCallback((y) => {
-    const row = Math.floor(
-      (scrollOffset.current + y - flatlistTopOffset.current) /
-        rowHeight.current,
-    );
-
-    return row;
-  }, []);
-
-  const getColumn = useCallback((x) => (x < rowWidth.current ? 0 : 1), []);
-
-  const getIndex = useCallback((row, column) => {
-    const firstColumnIndex = row * 2;
-    const secondColumnIndex = firstColumnIndex + 1;
-
-    return column === 0 ? firstColumnIndex : secondColumnIndex;
-  }, []);
-
-  const handleOnRowSize = (e) => {
-    rowWidth.current = e.nativeEvent.layout.width;
-    rowHeight.current = e.nativeEvent.layout.height;
-  };
-
-  const handleOnHeaderHeight = (e) => {
-    headerHeight.current = e.nativeEvent.layout.height;
-  };
-
-  const handleChangeIndex = useCallback(() => {
-    if (!active.current) return;
-
-    requestAnimationFrame(() => {
-      if (currentY.current + 80 > Dimensions.get('window').height) {
-        flatlistRef.current.scrollToOffset({
-          offset: scrollOffset.current + 20,
-          animated: false,
-        });
-      } else if (currentY.current < 190) {
-        flatlistRef.current.scrollToOffset({
-          offset: scrollOffset.current - 20,
-          animated: false,
-        });
-      }
-      const row = getRow(currentY.current);
-      const column = getColumn(currentX.current);
-      const movedIndex = getIndex(row, column);
-      if (movedIndex >= 0 && movedIndex <= pages.length) {
-        newIdx.current = movedIndex;
-      } else {
-        newIdx.current = currentIdx.current;
-      }
-
-      handleChangeIndex();
     });
-  }, []);
+  }
 
-  const handleChangePages = useCallback(() => {
-    if (isNull(currentIdx.current) || isNull(newIdx.current)) return;
+  componentDidUpdate(prevProps) {
+    const {preSelectedCart} = this.props;
+    const {dragging} = this.state;
 
-    if (currentIdx.current != newIdx.current) {
-      const pageFrom = pages[currentIdx.current];
-      const pageTo = pages[newIdx.current];
+    if (dragging) {
+      this.animateList();
+    } else {
+      this.handleChangePage();
+    }
 
-      const newPages = pages.map((page) => ({
-        ...page,
-      }));
+    if (prevProps.preSelectedCart !== preSelectedCart) {
+      this.setState({...this.state, pages: preSelectedCart.pages});
+    }
+  }
 
-      newPages[currentIdx.current] = {...pageFrom, pieces: pageTo.pieces};
-      newPages[newIdx.current] = {...pageTo, pieces: pageFrom.pieces};
+  handleChangePage = () => {
+    if (
+      this.newIdx >= 0 &&
+      this.currentIdx >= 0 &&
+      this.newIdx !== this.currentIdx
+    ) {
+      const {onSavePages} = this.props;
+      const {pages} = this.state;
+
+      const pageFrom = pages[this.currentIdx];
+      const pageTo = pages[this.newIdx];
+      const newPages = pages.map((page) => ({...page}));
+
+      newPages[this.currentIdx] = {
+        ...pageFrom,
+        layout_id: pageTo.layout_id,
+        pieces: pageTo.pieces.map((piece) => ({...piece})),
+      };
+
+      newPages[this.newIdx] = {
+        ...pageTo,
+        layout_id: pageFrom.layout_id,
+        pieces: pageFrom.pieces.map((piece) => ({...piece})),
+      };
 
       onSavePages(newPages);
     }
 
-    currentIdx.current = null;
-    newIdx.current = null;
-  }, [pages]);
-
-  const handleLayoutFlatlist = (e) => {
-    flatlistHeight.current = e.nativeEvent.layout.height;
-    flatlistTopOffset.current = e.nativeEvent.layout.y + headerHeight.current;
+    this.newIdx = -1;
+    this.currentIdx = -1;
   };
 
-  const handleOnScroll = async (e) => {
-    scrollOffset.current = e.nativeEvent.contentOffset.y;
+  animateList = () => {
+    const {pages} = this.state;
 
-    clearTimeout(timeoutId.current);
+    if (!this.active) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      if (this.currentY + 100 > Dimensions.get('window').height) {
+        this.flatlistRef.current.scrollToOffset({
+          offset: this.scrollOffset + 20,
+          animated: false,
+        });
+      } else if (this.currentY < 100) {
+        this.flatlistRef.current.scrollToOffset({
+          offset: this.scrollOffset - 20,
+          animated: false,
+        });
+      }
+
+      const row = this.getRow(this.currentY);
+      const column = this.getColumn(this.currentX);
+
+      const movedIndex = this.getCurrentIndex(row, column);
+
+      if (movedIndex >= 0 && movedIndex <= pages.length) {
+        this.newIdx = movedIndex;
+      } else {
+        this.newIdx = this.currentIdx;
+      }
+
+      this.animateList();
+    });
   };
 
-  const handleAddPage = (numberPage) => {
+  reset = () => {
+    this.active = false;
+    this.currentY = 0;
+    this.currentX = 0;
+    this.setState({...this.state, dragging: false, draggingIdx: -1});
+    clearTimeout(this.timeoutId);
+    clearTimeout(this.moveTimeOutId);
+  };
+
+  handleLayoutFlatlist = (e) => {
+    this.flatlistHeight = e.nativeEvent.layout.height;
+    this.flatlistTopOffset = e.nativeEvent.layout.y + this.headerHeight;
+  };
+
+  handleOnScroll = (e) => {
+    this.scrollOffset = e.nativeEvent.contentOffset.y;
+  };
+
+  handleOnRowSize = (e) => {
+    this.rowWidth = e.nativeEvent.layout.width;
+    this.rowHeight = e.nativeEvent.layout.height;
+  };
+
+  handleOnHeaderHeight = (e) => {
+    this.headerHeight = e.nativeEvent.layout.height;
+  };
+
+  handleAddPage = (numberPage) => {
+    const {onSavePages} = this.props;
+    const {pages} = this.state;
+
     const defaultPage = {
       layout_id: null,
       number: numberPage,
-      pieces: [{order: numberPage, file: null}],
+      pieces: [
+        {order: numberPage, file: {uri: null, base64: null, node: null}},
+      ],
     };
 
     const selectedPages = concat(pages);
     selectedPages.splice(numberPage, 0, defaultPage);
 
-    handleEditPages(selectedPages);
-  };
-
-  const handleDeletePage = (numberPage) => {
-    const selectedPages = pages.filter((page) => page.number !== numberPage);
-    handleEditPages(selectedPages);
-  };
-
-  const handleEditPages = (selectedPages) => {
-    const newPages = selectedPages.map((selectedPage, index) => ({
-      ...selectedPage,
+    const orderedPages = selectedPages.map((page, index) => ({
+      ...page,
       number: index,
     }));
 
-    onSavePages(newPages);
+    onSavePages(orderedPages);
   };
 
-  const renderPages = ({item: page}) => (
-    <CartLayoutImage
-      page={page}
-      panResponder={panResponder}
-      onGoToEditCartImage={onGoToEditCartImage}
-      onDeletePage={handleDeletePage}
-      onRowHeight={handleOnRowSize}
-    />
-  );
+  handleDeletePage = (numberPage) => {
+    const {onSavePages} = this.props;
+    const {pages} = this.state;
 
-  const renderSeparator = ({leadingItem}) => {
+    const selectedPages = pages
+      .filter((page) => page.number !== numberPage)
+      .map((page, index) => ({
+        ...page,
+        number: index,
+      }));
+
+    onSavePages(selectedPages);
+  };
+
+  getRow = (y) => {
+    const row = Math.floor(
+      (this.scrollOffset + y - this.flatlistTopOffset) / this.rowHeight,
+    );
+
+    return row;
+  };
+
+  getColumn = (x, extraSpace = 0) => {
+    const width = this.rowWidth + extraSpace;
+    return x < width ? 0 : 1;
+  };
+
+  getCurrentIndex = (row, column) => {
+    const firstColumnIndex = row * 2;
+    const secondColumnIndex = firstColumnIndex + 1;
+
+    return column === 0 ? firstColumnIndex : secondColumnIndex;
+  };
+
+  renderSeparator = ({leadingItem}) => {
     const handleOnPress = () => {
-      handleAddPage(leadingItem[1].number);
+      this.handleAddPage(leadingItem[1].number);
     };
 
     return (
       <View style={{marginLeft: 4}}>
-        <TouchableOpacity
+        <TouchableHighlight
+          underlayColor={'rgba(0, 0, 0, 0.5)'}
+          activeOpacity={0.2}
           style={style.cartLayoutIconContainer}
           onPress={handleOnPress}>
           <Icon name="plus" size={15} color={colores.verde} />
-        </TouchableOpacity>
+        </TouchableHighlight>
       </View>
     );
   };
 
-  useEffect(() => {
-    if (showDrag) {
-      handleChangeIndex();
-    } else {
-      handleChangePages();
-    }
-  }, [handleChangeIndex, handleChangePages, showDrag]);
+  renderPages = ({item: page}) => {
+    const {onGoToEditCartImage} = this.props;
 
-  useEffect(() => {
-    setPages(orderBy(preSelectedCart.pages, ['number', 'asc']));
-  }, [preSelectedCart, setPages]);
-
-  return (
-    <>
-      {showDrag && (
-        <Animated.View
-          style={{
-            ...style.cartLayoutImageAnimatedContainer,
-
-            transform: [
-              {translateX: pan.getLayout().left},
-              {translateY: pan.getLayout().top},
-            ],
-          }}>
-          <Image
-            source={{
-              uri: `data:image/gif;base64,${pages[draggingIdx].pieces[0].file}`,
-            }}
-            style={style.cartLayoutImageSize}
-            resizeMode="cover"
-          />
-        </Animated.View>
-      )}
-      <FlatList
-        scrollEnabled={!showDrag}
-        contentContainerStyle={style.listContainer}
-        ListHeaderComponent={
-          <CartLayoutCover
-            uri={pages[0].pieces[0].file}
-            onHeaderHeight={handleOnHeaderHeight}
-          />
-        }
-        ItemSeparatorComponent={renderSeparator}
-        onScroll={handleOnScroll}
-        onLayout={handleLayoutFlatlist}
-        scrollEventThrottle={16}
-        data={pages}
-        numColumns={2}
-        renderItem={renderPages}
-        keyExtractor={(page) => page.number.toString()}
-        ref={flatlistRef}
+    return (
+      <CartLayoutImage
+        page={page}
+        panResponder={this._panResponder}
+        onGoToEditCartImage={onGoToEditCartImage}
+        onDeletePage={this.handleDeletePage}
+        onRowHeight={this.handleOnRowSize}
       />
-    </>
-  );
-};
+    );
+  };
+
+  render() {
+    const {pages, dragging, draggingIdx} = this.state;
+
+    return (
+      <>
+        {dragging && (
+          <Animated.View
+            style={{
+              ...style.cartLayoutImageAnimatedContainer,
+              transform: [
+                {translateX: this.point.getLayout().left},
+                {translateY: this.point.getLayout().top},
+              ],
+            }}>
+            <CartLayoutWrapper page={pages[draggingIdx]} />
+          </Animated.View>
+        )}
+        <FlatList
+          scrollEnabled={!dragging}
+          contentContainerStyle={style.listContainer}
+          ListHeaderComponent={
+            <CartLayoutCover
+              piece={pages[0].pieces[0]}
+              onHeaderHeight={this.handleOnHeaderHeight}
+            />
+          }
+          ItemSeparatorComponent={this.renderSeparator}
+          onScroll={this.handleOnScroll}
+          onLayout={this.handleLayoutFlatlist}
+          scrollEventThrottle={16}
+          data={pages}
+          numColumns={2}
+          renderItem={this.renderPages}
+          keyExtractor={(page) => page.number.toString()}
+          ref={this.flatlistRef}
+        />
+      </>
+    );
+  }
+}
 
 const style = StyleSheet.create({
   listContainer: {
@@ -317,12 +357,10 @@ const style = StyleSheet.create({
   },
   cartLayoutImageAnimatedContainer: {
     position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 120,
+    height: 100,
     width: '50%',
     backgroundColor: colores.blanco,
-    opacity: 0.7,
+    opacity: 0.8,
     elevation: 999,
     zIndex: 998,
   },
@@ -336,20 +374,21 @@ const style = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     elevation: 1,
   },
   cartLayoutIconContainer: {
     position: 'absolute',
     bottom: 35,
-    width: 20,
+    width: 25,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 999,
+    zIndex: 999,
   },
 });
 

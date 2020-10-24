@@ -69,10 +69,6 @@ const SelectionListImage = ({
     if (!loading) {
       if (!hasMaxQuantity || images.length < selectedImages.length) {
         setSelectedImages(images);
-      } else {
-        Alert.alert(
-          `Solo tiene un máximo permitido de ${maxQuantity} imágenes`,
-        );
       }
     }
   };
@@ -130,13 +126,14 @@ const style = StyleSheet.create({
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     width: '100%',
     alignItems: 'center',
   },
   button: {
     position: 'relative',
-    width: 400,
+    width: '80%',
+    marginHorizontal: '20%',
     paddingVertical: 10,
     alignItems: 'center',
     borderRadius: 290486,

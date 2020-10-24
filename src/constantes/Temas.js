@@ -26,6 +26,7 @@ export const colores = {
   grisWrapperImage: '#9b9b9b',
   grisWrapperEmptyImage: '#f8f8f8',
   azulNoche: '#051441',
+  azulMedio: '#3987B5',
   logo: '#f98364',
   cartButton: '#23dcb3',
   button: '#EC906D',
