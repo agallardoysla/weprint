@@ -14,7 +14,7 @@ export const PromoView = () => {
         margin: 10,
       }}>
       <Image
-        style={{resizeMode: 'contain', width: '100%', height: '100%'}}
+        style={{resizeMode: 'cover', width: '100%', height: '100%'}}
         source={require('../../assets/img/slidetab1.png')}
       />
       <View

@@ -21,6 +21,9 @@ function Profile({navigation, dispatch}) {
       setLoading(false)
     });
   }, [])
+
+  console.log(userData)
+
   return (
     <Container>
       <CargandoModal title="Cargando" show={loading} />
@@ -49,7 +52,7 @@ function Profile({navigation, dispatch}) {
               name="Mis Albunes compartidos"
               icon="insert-photo"
               color="#5d58e0"
-              
+              onPressFunction={() => navigation.navigate('Album')}
             />
             <MenuItem 
               name="Mis repositorios" 

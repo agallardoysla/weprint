@@ -35,7 +35,10 @@ export const colores = {
   grisTransparente: 'rgba(192,192,192,0.5)', 
   loginInput: 'rgba(52,52,52,0.8)',
   cargandoModal: '#484848',
-  cargandoModalFondo: 'rgba(0,0,0,0.5)'
+  cargandoModalFondo: 'rgba(0,0,0,0.5)',
+  rojoAtenuado: '#F78C83',
+  rojoBrillante: '#FF6A6A',
+  grisOscuro: '#8B7C7A'
 };
 
 export const tipoDeLetra = {

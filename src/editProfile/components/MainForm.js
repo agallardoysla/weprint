@@ -9,47 +9,47 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import {Picker} from '@react-native-community/picker';
-import {getDiscricts, getProvinces} from '../../utils/apis/location_api'
-import {upload_image} from '../../utils/apis/project_api'
-import {update_user_api} from '../../utils/apis/login_api'
-import SelectionListImage from '../../generales/SelectionListImage'
-import CargandoModal from '../../generales/CargandoModal'
+import {getDiscricts, getProvinces} from '../../utils/apis/location_api';
+import {upload_image} from '../../utils/apis/project_api';
+import {update_user_api} from '../../utils/apis/login_api';
+import SelectionListImage from '../../generales/SelectionListImage';
+import CargandoModal from '../../generales/CargandoModal';
 
 export const MainForm = ({data}) => {
-  const [userData, setUserData] = useState(data)
+  const [userData, setUserData] = useState(data);
   const [date, setDate] = useState(new Date(data.birthdate));
   const [mode, setMode] = useState('date');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [locationSelector, setLocationSelector] = useState(data.district_name);
-  const [success, setSuccess] = useState(false)
-  const [showImagePicker, setShowImagePicker] = useState(false)
-  //const [loading, setloading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [discrictLocation, setDiscrictLocation] = useState([]);
   const [provinceLocation, setProvinceLocation] = useState([]);
 
-  console.log(data)
+  console.log(data.provinceLocation);
 
   useEffect(() => {
     const provinceData = getProvinces().then((data) =>
       setProvinceLocation(data.data),
     );
-    console.log(provinceLocation)
+    console.log(provinceLocation);
   }, []);
 
   useEffect(() => {
     if (locationSelector) {
       const disctrictData = getDiscricts(locationSelector).then((data) =>
-        setDiscrictLocation(data.data)
+        setDiscrictLocation(data.data),
       );
     }
-  }, [locationSelector])
-  
+  }, [locationSelector]);
+
   const changeValues = (value, datakey) => {
     setUserData({
       ...userData,
-      [datakey]: value
-    })
-  }
+      [datakey]: value,
+    });
+  };
 
   const onChange = (val, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -66,20 +66,23 @@ export const MainForm = ({data}) => {
     }));
   };
 
-  const uplaodImage = (uri) => {
-    upload_image(uri).then((response) => {
+  const uplaodImage = async (image) => {
+    upload_image({file: image.node}).then((response) => {
+      const cloudImage = JSON.parse(response);
+      console.log(cloudImage.url);
       setUserData({
         ...userData,
-        avatar: response.data
+        avatar: cloudImage.url,
       });
-      response.success && setSuccess(true)
-      response.errors && setError(true);
+      response.success && setSuccess(true);
+      return cloudImage.url;
     });
-  }
+  };
 
   const editProfileHandle = async () => {
-    if(userData.avatar.uri && userData.avatar.base64){
-      uplaodImage(userData.avatar.uri)
+    setLoading(true);
+    if ((await userData.avatar.uri) && userData.avatar.base64) {
+      await uplaodImage(userData.avatar);
     }
     let body = {
       nickname: userData.nickname,
@@ -89,22 +92,23 @@ export const MainForm = ({data}) => {
       address: `${userData.address}, ${userData.comuna}, ${userData.province}`,
       birthdate: userData.birthdate,
       district_id: userData.district_id,
-      avatar: userData.avatar
+      avatar: userData.avatar,
     };
-    //setloading(true)
+
+    console.log(body);
+
     update_user_api(body).then((response) => {
-      console.log("res: "+response);
-      response.success && setSuccess(true)
-      response.errors && setError(true);
-      //setloading(false)
+      console.log('response');
+      console.log(response);
+      //response.success && setSuccess(true)
+      setLoading(false);
     });
   };
 
-
   return (
     <View style={{width: '90%', marginVertical: 25}}>
-      
-      <TouchableOpacity onPress={() => setShowImagePicker(true)} >
+      <CargandoModal title="Validando datos..." show={loading} />
+      <TouchableOpacity onPress={() => setShowImagePicker(true)}>
         <View
           style={{
             borderRadius: 150,
@@ -114,14 +118,15 @@ export const MainForm = ({data}) => {
             margin: 40,
             width: 220,
             alignSelf: 'center',
-            height: 210
+            height: 210,
           }}>
           <Image
             resizeMode="cover"
             style={{height: 220, width: 220}}
             source={{
-              uri: userData.avatar ? `data:image/jpeg;base64,${userData.avatar.base64}` :
-                'https://www.mundodeportivo.com/r/GODO/MD/p5/MasQueDeporte/Imagenes/2018/10/24/Recortada/img_femartinez_20181010-125104_imagenes_md_otras_fuentes_captura-kcOG-U452531892714hYG-980x554@MundoDeportivo-Web.JPG',
+              uri: userData.avatar.base64
+                ? `data:image/jpeg;base64,${userData.avatar.base64}`
+                : `${userData.avatar}`,
             }}
           />
         </View>
@@ -180,48 +185,49 @@ export const MainForm = ({data}) => {
         placeholder="Direccion"
         style={styles.input}
         placeholderTextColor={colores.gris}
-        defaultValue={data.address}
+        defaultValue={data.address.split(',')[0]}
         onChangeText={(val) => changeValues(val, 'address')}
       />
       <View style={styles.input}>
         <Picker
           selectedValue={locationSelector}
-          onValueChange={(val) =>{
-            setLocationSelector(val)
-            setUserData({...userData, district_id: val})
-            }
-          }
+          onValueChange={(val) => {
+            setLocationSelector(val);
+            setUserData({...userData, district_id: val});
+            setUserData({
+              ...userData,
+              province: provinceLocation.find((province) => province.id === val).name
+            })
+          }}
           itemStyle={{height: 120}}
-          style={{height: 25}}
-          >
+          style={{height: 25}}>
           <Picker.Item label={'- Seleccione -'} value="" />
-          {provinceLocation && provinceLocation.map((province) => (
-            <Picker.Item
-              key={province.id}
-              label={province.name}
-              value={province.id}
-            />
-          ))}
+          {provinceLocation &&
+            provinceLocation.map((province) => (
+              <Picker.Item
+                key={province.id}
+                label={province.name}
+                value={province.id}
+              />
+            ))}
         </Picker>
       </View>
 
       <View style={styles.input}>
         <Picker
           selectedValue={userData.comuna}
-          onValueChange={(val) =>
-            changeValues(val, 'comuna',)
-          }
+          onValueChange={(val) => changeValues(val, 'comuna')}
           itemStyle={{height: 120}}
-          style={{height: 25}}  
-        >
+          style={{height: 25}}>
           <Picker.Item label={'- Seleccione -'} value={false} />
-          {discrictLocation && discrictLocation.map((district) => (
-            <Picker.Item
-              key={district.id}
-              label={district.name}
-              value={district.name}
-            />
-          ))}
+          {discrictLocation &&
+            discrictLocation.map((district) => (
+              <Picker.Item
+                key={district.id}
+                label={district.name}
+                value={district.name}
+              />
+            ))}
         </Picker>
       </View>
 
@@ -230,28 +236,37 @@ export const MainForm = ({data}) => {
         onPress={() => editProfileHandle()}>
         <Text style={styles.buttonTitle}>ACTUALIZAR</Text>
       </TouchableOpacity>
-      {
-        success && 
-          <Animatable.View animation="bounceIn">
-            <Text
-              style={{
-                color: 'red',
-                textAlign: 'center',
-                marginVertical: 10,
-              }}>
-                  Los cambios se realizaron con exito!
-            </Text>
-          </Animatable.View>
-      } 
+      {success && (
+        <Animatable.View animation="bounceIn">
+          <Text
+            style={{
+              color: 'red',
+              textAlign: 'center',
+              marginVertical: 10,
+            }}>
+            Los cambios se realizaron con exito!
+          </Text>
+        </Animatable.View>
+      )}
 
-      <Modal visible={showImagePicker} hardwareAccelerated={true} animationType="slide" >
-          <SelectionListImage maxQuantity={1} minQuantity={1} onResponse={(images) => {setShowImagePicker(false); setUserData({...userData, avatar: images[0]}); console.log(images[0])}} 
-              onPressGoToBack={() => setShowImagePicker(false)} 
-          />
-      </Modal>  
+      <Modal
+        visible={showImagePicker}
+        hardwareAccelerated={true}
+        animationType="slide">
+        <SelectionListImage
+          maxQuantity={1}
+          minQuantity={1}
+          onResponse={(images) => {
+            setShowImagePicker(false);
+            setUserData({...userData, avatar: images[0]});
+            console.log(images[0]);
+          }}
+          onPressGoToBack={() => setShowImagePicker(false)}
+        />
+      </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   input: {

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Image} from 'react-native';
+import { colores } from '../../../constantes/Temas';
 
 export const Header = () => (
     <View style={{alignItems: 'center', paddingBottom: '20%'}}>
-        <Image style={{backgroundColor: 'red'}} source={require('../../../assets/img/bg-app.png')} height={200} width={'100%'}/>
+        <Image style={{backgroundColor: colores.blanco}} source={require('../../../assets/img/bg-app.png')} height={200} width={'100%'}/>
         <View style={{position: 'absolute'}}>
             <View style={{alignItems: 'center'}}>
                 <View style={{alignItems: 'center'}}>

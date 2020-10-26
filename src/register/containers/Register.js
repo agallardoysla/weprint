@@ -110,7 +110,7 @@ function Register(props) {
       password: password.trim(),
       address: `${address.trim()}, ${comuna.trim()}, ${province.trim()}`,
       birthdate: bornDate.trim(),
-      district_id: districtId.trim(),
+      district_id: districtId,
     };
     for (let value in textValidator) {
       if (!textValidator[value]) {

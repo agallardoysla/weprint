@@ -1,90 +1,145 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, SafeAreaView, View, Text, StyleSheet, Image} from 'react-native';
+import {
+  ScrollView,
+  SafeAreaView,
+  View,
+  Text,
+  Alert
+} from 'react-native';
 import Container from '../../generales/Container';
-import { colores, estiloDeLetra } from '../../constantes/Temas';
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { get_repositories } from '../../utils/apis/repository_api'
+import {colores, estiloDeLetra} from '../../constantes/Temas';
+import {RFPercentage} from 'react-native-responsive-fontsize';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {get_repositories, delete_repository} from '../../utils/apis/repository_api';
+import {ProjectPreview} from '../components/ProjectPreview';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CargandoModal from '../../generales/CargandoModal';
 
-function Repositories({route, cover, navigation}){
-  const [data, setData] = useState(null)
+function Repositories({route, cover, navigation}) {
+  const [repositoriesData, setRepositoriesData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("data")
-    const repoData = get_repositories().then((data) =>
-    setData(data.data)
-    );
-    
-  }, []);
+    get_repositories().then((data) => {
+      setRepositoriesData(data.data);
+      console.log(data);
+      setLoading(false);
+    });
+  }, [loading]);
 
-  console.log(route.params)
-  const photo = route.params
+  const handleDeleteRepository = (repoId) => {
+    Alert.alert(
+      'Borrar Repositorio',
+      'Deseas eliminar este repositorio ?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Aceptar',
+          onPress: () => {
+            setLoading(true)
+            delete_repository(repoId)
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const handleGoToRepository = (id, name, code) => {
+    navigation.navigate('RepositoryDescription', {
+      repoName: name,
+      repoCode: code,
+      repoId: id
+  })
+  }
+  console.log(route.params);
+  const photo = route.params;
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
-        <View style={{width: '100%', flexDirection: 'row', justifyContent: 'center', paddingVertical: 10}}>
-            <TouchableOpacity onPress={() => navigation.navigate("UploadRepository")}>
-                <View style={{padding: 20, backgroundColor: colores.button, width: 190, borderRadius: 50, margin: 5}}>
-                    <Text style={{...estiloDeLetra.negrita, color: colores.blanco, textAlign:'center',fontSize: RFPercentage(1.5)}}>+ CREAR REPOSITORIO</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <View style={{padding: 20, backgroundColor: colores.button, width: 190, borderRadius: 50, margin: 5}}>
-                    <Text style={{...estiloDeLetra.negrita, color: colores.blanco, textAlign:'center', fontSize: RFPercentage(1.5)}}>SOLICITUDES</Text>
-                </View>
-            </TouchableOpacity>
-        </View>
+      <CargandoModal show={loading} title={'Cargando'} />
+      <View
+        style={{
+          width: '100%',
+          flexDirection: 'row',
+          justifyContent: 'center',
+          paddingVertical: 10,
+        }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('UploadRepository')}>
+          <View
+            style={{
+              padding: 20,
+              backgroundColor: colores.button,
+              width: 190,
+              borderRadius: 50,
+              margin: 5,
+            }}>
+            <Text
+              style={{
+                ...estiloDeLetra.negrita,
+                color: colores.blanco,
+                textAlign: 'center',
+                fontSize: RFPercentage(1.5),
+              }}>
+              + CREAR REPOSITORIO
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("RepositoryRequest")}>
+          <View
+            style={{
+              padding: 20,
+              backgroundColor: colores.button,
+              width: 190,
+              borderRadius: 50,
+              margin: 5,
+            }}>
+            <Text
+              style={{
+                ...estiloDeLetra.negrita,
+                color: colores.blanco,
+                textAlign: 'center',
+                fontSize: RFPercentage(1.5),
+              }}>
+              SOLICITUDES
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
       <ScrollView>
         <Container footer={false}>
-            
-            <View style={{marginTop: 25}}>
-                <RepoView coverPhoto={cover} />
-                <RepoView coverPhoto={cover} />
-                <RepoView coverPhoto={cover} available={false} />
-            </View>
+          <View style={{marginTop: 25}}>
+            {repositoriesData &&
+              repositoriesData.map((repository) =>
+                <ProjectPreview
+                  title={repository.name}
+                  totalPieces={repository.totalPieces}
+                  totalShared={repository.totalShared}
+                  coverPhoto={repository.lastImage}
+                  available={repository.available === 1 ? true : false}
+                  onPressDelete={() => handleDeleteRepository(repository.id)}
+                  onPressFunction={() =>
+                    handleGoToRepository(
+                      repository.id,
+                      repository.name,
+                      repository.code,
+                    )
+                  }
+                />
+              )}
+          </View>
         </Container>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const RepoView = ({title, users, coverPhoto, available = true}) => (
-    <View style={{borderRadius: 25, width: '95%', alignSelf: 'center', backgroundColor: colores.blanco, borderRadius: 25, overflow: 'hidden', marginBottom: 40}}>
-        <Image source={{uri: coverPhoto}} style={{width: '100%', height: 250, borderRadius: 25}}/>
-        <View style={{padding: 20}}>
-            {
-                available === true ? (
-                    <View>
-                        <View style={{backgroundColor: colores.naranja, flexDirection: 'row', alignSelf: 'flex-start', borderRadius: 5, padding: 3, marginBottom: 5}}>
-                            <Icon name="eye" style={{marginHorizontal: 5}} size={20} />
-                            <Text style={{marginRight: 5, ...estiloDeLetra.negrita}}>Disponible</Text>
-                        </View>
-                    
-                    </View>
-                ) : (
-                    <View style={{backgroundColor: colores.rojo, flexDirection: 'row', alignSelf: 'flex-start', borderRadius: 5, padding: 3, marginBottom: 5}}>
-                        <Icon name="eye-slash" style={{marginLeft: 5}} size={20} color={colores.blanco} />
-                        <Text style={{marginHorizontal: 10, ...estiloDeLetra.negrita, color: colores.blanco}}>No Disponible</Text>
-                    </View> 
-                )
-            }
-            <Text style={{...estiloDeLetra.negrita, fontSize: RFPercentage(2), marginBottom: 20}}>Casamiento de Lucas</Text>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flexDirection: 'row'}}>
-                    <Icon name="users" style={{marginHorizontal: 5}} size={20} color={colores.gris} />
-                    <Text style={{color: colores.gris}}>3</Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <Icon name="image" style={{marginHorizontal: 5}} size={20} color={colores.gris} />
-                    <Text style={{color: colores.gris}}>20</Text>
-                </View>
-            </View>
-        </View>
-    </View>
-)
-
 export default Repositories;
 
 Repositories.defaultProps = {
-    cover: 'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg'
+  cover:
+    'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg',
 }
