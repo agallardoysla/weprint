@@ -3,7 +3,7 @@ import {Image, StyleSheet, View} from 'react-native';
 import Cargando from './Cargando';
 import {colores} from '../constantes/Temas';
 
-const GeneralImage = ({styleImg, uri, base64}) => {
+const GeneralImage = ({styleImg, uri, base64, resizeMode}) => {
   const defaultImg = require('../assets/img/default.jpg');
 
   const [loading, setLoading] = useState(true);
@@ -34,12 +34,16 @@ const GeneralImage = ({styleImg, uri, base64}) => {
       <Image
         style={styleImg}
         source={source}
-        resizeMode="cover"
+        resizeMode={resizeMode}
         onLoadEnd={handleLoadEnd}
         onError={handleOnError}
       />
     </View>
   );
+};
+
+GeneralImage.defaultProps = {
+  resizeMode: 'cover',
 };
 
 const style = StyleSheet.create({

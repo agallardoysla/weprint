@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  useWindowDimensions,
 } from 'react-native';
 import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';
@@ -15,10 +16,18 @@ class ImagenItem extends PureComponent {
   constructor(props) {
     super(props);
 
+    const window = Dimensions.get('window');
+
     this.state = {
       loading: true,
       check: props.isSelected,
+      preSelectedCheck: false,
+      window,
     };
+  }
+
+  componentDidMount() {
+    Dimensions.addEventListener('change', this.onChangeDimensions);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -34,9 +43,35 @@ class ImagenItem extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    Dimensions.removeEventListener('change', this.onChange);
+  }
+
+  onChangeDimensions = ({window}) => {
+    this.setState({...this.state, window});
+  };
+
   handleOnLoadEndImage = () => this.setState({...this.state, loading: false});
 
   handleOnPressSelectImage = () => {
+    const {isPreselected} = this.props;
+
+    if (isPreselected) {
+      this.handlePreSelectCheck();
+    } else {
+      this.handleNormalCheck();
+    }
+  };
+
+  handlePreSelectCheck = () => {
+    const {onPressCheckImage, node} = this.props;
+    const preSelectedCheck = !this.state.preSelectedCheck;
+
+    onPressCheckImage(node, preSelectedCheck);
+    this.setState({...this.state, preSelectedCheck});
+  };
+
+  handleNormalCheck = () => {
     const {hasMaxQuantity} = this.props;
     const check = !this.state.check;
 
@@ -48,7 +83,7 @@ class ImagenItem extends PureComponent {
   };
 
   render() {
-    const {loading, check} = this.state;
+    const {loading, check, window} = this.state;
     const {node} = this.props;
 
     return (
@@ -56,7 +91,8 @@ class ImagenItem extends PureComponent {
         <View
           style={{
             ...style.imagenItemMainContainer,
-            width: Dimensions.get('window').width / 3 - 8,
+            width: window.width / 3 - 8,
+            height: window.width / 3 + 1,
           }}>
           {loading && (
             <View style={style.imagenItemLoadingContainer}>
@@ -85,7 +121,6 @@ class ImagenItem extends PureComponent {
 const style = StyleSheet.create({
   imagenItemMainContainer: {
     position: 'relative',
-    height: 110,
     marginHorizontal: 4,
     marginBottom: 15,
   },
@@ -95,7 +130,7 @@ const style = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     elevation: 0,
   },
   imagenItemCheckContainer: {

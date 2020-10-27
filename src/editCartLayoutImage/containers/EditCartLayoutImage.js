@@ -1,6 +1,12 @@
 import React, {useEffect, useRef, useState, useCallback} from 'react';
 import {PhotoEditorModal, PESDK} from 'react-native-photoeditorsdk';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import concat from 'lodash/concat';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
@@ -180,6 +186,8 @@ function EditCartLayoutImage({
     navigation.goBack();
   };
 
+  const handleGoBack = () => navigation.goBack();
+
   const getSelectedPieces = (layoutId, pieces) => {
     if (!layoutId || layoutId === 1) {
       return pieces.slice(0, 1);
@@ -215,34 +223,40 @@ function EditCartLayoutImage({
         />
       ) : (
         <View style={style.editCartLayoutMainContainer}>
-          <PhotoEditorModal
-            visible={showEdit}
-            image={photoEdit && photoEdit.source}
-            onCancel={handleCancelEditPhoto}
-            onExport={handleExport}
-          />
-          <TouchableOpacity style={style.editCartLayoutImageHeader}>
-            <Icon name="arrow-left" size={27} color={colores.negro} />
-            <Text style={style.editCartLayoutImageHeaderText}>
-              Página {selectedPage.number}
-            </Text>
-          </TouchableOpacity>
-          <TouchableWithoutFeedback onPress={handleOnPressDelete}>
-            <Text>borrar diseño</Text>
-          </TouchableWithoutFeedback>
-          <EditCartLayoutCover
-            onShowListImage={handleShowListImage}
-            onEditPhoto={handleOnEditPhoto}
-            selectedLayout={selectedLayout}
-            selectedPage={selectedPage}
-          />
-          <EditCartLayoutList
-            error={layoutError}
-            loading={layoutLoading}
-            layouts={layouts}
-            selectedLayout={selectedLayout}
-            onSelectedLayout={handleSelectedLayout}
-          />
+          <ScrollView>
+            <PhotoEditorModal
+              visible={showEdit}
+              image={photoEdit && photoEdit.source}
+              onCancel={handleCancelEditPhoto}
+              onExport={handleExport}
+            />
+            <TouchableOpacity
+              style={style.editCartLayoutImageHeader}
+              onPress={handleGoBack}>
+              <Icon name="arrow-left" size={27} color={colores.negro} />
+              <Text style={style.editCartLayoutImageHeaderText}>
+                Página {selectedPage.number}
+              </Text>
+            </TouchableOpacity>
+            <TouchableWithoutFeedback
+              style={style.editCartImageDeleteTextContainer}
+              onPress={handleOnPressDelete}>
+              <Text style={style.editCartImageDeleteText}>Borrar Diseño</Text>
+            </TouchableWithoutFeedback>
+            <EditCartLayoutCover
+              onShowListImage={handleShowListImage}
+              onEditPhoto={handleOnEditPhoto}
+              selectedLayout={selectedLayout}
+              selectedPage={selectedPage}
+            />
+            <EditCartLayoutList
+              error={layoutError}
+              loading={layoutLoading}
+              layouts={layouts}
+              selectedLayout={selectedLayout}
+              onSelectedLayout={handleSelectedLayout}
+            />
+          </ScrollView>
           <EditCartLayoutFooter
             onSelectPage={handleSelectPage}
             onSaveChanges={handleSaveChanges}
@@ -286,14 +300,15 @@ const style = StyleSheet.create({
     position: 'relative',
   },
   editCartImageDeleteTextContainer: {
-    marginTop: 40,
-    paddingRight: 6,
+    marginTop: 25,
+    marginBottom: 10,
+    paddingRight: 8,
     alignItems: 'flex-end',
   },
   editCartImageDeleteText: {
     color: colores.rojo,
-    fontSize: 18,
-    fontFamily: tipoDeLetra.bold,
+    fontSize: 15,
+    fontFamily: tipoDeLetra.regular,
   },
   editCartContainerImage: {
     marginTop: 12,

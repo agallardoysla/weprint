@@ -19,8 +19,8 @@ const CartLayoutCover = ({piece, onHeaderHeight}) => {
             width: widthCover - 6,
           }}>
           <GeneralImage
-            base64={piece.file.base64}
-            uri={piece.file.uri}
+            base64={piece ? piece.file.base64 : null}
+            uri={piece ? piece.file.uri : null}
             styleImg={style.cartLayoutImage}
           />
         </View>

@@ -88,9 +88,14 @@ class ImagesList extends PureComponent {
 
   handleRemoveImage = (node) => {
     const {selectedImages, onSelectImages} = this.props;
-    const images = selectedImages.filter(
-      (selectedImage) => selectedImage.uri !== node.image.uri,
+    const imagesReverse = concat(selectedImages).reverse();
+    const indexDelete = imagesReverse.findIndex(
+      (imageReverse) => imageReverse.uri === node.image.uri,
     );
+
+    const images = imagesReverse
+      .filter((_, index) => index !== indexDelete)
+      .reverse();
 
     onSelectImages(images);
   };
@@ -142,6 +147,19 @@ class ImagesList extends PureComponent {
     return selectedImages.some((selectedImage) => selectedImage.uri === uri);
   };
 
+  handleImageIsPreselected = (uri) => {
+    const {preSelectedImages} = this.props;
+    return preSelectedImages.some(
+      (preselectImage) => preselectImage.uri === uri,
+    );
+  };
+
+  showButtonAll = () => {
+    const {maxQuantity, preSelectedImages} = this.props;
+
+    return maxQuantity === 0 && preSelectedImages.length === 0;
+  };
+
   disabledButtonAll = () => {
     const {minQuantity, selectedImages} = this.props;
     const {selectAll} = this.state;
@@ -151,11 +169,18 @@ class ImagesList extends PureComponent {
 
   renderImage = ({item: edge}) => {
     const {hasMaxQuantity} = this.props;
-    const isSelected = this.handleImageIsSelected(edge.node.image.uri);
+    const {node} = edge;
+    const {
+      image: {uri},
+    } = node;
+
+    const isPreselected = this.handleImageIsPreselected(uri);
+    const isSelected = isPreselected || this.handleImageIsSelected(uri);
 
     return (
       <ImageItem
-        node={edge.node}
+        node={node}
+        isPreselected={isPreselected}
         isSelected={isSelected}
         hasMaxQuantity={hasMaxQuantity}
         onPressCheckImage={this.handleOnPressCheckImage}
@@ -172,7 +197,6 @@ class ImagesList extends PureComponent {
     const {
       albumTitle,
       minQuantity,
-      maxQuantity,
       hasMaxQuantity,
       selectedImages,
       onPressGoToAlbum,
@@ -204,7 +228,7 @@ class ImagesList extends PureComponent {
             <View>
               <Text style={style.imagesListAlbumText}>{albumTitle}</Text>
             </View>
-            {maxQuantity === 0 && (
+            {this.showButtonAll() && (
               <TouchableHighlight
                 disabled={this.disabledButtonAll()}
                 style={{
@@ -221,21 +245,18 @@ class ImagesList extends PureComponent {
           </View>
         )}
 
-        <View style={style.imagesListContainer}>
-          {false ? (
-            <Cargando titulo="" loaderColor={colores.logo} />
-          ) : (
-            <FlatList
-              data={edges}
-              numColumns={3}
-              renderItem={this.renderImage}
-              hasMaxQuantity={hasMaxQuantity}
-              keyExtractor={(edge) => edge.node.image.uri}
-              onEndReachedThreshold={0.4}
-              onEndReached={this.loadImages}
-              ListFooterComponent={this.renderFooter}
-            />
-          )}
+        <View>
+          <FlatList
+            style={style.imagesListContainer}
+            data={edges}
+            numColumns={3}
+            renderItem={this.renderImage}
+            hasMaxQuantity={hasMaxQuantity}
+            keyExtractor={(edge) => edge.node.image.uri}
+            onEndReachedThreshold={0.4}
+            onEndReached={this.loadImages}
+            ListFooterComponent={this.renderFooter}
+          />
         </View>
       </View>
     );
@@ -246,6 +267,7 @@ const style = StyleSheet.create({
   imagesListMainContainer: {
     position: 'relative',
     height: '100%',
+    width: '100%',
     paddingBottom: 100,
   },
   imagesListHeader: {
@@ -277,13 +299,9 @@ const style = StyleSheet.create({
     marginLeft: 10,
     paddingBottom: 0.5,
   },
-  imagesListContainer: {
-    marginTop: 15,
-    paddingVertical: 10,
-  },
   imageListButtonContainer: {
-    marginTop: 15,
-    paddingLeft: 18,
+    marginTop: 18,
+    paddingLeft: 14,
     paddingRight: 6,
     flexDirection: 'row',
     alignItems: 'center',
@@ -291,8 +309,8 @@ const style = StyleSheet.create({
     width: '100%',
   },
   imagesListButton: {
-    marginTop: 5,
-    width: 130,
+    marginTop: 3,
+    width: 120,
     paddingVertical: 6,
     borderWidth: 2,
     borderRadius: 290486,
@@ -303,13 +321,18 @@ const style = StyleSheet.create({
     color: colores.logo,
     fontFamily: tipoDeLetra.bold,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'center',
   },
+  imagesListContainer: {
+    marginTop: 20,
+  },
+  imagesListContent: {
+    paddingVertical: 10,
+  },
   imagesListAlbumText: {
-    paddingTop: 1,
     fontFamily: tipoDeLetra.bold,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: colores.negro,
   },

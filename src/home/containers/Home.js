@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, FlatList, Text, StyleSheet} from 'react-native';
+import {View, FlatList, Text, StyleSheet, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
 import Container from '../../generales/Container';
@@ -53,7 +53,7 @@ function Home({dispatch, navigation}) {
   );
 
   return (
-    <Container>
+    <>
       <View style={style.mainContainer}>
         <View style={style.logoContainer}>
           <Logo height={style.logo.height} width={style.logo.width} />
@@ -81,6 +81,7 @@ function Home({dispatch, navigation}) {
         {!loadingProject && !errorProject && (
           <FlatList
             style={style.projectsListContainer}
+            contentContainerStyle={style.projectsListContent}
             data={projects}
             renderItem={renderProjectCards}
             keyExtractor={(project) => project.id.toString()}
@@ -94,7 +95,7 @@ function Home({dispatch, navigation}) {
           </View>
         )}
       </View>
-    </Container>
+    </>
   );
 }
 const style = StyleSheet.create({
@@ -118,6 +119,10 @@ const style = StyleSheet.create({
   },
   projectsListContainer: {
     width: '100%',
+  },
+  projectsListContent: {
+    paddingBottom: 60,
+    paddingHorizontal: 12,
   },
   projectText: {
     ...estiloDeLetra.negrita,

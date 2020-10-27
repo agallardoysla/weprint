@@ -1,135 +1,209 @@
 import React, {Component} from 'react';
-import {TouchableOpacity, View, StyleSheet, Text} from 'react-native';
+import {TouchableHighlight, View, StyleSheet} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
 import {colores} from '../../constantes/Temas';
 import GeneralImage from '../../generales/GeneralImage';
 
-const BasicLayout = ({getSelectedImages, onPressImage}) => {
+const BasicLayout = ({
+  getSelectedImages,
+  panResponder,
+  onPressImage,
+  onSelectImage,
+}) => {
   const pieces = getSelectedImages(1);
   const piece = pieces[0];
 
+  const handleResponder = (evt) => {
+    if (!isNull(piece.file.uri)) {
+      onSelectImage(0);
+      panResponder.panHandlers.onResponderGrant(evt);
+    }
+  };
+
   return (
-    <TouchableOpacity style={style.basicWrapper} onPress={onPressImage}>
-      <GeneralImage
-        base64={piece.file.base64}
-        uri={piece.file.base64}
-        styleImg={style.imageSize}
-      />
-    </TouchableOpacity>
+    <View
+      {...panResponder.panHandlers}
+      onResponderGrant={handleResponder}
+      style={style.basicWrapper}>
+      <TouchableHighlight onPress={onPressImage}>
+        <GeneralImage
+          base64={piece.file.base64}
+          uri={piece.file.base64}
+          styleImg={style.imageSize}
+        />
+      </TouchableHighlight>
+    </View>
   );
 };
 
-const TwoLayouts = ({getSelectedImages, onPressImage}) => {
+const TwoLayouts = ({
+  getSelectedImages,
+  panResponder,
+  onPressImage,
+  onSelectImage,
+}) => {
   const pieces = getSelectedImages(2);
 
   return (
     <View style={style.twoColumnsWrapper}>
-      <TouchableOpacity
-        style={style.largeWrapper}
-        onPress={onPressImage}
-        key={pieces[0].order.toString()}>
-        <GeneralImage
-          base64={pieces[0].file.base64}
-          uri={pieces[0].file.uri}
-          styleImg={style.imageSize}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={style.largeWrapper}
-        onPress={onPressImage}
-        key={pieces[1].order.toString()}>
-        <GeneralImage
-          base64={pieces[1].file.base64}
-          uri={pieces[1].file.uri}
-          styleImg={style.imageSize}
-        />
-      </TouchableOpacity>
+      {pieces.map((piece, index) => {
+        const handleResponder = (evt) => {
+          if (!isNull(piece.file.uri)) {
+            onSelectImage(index);
+            panResponder.panHandlers.onResponderGrant(evt);
+          }
+        };
 
-      {/*pieces.map((piece) => {
         return (
-          <TouchableOpacity
+          <View
+            {...panResponder.panHandlers}
             style={style.largeWrapper}
-            onPress={onPressImage}
-            key={piece.order.toString()}>
-            <GeneralImage
-              base64={piece.file.base64}
-              uri={piece.file.uri}
-              styleImg={style.imageSize}
-            />
-          </TouchableOpacity>
+            key={piece.order.toString()}
+            onResponderGrant={handleResponder}>
+            <TouchableHighlight onPress={onPressImage}>
+              <GeneralImage
+                base64={piece.file.base64}
+                uri={piece.file.uri}
+                styleImg={style.imageSize}
+              />
+            </TouchableHighlight>
+          </View>
         );
-      })*/}
+      })}
     </View>
   );
 };
 
-const ThirdLayout = ({getSelectedImages, onPressImage}) => {
+const ThirdLayout = ({
+  getSelectedImages,
+  panResponder,
+  onPressImage,
+  onSelectImage,
+}) => {
   const pieces = getSelectedImages(4);
   const firstColumnPiece = pieces[0];
   const secondColumnPieces = pieces.slice(1, 4);
 
+  const handleFirstPieceResponder = (evt) => {
+    if (!isNull(firstColumnPiece.file.uri)) {
+      onSelectImage(0);
+      panResponder.panHandlers.onResponderGrant(evt);
+    }
+  };
+
   return (
     <View style={style.twoColumnsWrapper}>
-      <TouchableOpacity style={style.largeWrapper} onPress={onPressImage}>
-        <GeneralImage
-          base64={firstColumnPiece.file.base64}
-          uri={firstColumnPiece.file.uri}
-          styleImg={style.imageSize}
-        />
-      </TouchableOpacity>
+      <View
+        {...panResponder.panHandlers}
+        onResponderGrant={handleFirstPieceResponder}
+        style={style.largeWrapper}>
+        <TouchableHighlight onPress={onPressImage}>
+          <GeneralImage
+            base64={firstColumnPiece.file.base64}
+            uri={firstColumnPiece.file.uri}
+            styleImg={style.imageSize}
+          />
+        </TouchableHighlight>
+      </View>
       <View style={style.largeWrapper}>
-        {secondColumnPieces.map((piece) => (
-          <TouchableOpacity
-            style={style.minWrapper}
-            onPress={onPressImage}
-            key={piece.order.toString()}>
-            <GeneralImage
-              base64={piece.file.base64}
-              uri={piece.file.uri}
-              styleImg={style.imageSize}
-            />
-          </TouchableOpacity>
-        ))}
+        {secondColumnPieces.map((piece, index) => {
+          const handleResponder = (evt) => {
+            if (!isNull(piece.file.uri)) {
+              onSelectImage(index + 1);
+              panResponder.panHandlers.onResponderGrant(evt);
+            }
+          };
+
+          return (
+            <View
+              key={piece.order.toString()}
+              style={style.minWrapper}
+              {...panResponder.panHandlers}
+              onResponderGrant={handleResponder}>
+              <TouchableHighlight onPress={onPressImage}>
+                <GeneralImage
+                  base64={piece.file.base64}
+                  uri={piece.file.uri}
+                  styleImg={style.imageSize}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
 };
 
-const FourthLayout = ({getSelectedImages, onPressImage}) => {
+const FourthLayout = ({
+  getSelectedImages,
+  panResponder,
+  onPressImage,
+  onSelectImage,
+}) => {
   const pieces = getSelectedImages(3);
   const firstColumnPieces = pieces.slice(1, 3);
   const secondColumnPiece = pieces[0];
 
+  const handleFirstPieceResponder = (evt) => {
+    if (!isNull(secondColumnPiece.file.uri)) {
+      onSelectImage(0);
+      panResponder.panHandlers.onResponderGrant(evt);
+    }
+  };
+
   return (
     <View style={style.twoColumnsWrapper}>
       <View style={style.largeWrapper}>
-        {firstColumnPieces.map((piece) => (
-          <TouchableOpacity
-            style={style.squareWrapper}
-            onPress={onPressImage}
-            key={piece.order.toString()}>
-            <GeneralImage
-              base64={piece.file.base64}
-              uri={piece.file.uri}
-              styleImg={style.imageSize}
-            />
-          </TouchableOpacity>
-        ))}
+        {firstColumnPieces.map((piece, index) => {
+          const handleResponder = (evt) => {
+            if (!isNull(piece.file.uri)) {
+              onSelectImage(index + 1);
+              panResponder.panHandlers.onResponderGrant(evt);
+            }
+          };
+
+          return (
+            <View
+              key={piece.order.toString()}
+              style={style.squareWrapper}
+              {...panResponder.panHandlers}
+              onResponderGrant={handleResponder}>
+              <TouchableHighlight onPress={onPressImage}>
+                <GeneralImage
+                  base64={piece.file.base64}
+                  uri={piece.file.uri}
+                  styleImg={style.imageSize}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        })}
       </View>
-      <TouchableOpacity style={style.largeWrapper} onPress={onPressImage}>
-        <GeneralImage
-          base64={secondColumnPiece.file.base64}
-          uri={secondColumnPiece.file.uri}
-          styleImg={style.imageSize}
-        />
-      </TouchableOpacity>
+      <View
+        style={style.largeWrapper}
+        {...panResponder.panHandlers}
+        onResponderGrant={handleFirstPieceResponder}>
+        <TouchableHighlight onPress={onPressImage}>
+          <GeneralImage
+            base64={secondColumnPiece.file.base64}
+            uri={secondColumnPiece.file.uri}
+            styleImg={style.imageSize}
+          />
+        </TouchableHighlight>
+      </View>
     </View>
   );
 };
 
-const FifthLayout = ({getSelectedImages, onPressImage}) => {
+const FifthLayout = ({
+  getSelectedImages,
+  panResponder,
+  onPressImage,
+  onSelectImage,
+}) => {
   const pieces = getSelectedImages(4);
   const firstColumnPieces = pieces.slice(0, 2);
   const secondColumnPieces = pieces.slice(2, 4);
@@ -137,32 +211,56 @@ const FifthLayout = ({getSelectedImages, onPressImage}) => {
   return (
     <View style={style.twoColumnsWrapper}>
       <View style={style.largeWrapper}>
-        {firstColumnPieces.map((piece) => (
-          <TouchableOpacity
-            style={style.squareWrapper}
-            onPress={onPressImage}
-            key={piece.order.toString()}>
-            <GeneralImage
-              base64={piece.file.base64}
-              uri={piece.file.uri}
-              styleImg={style.imageSize}
-            />
-          </TouchableOpacity>
-        ))}
+        {firstColumnPieces.map((piece, index) => {
+          const handleResponder = (evt) => {
+            if (!isNull(piece.file.uri)) {
+              onSelectImage(index);
+              panResponder.panHandlers.onResponderGrant(evt);
+            }
+          };
+
+          return (
+            <View
+              key={piece.order.toString()}
+              style={style.squareWrapper}
+              {...panResponder.panHandlers}
+              onResponderGrant={handleResponder}>
+              <TouchableHighlight onPress={onPressImage}>
+                <GeneralImage
+                  base64={piece.file.base64}
+                  uri={piece.file.uri}
+                  styleImg={style.imageSize}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        })}
       </View>
       <View style={style.largeWrapper}>
-        {secondColumnPieces.map((piece) => (
-          <TouchableOpacity
-            style={style.squareWrapper}
-            onPress={onPressImage}
-            key={piece.order.toString()}>
-            <GeneralImage
-              base64={piece.file.base64}
-              uri={piece.file.uri}
-              styleImg={style.imageSize}
-            />
-          </TouchableOpacity>
-        ))}
+        {secondColumnPieces.map((piece, index) => {
+          const handleResponder = (evt) => {
+            if (!isNull(piece.file.uri)) {
+              onSelectImage(index + 2);
+              panResponder.panHandlers.onResponderGrant(evt);
+            }
+          };
+
+          return (
+            <View
+              key={piece.order.toString()}
+              style={style.squareWrapper}
+              {...panResponder.panHandlers}
+              onResponderGrant={handleResponder}>
+              <TouchableHighlight onPress={onPressImage}>
+                <GeneralImage
+                  base64={piece.file.base64}
+                  uri={piece.file.uri}
+                  styleImg={style.imageSize}
+                />
+              </TouchableHighlight>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
@@ -197,14 +295,18 @@ class CartLayoutWrapper extends Component {
   };
 
   renderWrapper = () => {
-    const {onPressImage, page} = this.props;
+    const {onPressImage, onSelectPieceItem, page, panResponder} = this.props;
     const {layout_id: layoutId} = page;
+
+    const handleSelectImage = (index) => onSelectPieceItem(page, index);
 
     if (isNull(layoutId) || layoutId === 1) {
       return (
         <BasicLayout
           getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
+          onSelectImage={handleSelectImage}
+          panResponder={panResponder}
         />
       );
     } else if (layoutId === 2) {
@@ -212,6 +314,8 @@ class CartLayoutWrapper extends Component {
         <TwoLayouts
           getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
+          onSelectImage={handleSelectImage}
+          panResponder={panResponder}
         />
       );
     } else if (layoutId === 3) {
@@ -219,6 +323,8 @@ class CartLayoutWrapper extends Component {
         <ThirdLayout
           getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
+          onSelectImage={handleSelectImage}
+          panResponder={panResponder}
         />
       );
     } else if (layoutId === 4) {
@@ -226,6 +332,8 @@ class CartLayoutWrapper extends Component {
         <FourthLayout
           getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
+          onSelectImage={handleSelectImage}
+          panResponder={panResponder}
         />
       );
     } else if (layoutId === 5) {
@@ -233,6 +341,8 @@ class CartLayoutWrapper extends Component {
         <FifthLayout
           getSelectedImages={this.getSelectedImages}
           onPressImage={onPressImage}
+          onSelectImage={handleSelectImage}
+          panResponder={panResponder}
         />
       );
     }
@@ -245,6 +355,8 @@ class CartLayoutWrapper extends Component {
 
 CartLayoutWrapper.defaultProps = {
   onPressImage: () => {},
+  onSelectPieceItem: () => {},
+  panResponder: {},
 };
 
 const style = StyleSheet.create({

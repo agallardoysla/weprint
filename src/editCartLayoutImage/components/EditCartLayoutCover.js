@@ -15,9 +15,11 @@ const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
 
   return (
     <>
-      <View style={style.basicLayoutItem}>
+      <View style={style.basicLayout}>
         {piece.file.uri ? (
-          <TouchableOpacity onPress={handleEditPhoto}>
+          <TouchableOpacity
+            style={style.basicLayoutItem}
+            onPress={handleEditPhoto}>
             <GeneralImage
               styleImg={style.basicLayoutItem}
               uri={piece.file.uri}
@@ -51,7 +53,7 @@ const TwoCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
       {pieces.map((piece, index) => {
         const handleEditPhoto = () => onEditPhoto(piece.file);
         return (
-          <View style={style.layoutLargeItem} key={index}>
+          <View style={{...style.layoutLargeItem, width: '50%'}} key={index}>
             {piece.file.uri ? (
               <TouchableOpacity onPress={handleEditPhoto}>
                 <GeneralImage
@@ -93,7 +95,7 @@ const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
-      <View style={(style.layoutLargeItem, {width: '60%', marginBottom: 10})}>
+      <View style={{...style.layoutLargeItem, width: '65%'}}>
         {firstColumnPiece.file.uri ? (
           <TouchableOpacity onPress={handleOnEditFirstImage}>
             <GeneralImage
@@ -112,7 +114,11 @@ const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
           </TouchableOpacity>
         )}
       </View>
-      <View style={(style.layoutLargeItem, {width: '35%'})}>
+      <View
+        style={{
+          ...style.layoutLargeItem,
+          width: '35%',
+        }}>
         {secondColumnPieces.map((piece, index) => {
           const handleEditPhoto = () => onEditPhoto(piece.file);
           return (
@@ -163,7 +169,7 @@ const FourthCartLayout = ({
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
-      <View style={(style.layoutLargeItem, {width: '45%'})}>
+      <View style={{...style.layoutLargeItem, width: '40%'}}>
         {firstColumnPieces.map((piece, index) => {
           const handleEditPhoto = () => onEditPhoto(piece.file);
           return (
@@ -171,7 +177,7 @@ const FourthCartLayout = ({
               key={index}
               style={{
                 ...style.layoutSquareItem,
-                height: '45%',
+                height: '49.5%',
               }}>
               {piece.file.uri ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
@@ -194,7 +200,7 @@ const FourthCartLayout = ({
           );
         })}
       </View>
-      <View style={(style.layoutLargeItem, {width: '50%', marginBottom: 10})}>
+      <View style={{...style.layoutLargeItem, width: '55%'}}>
         {secondColumnPiece.file.uri ? (
           <TouchableOpacity onPress={handleEditPhotoSecondColumn}>
             <GeneralImage
@@ -230,7 +236,7 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
 
   return (
     <View style={style.layoutTwoColumnsContainer}>
-      <View style={(style.layoutLargeItem, {width: '45%'})}>
+      <View style={{...style.layoutLargeItem, width: '50%'}}>
         {firstColumnPieces.map((piece, index) => {
           const handleEditPhoto = () => onEditPhoto(piece.file);
           return (
@@ -238,7 +244,8 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
               key={index}
               style={{
                 ...style.layoutSquareItem,
-                height: '45%',
+                marginBottom: 4,
+                height: '49%',
               }}>
               {piece.file.uri ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
@@ -261,7 +268,7 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
           );
         })}
       </View>
-      <View style={(style.layoutLargeItem, {width: '45%'})}>
+      <View style={{...style.layoutLargeItem, width: '50%'}}>
         {secondColumnPieces.map((piece, index) => {
           const handleEditPhoto = () => onEditPhoto(piece.file);
 
@@ -270,7 +277,8 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
               key={index}
               style={{
                 ...style.layoutSquareItem,
-                height: '45%',
+                marginBottom: 4,
+                height: '49%',
               }}>
               {piece.file.uri ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
@@ -370,16 +378,25 @@ const EditCartLayoutCover = ({
 
 const style = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 6,
   },
   container: {
-    height: 230,
+    height: 240,
     width: '100%',
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
     backgroundColor: colores.blanco,
+  },
+  basicLayout: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  layoutTwoColumnsContainer: {
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   basicLayoutItem: {
     height: '100%',
@@ -387,17 +404,12 @@ const style = StyleSheet.create({
   },
   layoutLargeItem: {
     height: '100%',
-    width: '45%',
-    marginHorizontal: 2,
+    marginHorizontal: 8,
   },
   layoutSquareItem: {
-    height: 60,
+    height: '32.3%',
     width: '100%',
-    marginBottom: 10,
-  },
-  layoutTwoColumnsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    marginBottom: 3,
   },
   selectImageWrapper: {
     width: '100%',

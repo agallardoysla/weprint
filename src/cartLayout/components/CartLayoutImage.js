@@ -40,7 +40,13 @@ class CartLayoutImage extends PureComponent {
   }
 
   render() {
-    const {page, panResponder, onRowHeight} = this.props;
+    const {
+      page,
+      panResponder,
+      onRowHeight,
+      onSelectPieceItem,
+      onResetPieceItem,
+    } = this.props;
     const {showModal} = this.state;
 
     return (
@@ -74,19 +80,24 @@ class CartLayoutImage extends PureComponent {
           </View>
         </Modal>
         <View style={style.cartLayoutImageMainContainer} onLayout={onRowHeight}>
-          <View style={style.cartLayoutImageBg} {...panResponder.panHandlers}>
+          <View style={style.cartLayoutImageBg}>
             <CartLayoutWrapper
+              panResponder={panResponder}
               page={page}
+              onSelectPieceItem={onSelectPieceItem}
               onPressImage={this.handleOnPressImage}
             />
           </View>
           <Text style={style.cartLayoutText}>Pg {page.number}</Text>
           <View
+            nativeID={page.number.toString()}
             style={
               this.pageIsOdd()
                 ? style.cartLayoutIconContainerRight
                 : style.cartLayoutIconContainer
-            }>
+            }
+            {...panResponder.panHandlers}
+            onResponderStart={onResetPieceItem}>
             <Icon name="move" size={15} color={colores.gris} />
           </View>
           <TouchableHighlight
@@ -122,10 +133,12 @@ const style = StyleSheet.create({
   },
   cartLayoutIconContainer: {
     position: 'absolute',
-    top: 100,
+    top: 92,
     left: 0,
     height: 18,
-    width: 20,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F6F8FA',
@@ -135,10 +148,12 @@ const style = StyleSheet.create({
   },
   cartLayoutIconContainerRight: {
     position: 'absolute',
-    top: 100,
+    top: 92,
     right: 0,
     height: 18,
-    width: 20,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F6F8FA',
@@ -151,7 +166,9 @@ const style = StyleSheet.create({
     top: -5,
     left: 0,
     height: 18,
-    width: 20,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.grisBgIconCart,
@@ -165,7 +182,9 @@ const style = StyleSheet.create({
     top: -5,
     right: 0,
     height: 18,
-    width: 20,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colores.grisBgIconCart,
