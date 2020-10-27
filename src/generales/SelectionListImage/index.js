@@ -9,13 +9,14 @@ import {colores, tipoDeLetra} from '../../constantes/Temas';
 const SelectionListImage = ({
   minQuantity,
   maxQuantity,
+  preSelectedImages,
   onPressGoToBack,
   onResponse,
 }) => {
   const [selectedAlbum, setSelectedAlbum] = useState('');
   const [loading, setLoading] = useState(false);
   const [showImagesList, setShowImagesList] = useState(false);
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedImages, setSelectedImages] = useState(preSelectedImages);
   const [hasMaxQuantity, setHasMaxQuantity] = useState(false);
 
   const handleOnPressSelectAlbum = (albumTitle) => {
@@ -90,6 +91,7 @@ const SelectionListImage = ({
       {showImagesList ? (
         <ImagesList
           albumTitle={selectedAlbum}
+          preSelectedImages={preSelectedImages}
           selectedImages={selectedImages}
           onSelectImages={handleSelectImages}
           onPressGoToAlbum={handleOnPressGoToAlbumList}
@@ -172,6 +174,7 @@ const style = StyleSheet.create({
 SelectionListImage.defaultProps = {
   minQuantity: 1,
   maxQuantity: 0,
+  preSelectedImages: [],
 };
 
 export default SelectionListImage;

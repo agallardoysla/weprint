@@ -4,17 +4,18 @@ import {
   StyleSheet,
   Animated,
   View,
-  TouchableOpacity,
+  Alert,
   TouchableHighlight,
   PanResponder,
   Dimensions,
 } from 'react-native';
 import concat from 'lodash/concat';
 import isNull from 'lodash/isNull';
+import fill from 'lodash/fill';
 import CartLayoutCover from './CartLayoutCover';
 import CartLayoutImage from './CartLayoutImage';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import orderBy from 'lodash/orderBy';
+import GeneralImage from '../../generales/GeneralImage';
 import CartLayoutWrapper from './CartLayoutWrapper';
 import {colores} from '../../constantes/Temas';
 
@@ -22,7 +23,6 @@ class CartLayoutListImage extends PureComponent {
   point = new Animated.ValueXY();
   currentY = 0;
   currentX = 0;
-
   scrollOffset = 0;
   flatlistTopOffset = 0;
   flatlistHeight = 0;
@@ -35,6 +35,7 @@ class CartLayoutListImage extends PureComponent {
   active = false;
   timeoutId = null;
   moveTimeOutId = null;
+  editItemTimoutId = null;
 
   constructor(props) {
     super(props);
@@ -43,13 +44,18 @@ class CartLayoutListImage extends PureComponent {
       dragging: false,
       draggingIdx: -1,
       pages: props.preSelectedCart.pages,
+      piece: {
+        position: null,
+        pageNumber: null,
+        file: {},
+      },
     };
 
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
       onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
 
       onPanResponderGrant: (evt, gestureState) => {
         this.currentY = gestureState.y0;
@@ -71,29 +77,30 @@ class CartLayoutListImage extends PureComponent {
         this.timeoutId = setTimeout(() => {
           this.currentIdx = this.getCurrentIndex(row, column);
           this.active = true;
-
           this.setState({
             ...this.state,
             dragging: true,
             draggingIdx: this.currentIdx,
           });
-        }, 400);
+        }, 300);
       },
       onPanResponderMove: (evt, gestureState) => {
         this.currentY = gestureState.moveY;
         this.currentX = gestureState.moveX;
 
-        this.moveTimeOutId = setTimeout(() => {
-          Animated.event([{y: this.point.y, x: this.point.x}], {
-            useNativeDriver: false,
-          })(
-            {
-              y: this.currentY,
-              x: this.currentX,
-            },
-            {},
-          );
-        }, 100);
+        if (this.active) {
+          this.moveTimeOutId = setTimeout(() => {
+            Animated.event([{y: this.point.y, x: this.point.x}], {
+              useNativeDriver: false,
+            })(
+              {
+                y: this.currentY - this.rowHeight / 2,
+                x: this.currentX,
+              },
+              {},
+            );
+          }, 100);
+        }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => false,
       onPanResponderRelease: (evt, gestureState) => {
@@ -123,36 +130,150 @@ class CartLayoutListImage extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeoutId);
+    clearTimeout(this.moveTimeOutId);
+    clearTimeout(this.editItemTimoutId);
+  }
+
+  handleSelectPieceItem = (page, position) => {
+    clearTimeout(this.editItemTimoutId);
+
+    this.editItemTimoutId = setTimeout(() => {
+      const piece = {
+        position,
+        pageNumber: page.number,
+        file: page.pieces[position].file,
+      };
+
+      this.setState({...this.state, piece});
+    }, 70);
+  };
+
   handleChangePage = () => {
     if (
       this.newIdx >= 0 &&
       this.currentIdx >= 0 &&
       this.newIdx !== this.currentIdx
     ) {
-      const {onSavePages} = this.props;
-      const {pages} = this.state;
+      const {piece} = this.state;
 
-      const pageFrom = pages[this.currentIdx];
-      const pageTo = pages[this.newIdx];
-      const newPages = pages.map((page) => ({...page}));
+      if (isNull(piece.position)) {
+        this.handleChangeFullPiece();
+      } else {
+        this.handleAddPiece();
+      }
 
-      newPages[this.currentIdx] = {
-        ...pageFrom,
-        layout_id: pageTo.layout_id,
-        pieces: pageTo.pieces.map((piece) => ({...piece})),
-      };
-
-      newPages[this.newIdx] = {
-        ...pageTo,
-        layout_id: pageFrom.layout_id,
-        pieces: pageFrom.pieces.map((piece) => ({...piece})),
-      };
-
-      onSavePages(newPages);
+      this.resetPiece();
     }
 
     this.newIdx = -1;
     this.currentIdx = -1;
+  };
+
+  handleAddPiece = () => {
+    const {onSavePages} = this.props;
+    const {pages, piece} = this.state;
+    const pageFrom = pages[this.currentIdx];
+    const pageTo = pages[this.newIdx];
+    const newPages = pages.map((page) => ({...page}));
+    const allPiecesFrom = pageFrom.pieces.map((piece) => ({...piece}));
+    const allPiecesTo = pageTo.pieces.map((piece) => ({...piece}));
+
+    if (allPiecesTo.length === 4) {
+      Alert.alert('No puedes agregar más piezas :C');
+    } else {
+      allPiecesTo.unshift({file: piece.file});
+      allPiecesFrom.splice(piece.position, 1);
+
+      const allPiecesToFilled = this.fillEmptySpace(
+        pageTo.layout_id,
+        allPiecesTo,
+      );
+
+      const layoutId = this.getLayoutId(pageTo.layout_id, allPiecesToFilled);
+      const newPieces = this.orderPieces(allPiecesTo);
+      newPages[this.newIdx].layout_id = layoutId;
+      newPages[this.newIdx].pieces = newPieces;
+
+      if (allPiecesFrom.length === 0) {
+        newPages[this.currentIdx].pieces = [];
+      } else {
+        const layoutIdFrom = this.getLayoutId(
+          pageFrom.layout_id,
+          allPiecesFrom,
+        );
+
+        newPages[this.currentIdx].layout_id = layoutIdFrom;
+        newPages[this.currentIdx].pieces = this.orderPieces(allPiecesFrom);
+      }
+
+      onSavePages(newPages);
+    }
+  };
+
+  fillEmptySpace = (layoutId, pieces) => {
+    let totalSpace = layoutId;
+
+    if (layoutId === 3 || layoutId === 5) {
+      totalSpace = 4;
+    } else if (layoutId === 4) {
+      totalSpace = 3;
+    }
+
+    if (pieces.length < totalSpace) {
+      const totalEmpty = totalSpace - pieces.length;
+      const fillEmptySpace = fill(Array(totalEmpty), {
+        file: {
+          base64: null,
+          uri: null,
+        },
+      });
+
+      return concat(pieces, fillEmptySpace);
+    }
+    return pieces;
+  };
+
+  orderPieces = (pieces) =>
+    pieces.map((piece, index) => ({...piece, order: index}));
+
+  getLayoutId = (currentLayoutId, pieces) => {
+    const totalPiecesLayout = pieces.length;
+
+    let layoutId = totalPiecesLayout;
+
+    if (totalPiecesLayout === 3) {
+      layoutId = 4;
+    } else if (totalPiecesLayout === 4 && currentLayoutId === 3) {
+      layoutId = 3;
+    } else if (totalPiecesLayout === 4) {
+      layoutId = 5;
+    }
+
+    return layoutId;
+  };
+
+  handleChangeFullPiece = () => {
+    const {onSavePages} = this.props;
+    const {pages} = this.state;
+    const pageFrom = pages[this.currentIdx];
+    const pageTo = pages[this.newIdx];
+    const newPages = pages.map((page) => ({...page}));
+
+    newPages[this.currentIdx] = {
+      ...pageFrom,
+      layout_id: pageTo.layout_id,
+      pieces: pageTo.pieces.map((piece) => ({...piece})),
+    };
+
+    newPages[this.newIdx] = {
+      ...pageTo,
+      layout_id: pageFrom.layout_id,
+      pieces: pageFrom.pieces.map((piece) => ({...piece})),
+    };
+
+    onSavePages(newPages);
   };
 
   animateList = () => {
@@ -197,6 +318,22 @@ class CartLayoutListImage extends PureComponent {
     this.setState({...this.state, dragging: false, draggingIdx: -1});
     clearTimeout(this.timeoutId);
     clearTimeout(this.moveTimeOutId);
+    clearTimeout(this.editItemTimoutId);
+  };
+
+  resetPiece = () => {
+    const {piece} = this.state;
+
+    if (!isNull(piece.position)) {
+      this.setState({
+        ...this.state,
+        piece: {
+          position: null,
+          pageNumber: null,
+          file: {},
+        },
+      });
+    }
   };
 
   handleLayoutFlatlist = (e) => {
@@ -224,9 +361,7 @@ class CartLayoutListImage extends PureComponent {
     const defaultPage = {
       layout_id: null,
       number: numberPage,
-      pieces: [
-        {order: numberPage, file: {uri: null, base64: null, node: null}},
-      ],
+      pieces: [],
     };
 
     const selectedPages = concat(pages);
@@ -282,7 +417,7 @@ class CartLayoutListImage extends PureComponent {
     return (
       <View style={{marginLeft: 4}}>
         <TouchableHighlight
-          underlayColor={'rgba(0, 0, 0, 0.5)'}
+          underlayColor={'rgba(255, 255, 255, 0.7)'}
           activeOpacity={0.2}
           style={style.cartLayoutIconContainer}
           onPress={handleOnPress}>
@@ -301,6 +436,8 @@ class CartLayoutListImage extends PureComponent {
         panResponder={this._panResponder}
         onGoToEditCartImage={onGoToEditCartImage}
         onDeletePage={this.handleDeletePage}
+        onSelectPieceItem={this.handleSelectPieceItem}
+        onResetPieceItem={this.resetPiece}
         onRowHeight={this.handleOnRowSize}
       />
     );
@@ -308,6 +445,7 @@ class CartLayoutListImage extends PureComponent {
 
   render() {
     const {pages, dragging, draggingIdx} = this.state;
+    const {piece} = this.state;
 
     return (
       <>
@@ -320,7 +458,15 @@ class CartLayoutListImage extends PureComponent {
                 {translateY: this.point.getLayout().top},
               ],
             }}>
-            <CartLayoutWrapper page={pages[draggingIdx]} />
+            {isNull(piece.pageNumber) ? (
+              <CartLayoutWrapper page={pages[draggingIdx]} />
+            ) : (
+              <GeneralImage
+                uri={pages[draggingIdx].pieces[piece.position].file.uri}
+                base64={pages[draggingIdx].pieces[piece.position].file.base64}
+                styleImg={style.cartLayoutImageSize}
+              />
+            )}
           </Animated.View>
         )}
         <FlatList
@@ -365,8 +511,9 @@ const style = StyleSheet.create({
     zIndex: 998,
   },
   cartLayoutImageSize: {
-    width: 91,
+    width: '50%',
     height: 100,
+    alignSelf: 'center',
   },
   cartLayoutOverlay: {
     position: 'absolute',
@@ -381,6 +528,8 @@ const style = StyleSheet.create({
     position: 'absolute',
     bottom: 35,
     width: 25,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',

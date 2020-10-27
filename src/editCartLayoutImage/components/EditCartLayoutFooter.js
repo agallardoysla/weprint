@@ -57,8 +57,6 @@ const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
         <Text
           style={{
             ...style.arrowText,
-            fontSize: 17,
-            fontWeight: '600',
           }}>
           Guardar cambios
         </Text>
@@ -75,12 +73,16 @@ const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
 
 const style = StyleSheet.create({
   footerContainer: {
-    height: 50,
+    position: 'absolute',
+    bottom: 0,
+    height: 60,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     width: '100%',
+    paddingBottom: 8,
     backgroundColor: colores.negro,
+    elevation: 3,
   },
 
   button: {
@@ -90,7 +92,12 @@ const style = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     backgroundColor: colores.logo,
-    transform: [{scale: 1}],
+    elevation: 3,
+    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    shadowOpacity: 0.8,
+    elevation: 6,
+    shadowRadius: 15,
+    shadowOffset: {width: 1, height: 13},
   },
   arrowContainer: {
     flexDirection: 'row',
@@ -99,7 +106,7 @@ const style = StyleSheet.create({
   arrowText: {
     color: colores.blanco,
     fontFamily: tipoDeLetra.regular,
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 

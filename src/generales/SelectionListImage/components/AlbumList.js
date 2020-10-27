@@ -39,8 +39,18 @@ const AlbumList = ({
   const getAlbumsFromPhone = useCallback(async () => {
     if (Platform.OS === 'android' && (await hasAndroidPermission())) {
       const albumsFromPhone = await CameraRoll.getAlbums({assetType: 'Photos'});
+      const albumsFormat = await Promise.all(
+        albumsFromPhone.map(async (album) => {
+          const response = await getPhotosByAlbumFromPhone(1, album.title);
 
-      setAlbums(albumsFromPhone);
+          return {
+            ...album,
+            firstImage: response.edges[0].node.image.uri,
+          };
+        }),
+      );
+
+      setAlbums(albumsFormat);
       setLoading(false);
     }
   }, [hasAndroidPermission, setAlbums, setLoading]);
@@ -61,18 +71,22 @@ const AlbumList = ({
   }, [getAlbumsFromPhone]);
 
   const renderAlbums = ({item: album}) => (
-    <AlbumItem
-      album={album}
-      getPhotosByAlbumFromPhone={getPhotosByAlbumFromPhone}
-      onPressSelectAlbum={onPressSelectAlbum}
-    />
+    <AlbumItem album={album} onPressSelectAlbum={onPressSelectAlbum} />
   );
+
+  const handlePressGotoBack = () => {
+    if (!loading) {
+      onPressGoToBack();
+    }
+  };
 
   const isSelectedStorage = (storageSelected) => storageSelected === storage;
 
   return (
     <View style={style.albumListMainContainer}>
-      <TouchableOpacity style={style.albumListHeader} onPress={onPressGoToBack}>
+      <TouchableOpacity
+        style={style.albumListHeader}
+        onPress={handlePressGotoBack}>
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <View style={style.albumListHeaderTextContainer}>
           <View>
@@ -179,10 +193,10 @@ const style = StyleSheet.create({
     },
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
-
     elevation: 4,
   },
   albumListHeaderText: {
+    paddingTop: 2,
     color: 'black',
     fontWeight: '600',
     fontSize: 19,
@@ -191,7 +205,7 @@ const style = StyleSheet.create({
     flexGrow: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginLeft: 12,
+    marginLeft: 14,
     paddingRight: 20,
     paddingBottom: 1,
   },
@@ -203,6 +217,7 @@ const style = StyleSheet.create({
     backgroundColor: colores.blanco,
   },
   albumListContent: {
+    width: '100%',
     paddingBottom: 40,
   },
   albumListSocialMediaContainer: {
