@@ -24,9 +24,9 @@ import logo from '../../../assets/images/logo_blanco.png';
 import AnimatedMessage from '../components/AnimatedMessage';
 import styles from '../styles/styles';
 import {getProvinces, getDiscricts} from '../../utils/apis/location_api';
-import {register_api} from '../../utils/apis/login_api'
+import {register_api} from '../../utils/apis/login_api';
 import {actualizarLogin} from '../../redux/reducer/login';
-import CargandoModal from '../../generales/CargandoModal'
+import CargandoModal from '../../generales/CargandoModal';
 
 function Register(props) {
   const {login, dispatch, navigation} = props;
@@ -65,7 +65,9 @@ function Register(props) {
     isValidDate: null,
   });
 
-  const [registerValidation, setRegisterValidation] = useState(null)
+  const [registerValidation, setRegisterValidation] = useState(null);
+
+  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -77,10 +79,9 @@ function Register(props) {
   useEffect(() => {
     if (locationSelector) {
       const disctrictData = getDiscricts(locationSelector).then((data) =>
-        setDiscrictLocation(data.data)
+        setDiscrictLocation(data.data),
       );
     }
-
   }, [locationSelector]);
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -109,23 +110,23 @@ function Register(props) {
       password: password.trim(),
       address: `${address.trim()}, ${comuna.trim()}, ${province.trim()}`,
       birthdate: bornDate.trim(),
-      district_id: districtId.trim(),
+      district_id: districtId,
     };
-    for(let value in textValidator ){
-      if(!textValidator[value]){
-        setRegisterValidation(false)
-        return false
-      } 
+    for (let value in textValidator) {
+      if (!textValidator[value]) {
+        setRegisterValidation(false);
+        return false;
+      }
     }
-    setRegisterValidation(true)
+    setRegisterValidation(true);
 
-    if(registerValidation === true){
-      setloading(true)
+    if (registerValidation === true) {
+      setloading(true);
       register_api(body).then((response) => {
         console.log(response);
         response.success && dispatch(actualizarLogin());
         response.errors && setError(true);
-        setloading(false)
+        setloading(false);
       });
     }
   };
@@ -138,8 +139,8 @@ function Register(props) {
     });
     setData({
       ...data,
-      [datakey]: value
-    })
+      [datakey]: value,
+    });
   };
 
   const pickValidation = (value, key, validateKey) => {
@@ -156,7 +157,6 @@ function Register(props) {
   };
 
   const handleDateChange = async (val) => {
-
     setShow(Platform.OS === 'ios');
     let date = new Date(val.nativeEvent.timestamp);
     let dateParse = JSON.stringify(date);
@@ -178,7 +178,7 @@ function Register(props) {
 
   return (
     <Container footer={false}>
-      <CargandoModal title="Validando, porfavor espere..." show={loading} /> 
+      <CargandoModal title="Validando, porfavor espere..." show={loading} />
       <ScrollView>
         <StatusBar backgroundColor="#ff7b7f" barStyle="light-content" />
         <LinearGradient
@@ -210,11 +210,9 @@ function Register(props) {
               <Text style={styles.subtitleform}>
                 ¡Vamos! tan solo son unos cuantos datos que necesitamos.
               </Text>
-              {
-                registerValidation === false && (
-                  <AnimatedMessage message="Completar datos *" />
-                )
-              }
+              {registerValidation === false && (
+                <AnimatedMessage message="Completar datos *" />
+              )}
               <View style={styles.action}>
                 <Text style={{marginVertical: 10}}>Nombre</Text>
                 <TextInput
@@ -260,6 +258,12 @@ function Register(props) {
                   onChangeText={(val) =>
                     textDataValidation(val, 2, 'isValidEmail', 'email')
                   }
+                  onEndEditing={(e) =>{
+                    regexMail.test(e.nativeEvent.text.trim()) === false && setTextValidator({
+                      ...textValidator,
+                      isValidEmail: false,
+                    })
+                  }}
                 />
                 {textValidator.isValidEmail === false && (
                   <AnimatedMessage message="Ingresa un email valido!" />
@@ -273,9 +277,10 @@ function Register(props) {
                   onChangeText={(val) =>
                     textDataValidation(val, 8, 'isValidPassword', 'password')
                   }
+                  secureTextEntry={true}
                 />
                 {textValidator.isValidPassword === false && (
-                  <AnimatedMessage message="Ingresa un password valido!" />
+                  <AnimatedMessage message="La contraseña debe tener mas de 8 caracteres" />
                 )}
               </View>
 
@@ -284,12 +289,17 @@ function Register(props) {
                 <TextInput
                   style={styles.registerInput}
                   onChangeText={(val) =>
-                    setTextValidator({...textValidator, isValidRepeatPassword: val === data.password ? true : false})
+                    setTextValidator({
+                      ...textValidator,
+                      isValidRepeatPassword:
+                        val === data.password ? true : false,
+                    })
                   }
-                  onEndEditing={(val) =>  console.log(val.currentTarget)}
+                  onEndEditing={(val) => console.log(val.currentTarget)}
+                  secureTextEntry={true}
                 />
                 {textValidator.isValidRepeatPassword === false && (
-                  <AnimatedMessage message="Los password no coinciden!" />
+                  <AnimatedMessage message="Las contraseñas no coinciden!" />
                 )}
               </View>
 
@@ -310,12 +320,17 @@ function Register(props) {
                 <Text style={{marginVertical: 10}}> Provincia</Text>
                 <Picker
                   selectedValue={locationSelector}
-                  onValueChange={(val) =>{
-                    textDataValidation(provinceLocation.find(province => province.id === val).name, 0, 'isValidProvinceSelected', 'province')
-                    setLocationSelector(val)
-                    setData({...data, districtId: val})
-                   }
-                  }
+                  onValueChange={(val) => {
+                    textDataValidation(
+                      provinceLocation.find((province) => province.id === val)
+                        .name,
+                      0,
+                      'isValidProvinceSelected',
+                      'province',
+                    );
+                    setLocationSelector(val);
+                    setData({...data, districtId: val});
+                  }}
                   itemStyle={{height: 120}}>
                   <Picker.Item label={'- Seleccione -'} value="" />
                   {provinceLocation.map((province) => (
@@ -379,7 +394,7 @@ function Register(props) {
                         textAlign: 'center',
                         marginVertical: 10,
                       }}>
-                      Ingresa una fecha!
+                      Ingresa tu fecha de nacimiento
                     </Text>
                   </Animatable.View>
                 )}

@@ -50,7 +50,7 @@ public class MainApplication extends androidx.multidex.MultiDexApplication imple
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
-    initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    //initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
   /**

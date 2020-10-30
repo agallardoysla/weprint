@@ -31,18 +31,14 @@ export const register_api = async (body) => {
   return postToken(body, '/register');
 };
 
-export const login_api = async (body = example.login) => {
+export const login_api = async (body) => {
   return postToken(body, '/login');
 };
 
-export const update_user_api = async (body = example.update) => {
-  return put(body, '/profile');
+export const update_user_api = async (body) => {
+  return put('/profile', body);
 };
 
 export const get_profile_api = async () => {
   return get('/profile');
-};
-
-export const del_repository_api = async () => {
-  del('/repository/1');
 };

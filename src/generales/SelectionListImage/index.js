@@ -6,6 +6,7 @@ import ImagesList from './components/ImagesList';
 import Cargando from '../Cargando';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
+//Funciona como un modal
 const SelectionListImage = ({
   minQuantity,
   maxQuantity,

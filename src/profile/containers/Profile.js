@@ -21,6 +21,9 @@ function Profile({navigation, dispatch}) {
       setLoading(false)
     });
   }, [])
+
+  console.log(userData)
+
   return (
     <Container>
       <CargandoModal title="Cargando" show={loading} />
@@ -39,13 +42,24 @@ function Profile({navigation, dispatch}) {
               icon="shopping-basket"
               color="#f18263"
             />
-            <MenuItem name="Mis Borradores" icon="edit" color="#50c8ff" />
+            <MenuItem 
+              name="Mis Borradores" 
+              icon="edit" 
+              color="#50c8ff" 
+              onPressFunction={() => navigation.navigate('Drafts', userData.photo)}
+            />
             <MenuItem
               name="Mis Albunes compartidos"
               icon="insert-photo"
               color="#5d58e0"
+              onPressFunction={() => navigation.navigate('Album')}
             />
-            <MenuItem name="Mis repositorios" icon="folder" color="#e0bb2e" />
+            <MenuItem 
+              name="Mis repositorios" 
+              icon="folder" 
+              color="#e0bb2e" 
+              onPressFunction={() => navigation.navigate('Repositories')}
+            />
             <MenuItem
               name="Politicas de Privacidad"
               icon="policy"

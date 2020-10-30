@@ -4,22 +4,33 @@ import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from 'redux-persist'; //NO BORRAR
-
-import Cargando from './src/generales/Cargando';
 import Navigate from './src/Navigate';
 
 import {store, persistor} from './src/redux/store';
+import CargandoModal from './src/generales/CargandoModal';
+
+import messaging from '@react-native-firebase/messaging';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 const App: () => React$Node = () => {
   const renderLoading = () => (
     <View style={styles.container}>
-      <Cargando />
+      <CargandoModal transparentBackground={false} />
     </View>
   );
 
   useEffect(() => {
     //limpiar persist
     //persistStore(store).purge();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('Push notify', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
   }, []);
 
   return (
@@ -37,7 +48,6 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'red',
   },
 });
 export default App;

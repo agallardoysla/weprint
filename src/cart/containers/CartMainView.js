@@ -9,9 +9,10 @@ import { colores, estiloDeLetra } from '../../constantes/Temas';
 import { ProductItem } from '../components/ProductItem'
 import { Header } from '../../generales/Header'
 
-function CartMainView({dispatch, navigation}) {
-
-  const [isCartEmpty, setCartEmpty] = useState(true)  
+function CartMainView({dispatch, navigation, items}) {
+  const [isCartEmpty, setCartEmpty] = useState(Object.keys(items.shortlisted).length !== 0 ? false : true)  
+  const [itemData, setItemData] = useState(Object.values(items.shortlisted))  
+  console.log(items)
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -37,13 +38,15 @@ function CartMainView({dispatch, navigation}) {
                     </View>
                 </View>
               ) : (
-                <View style={{width: '100%', height: '100%'}}>
+                <View style={{width: '100%', height: '100%', flex: 1, paddingBottom: '25%'}}>
                     <Text style={{...estiloDeLetra.negrita, marginTop: 30, marginLeft: 30}}>Productos en tu cesta</Text>
-                    <ProductItem />
-                    <ProductItem />
-                    <ProductItem />
+                      {
+                        itemData.map((item, key)=>{
+                            return <ProductItem key={key} {...item} />
+                        })
+                      }
                     <View style={{width: '80%', padding: 20, backgroundColor: colores.blanco, elevation: 2, borderRadius: 50, alignSelf: 'center', marginBottom: 30}}>
-                        <TouchableWithoutFeedback onPress={() => navigation.push("Home")}>
+                        <TouchableWithoutFeedback onPress={() => navigation.push("ConfirmCart", {itemData})}>
                                 <Text style={{textAlign: 'center', ...estiloDeLetra.negrita, color: colores.dorado}}>IR A COMPRAR</Text>
                         </TouchableWithoutFeedback>
                     </View>
@@ -56,5 +59,5 @@ function CartMainView({dispatch, navigation}) {
   );
 }
 
-const mapStateToProps = (state) => ({login: state.login});
+const mapStateToProps = (state) => ({login: state.login, items: state.cart});
 export default connect(mapStateToProps)(CartMainView);
