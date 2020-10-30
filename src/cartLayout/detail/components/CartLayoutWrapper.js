@@ -3,8 +3,8 @@ import {TouchableHighlight, View, StyleSheet} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
-import {colores} from '../../constantes/Temas';
-import GeneralImage from '../../generales/GeneralImage';
+import {colores} from '../../../constantes/Temas';
+import GeneralImage from '../../../generales/GeneralImage';
 
 const BasicLayout = ({
   getSelectedImages,

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import CartLayoutWrapper from './CartLayoutWrapper';
 

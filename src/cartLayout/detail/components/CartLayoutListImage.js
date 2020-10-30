@@ -15,9 +15,9 @@ import fill from 'lodash/fill';
 import CartLayoutCover from './CartLayoutCover';
 import CartLayoutImage from './CartLayoutImage';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import GeneralImage from '../../generales/GeneralImage';
+import GeneralImage from '../../../generales/GeneralImage';
 import CartLayoutWrapper from './CartLayoutWrapper';
-import {colores} from '../../constantes/Temas';
+import {colores} from '../../../constantes/Temas';
 
 class CartLayoutListImage extends PureComponent {
   point = new Animated.ValueXY();

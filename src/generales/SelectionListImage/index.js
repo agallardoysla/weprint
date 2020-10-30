@@ -73,6 +73,10 @@ const SelectionListImage = ({
     }
   };
 
+  const renderButtom = () => {
+    return showImagesList || (!showImagesList && hasMinQuantitiy());
+  };
+
   useEffect(() => {
     if (maxQuantity > 0 && selectedImages.length === maxQuantity) {
       setHasMaxQuantity(true);
@@ -107,15 +111,18 @@ const SelectionListImage = ({
           onPressGoToBack={onPressGoToBack}
         />
       )}
-      <View style={style.buttonContainer}>
-        <TouchableOpacity
-          style={style.button}
-          onPress={handleTransformImagesToBase64}
-          disabled={!hasMinQuantitiy() || loading}>
-          {!hasMinQuantitiy() && <View style={style.overlayButton} />}
-          <Text style={style.buttonText}>Siguiente</Text>
-        </TouchableOpacity>
-      </View>
+      {renderButtom() && (
+        <View
+          style={{...style.buttonContainer, bottom: showImagesList ? 10 : 65}}>
+          <TouchableOpacity
+            style={style.button}
+            onPress={handleTransformImagesToBase64}
+            disabled={!hasMinQuantitiy() || loading}>
+            {!hasMinQuantitiy() && <View style={style.overlayButton} />}
+            <Text style={style.buttonText}>Siguiente</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -130,6 +137,8 @@ const style = StyleSheet.create({
     bottom: 10,
     width: '100%',
     alignItems: 'center',
+    zIndex: 999,
+    elevation: 999,
   },
   button: {
     position: 'relative',

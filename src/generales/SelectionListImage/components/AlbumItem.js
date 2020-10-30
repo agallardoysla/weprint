@@ -42,10 +42,9 @@ const style = StyleSheet.create({
   albumImageContainer: {
     position: 'relative',
     width: '100%',
-    borderWidth: 3,
-    borderColor: colores.blanco,
   },
   albumImage: {
+    borderRadius: 8,
     width: '100%',
     height: '100%',
   },

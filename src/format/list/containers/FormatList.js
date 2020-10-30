@@ -1,15 +1,15 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import {connect} from 'react-redux';
-import {actions} from '../../redux';
-import {tipoDeLetra, colores} from '../../constantes/Temas';
-import {get_format_by_project} from '../../utils/apis/project_api';
-import Cargando from '../../generales/Cargando';
+import {actions} from '../../../redux';
+import {tipoDeLetra, colores} from '../../../constantes/Temas';
+import {get_format_by_project} from '../../../utils/apis/project_api';
+import Cargando from '../../../generales/Cargando';
 import FormatCardView from '../components/FormatCardView';
 import orderBy from 'lodash/orderBy';
 import Icon from 'react-native-vector-icons/dist/Feather';
 
-function Format({dispatch, navigation, route, formats}) {
+function FormatList({dispatch, navigation, route, formats}) {
   const {projectId} = route.params;
   const [formatError, setFormatError] = useState(false);
   const [loadingFormat, setLoadingFormat] = useState(true);
@@ -51,7 +51,7 @@ function Format({dispatch, navigation, route, formats}) {
   const handleOnPressGoToBack = () => navigation.navigate('Home');
 
   const handleOnPressGoToSelectImage = (formatId) =>
-    navigation.navigate('SelectImagen', {formatId});
+    navigation.navigate('FormatDetail', {formatId});
 
   const isEmptyFormats = () =>
     !loadingFormat && !formatError && !formats.length;
@@ -155,4 +155,4 @@ const mapStateToProps = (
   };
 };
 
-export default connect(mapStateToProps)(Format);
+export default connect(mapStateToProps)(FormatList);

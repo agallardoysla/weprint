@@ -35,7 +35,7 @@ function Home({dispatch, navigation}) {
   }, []);
 
   const handleOnPressGoToFormat = (projectId) =>
-    navigation.navigate('Format', {projectId});
+    navigation.navigate('FormatList', {projectId});
 
   const handleGoToAlbumList = () => {
     console.log('prop: ' + navigation);

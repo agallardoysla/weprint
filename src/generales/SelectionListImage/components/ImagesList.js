@@ -36,7 +36,7 @@ class ImagesList extends PureComponent {
 
       const photos = await CameraRoll.getPhotos({
         assetType: 'Photos',
-        first: 24,
+        first: 27,
         after: pageInfo.after,
         groupName: albumTitle,
         include: ['filename'],

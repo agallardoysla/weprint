@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, useWindowDimensions} from 'react-native';
-import GeneralImage from '../../generales/GeneralImage';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import GeneralImage from '../../../generales/GeneralImage';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 
 const CartLayoutCover = ({piece, onHeaderHeight}) => {
   const widthCover = Math.floor((useWindowDimensions().width * 60) / 100);

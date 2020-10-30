@@ -82,6 +82,9 @@ const AlbumList = ({
 
   const isSelectedStorage = (storageSelected) => storageSelected === storage;
 
+  const getColor = (storageSelected) =>
+    isSelectedStorage(storageSelected) ? colores.logo : colores.grisClaro;
+
   return (
     <View style={style.albumListMainContainer}>
       <TouchableOpacity
@@ -101,56 +104,6 @@ const AlbumList = ({
           )}
         </View>
       </TouchableOpacity>
-      <View style={style.albumListIconContainer}>
-        <TouchableOpacity
-          style={
-            isSelectedStorage('device')
-              ? style.albumListStorage
-              : style.albumListSocialMediaContainer
-          }>
-          <Icon
-            name="smartphone"
-            size={27}
-            color={
-              isSelectedStorage('device')
-                ? colores.azulNoche
-                : colores.grisClaro
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            isSelectedStorage('facebook')
-              ? style.albumListStorage
-              : style.albumListSocialMediaContainer
-          }>
-          <Icon
-            name="facebook"
-            size={27}
-            color={
-              isSelectedStorage('facebook')
-                ? colores.azulNoche
-                : colores.grisClaro
-            }
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={
-            isSelectedStorage('instagram')
-              ? style.albumListStorage
-              : style.albumListSocialMediaContainer
-          }>
-          <Icon
-            name="instagram"
-            size={27}
-            color={
-              isSelectedStorage('instagram')
-                ? colores.azulNoche
-                : colores.grisClaro
-            }
-          />
-        </TouchableOpacity>
-      </View>
       {loading && <Cargando titulo=" " loaderColor={colores.logo} />}
       {!loading && albums.length && (
         <View style={style.albumListAlbumContainer}>
@@ -170,12 +123,55 @@ const AlbumList = ({
           </Text>
         </View>
       )}
+      <View style={style.albumListIconContainer}>
+        <TouchableOpacity style={style.albumListSocialIconItem}>
+          <Icon name="smartphone" size={25} color={getColor('device')} />
+          <Text
+            style={{
+              ...style.albumListSocialIconText,
+              color: getColor('device'),
+            }}>
+            Dispositivo
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={style.albumListSocialIconItem}>
+          <Icon name="facebook" size={25} color={getColor('facebook')} />
+          <Text
+            style={{
+              ...style.albumListSocialIconText,
+              color: getColor('facebook'),
+            }}>
+            Facebook
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={style.albumListSocialIconItem}>
+          <Icon name="instagram" size={25} color={getColor('instagram')} />
+          <Text
+            style={{
+              ...style.albumListSocialIconText,
+              color: getColor('instagram'),
+            }}>
+            instagram
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={style.albumListSocialIconItem}>
+          <Icon name="package" size={25} color={getColor('package')} />
+          <Text
+            style={{
+              ...style.albumListSocialIconText,
+              color: getColor('package'),
+            }}>
+            Repositorio
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const style = StyleSheet.create({
   albumListMainContainer: {
+    position: 'relative',
     height: '100%',
     paddingBottom: 100,
   },
@@ -197,7 +193,7 @@ const style = StyleSheet.create({
   },
   albumListHeaderText: {
     paddingTop: 2,
-    color: 'black',
+    color: colores.negro,
     fontWeight: '600',
     fontSize: 19,
   },
@@ -209,26 +205,29 @@ const style = StyleSheet.create({
     paddingRight: 20,
     paddingBottom: 1,
   },
-  albumListIconContainer: {
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colores.blanco,
-  },
   albumListContent: {
     width: '100%',
-    paddingBottom: 40,
   },
-  albumListSocialMediaContainer: {
-    marginHorizontal: 20,
-    paddingBottom: 5,
+  albumListIconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    height: 55,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: colores.blanco,
+    zIndex: 999,
+    elevation: 999,
   },
-  albumListStorage: {
+
+  albumListSocialIconItem: {
     marginHorizontal: 20,
-    paddingBottom: 5,
-    borderBottomColor: colores.azulNoche,
-    borderBottomWidth: 2,
+    alignItems: 'center',
+  },
+  albumListSocialIconText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
   albumListAlbumContainer: {
     marginTop: 10,

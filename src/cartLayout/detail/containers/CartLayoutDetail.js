@@ -9,15 +9,15 @@ import {
   BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import {actions} from '../../redux';
-import Cargando from '../../generales/Cargando';
-import SelectionListImage from '../../generales/SelectionListImage';
+import {actions} from '../../../redux';
+import Cargando from '../../../generales/Cargando';
+import SelectionListImage from '../../../generales/SelectionListImage';
 import CartLayoutListImage from '../components/CartLayoutListImage';
 import concat from 'lodash/concat';
 
-function CartLayout({
+function CartLayoutDetail({
   dispatch,
   navigation,
   route,
@@ -71,10 +71,9 @@ function CartLayout({
       storageId,
     });
 
-  const handleGoBack = useCallback(
-    () => navigation.navigate('SelectImagen', {storageId}),
-    [navigation],
-  );
+  const handleGoBack = useCallback(() => {
+    navigation.navigate('Home');
+  }, [navigation]);
 
   const handleToggleShowImages = () => {
     if (!loading) {
@@ -366,4 +365,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(CartLayout);
+export default connect(mapStateToProps)(CartLayoutDetail);

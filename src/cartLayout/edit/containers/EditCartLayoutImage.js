@@ -9,16 +9,16 @@ import {
 } from 'react-native';
 import concat from 'lodash/concat';
 import {connect} from 'react-redux';
-import {actions} from '../../redux';
-import {get_layout_api} from '../../utils/apis/layout_api';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {actions} from '../../../redux';
+import {get_layout_api} from '../../../utils/apis/layout_api';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import isNull from 'lodash/isNull';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import RNFetchBlob from 'rn-fetch-blob';
 import EditCartLayoutCover from '../components/EditCartLayoutCover';
 import EditCartLayoutList from '../components/EditCartLayoutList';
 import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
-import SelectionListImage from '../../generales/SelectionListImage';
+import SelectionListImage from '../../../generales/SelectionListImage';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
 function EditCartLayoutImage({
@@ -202,7 +202,7 @@ function EditCartLayoutImage({
 
   const handleOnPressDelete = () => handleUpdatePage([]);
 
-  PESDK.unlockWithLicense(require('../../../pesdk_android_license.json'));
+  PESDK.unlockWithLicense(require('../../../../pesdk_android_license.json'));
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));

@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import GeneralImage from '../../generales/GeneralImage';
+import GeneralImage from '../../../generales/GeneralImage';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import fill from 'lodash/fill';
 import concat from 'lodash/concat';
 import isNull from 'lodash/isNull';
-import {colores} from '../../constantes/Temas';
+import {colores} from '../../../constantes/Temas';
 
 const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(1);

@@ -8,8 +8,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Cargando from '../../generales/Cargando';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import Cargando from '../../../generales/Cargando';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 
 const EditCartLayoutItem = ({layout, selectedLayout, onSelectedLayout}) => {
   const handleOnPress = () => onSelectedLayout(layout.id);

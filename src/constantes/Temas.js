@@ -25,10 +25,13 @@ export const colores = {
   grisBgIconCart: '#f6f8fa',
   grisWrapperImage: '#9b9b9b',
   grisWrapperEmptyImage: '#f8f8f8',
+  grisLetter: '#616161',
   azulNoche: '#051441',
   azulMedio: '#3987B5',
   logo: '#f98364',
   negro: 'black',
+  negroMedio: '#333',
+  lila: '#7474f9',
 };
 
 export const tipoDeLetra = {

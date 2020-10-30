@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import {colores, tipoDeLetra} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
 
 const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
   const renderStrArrowLeft = () => {
