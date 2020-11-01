@@ -16,7 +16,7 @@ const BasicLayout = ({
   const piece = pieces[0];
 
   const handleResponder = (evt) => {
-    if (!isNull(piece.file.uri)) {
+    if (!isNull(piece.file)) {
       onSelectImage(0);
       panResponder.panHandlers.onResponderGrant(evt);
     }
@@ -28,11 +28,7 @@ const BasicLayout = ({
       onResponderGrant={handleResponder}
       style={style.basicWrapper}>
       <TouchableHighlight onPress={onPressImage}>
-        <GeneralImage
-          base64={piece.file.base64}
-          uri={piece.file.base64}
-          styleImg={style.imageSize}
-        />
+        <GeneralImage uri={piece.file} styleImg={style.imageSize} />
       </TouchableHighlight>
     </View>
   );
@@ -50,7 +46,7 @@ const TwoLayouts = ({
     <View style={style.twoColumnsWrapper}>
       {pieces.map((piece, index) => {
         const handleResponder = (evt) => {
-          if (!isNull(piece.file.uri)) {
+          if (!isNull(piece.file)) {
             onSelectImage(index);
             panResponder.panHandlers.onResponderGrant(evt);
           }
@@ -63,11 +59,7 @@ const TwoLayouts = ({
             key={piece.order.toString()}
             onResponderGrant={handleResponder}>
             <TouchableHighlight onPress={onPressImage}>
-              <GeneralImage
-                base64={piece.file.base64}
-                uri={piece.file.uri}
-                styleImg={style.imageSize}
-              />
+              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
             </TouchableHighlight>
           </View>
         );
@@ -87,7 +79,7 @@ const ThirdLayout = ({
   const secondColumnPieces = pieces.slice(1, 4);
 
   const handleFirstPieceResponder = (evt) => {
-    if (!isNull(firstColumnPiece.file.uri)) {
+    if (!isNull(firstColumnPiece.file)) {
       onSelectImage(0);
       panResponder.panHandlers.onResponderGrant(evt);
     }
@@ -101,8 +93,7 @@ const ThirdLayout = ({
         style={style.largeWrapper}>
         <TouchableHighlight onPress={onPressImage}>
           <GeneralImage
-            base64={firstColumnPiece.file.base64}
-            uri={firstColumnPiece.file.uri}
+            uri={firstColumnPiece.file}
             styleImg={style.imageSize}
           />
         </TouchableHighlight>
@@ -110,7 +101,7 @@ const ThirdLayout = ({
       <View style={style.largeWrapper}>
         {secondColumnPieces.map((piece, index) => {
           const handleResponder = (evt) => {
-            if (!isNull(piece.file.uri)) {
+            if (!isNull(piece.file)) {
               onSelectImage(index + 1);
               panResponder.panHandlers.onResponderGrant(evt);
             }
@@ -123,11 +114,7 @@ const ThirdLayout = ({
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
               <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage
-                  base64={piece.file.base64}
-                  uri={piece.file.uri}
-                  styleImg={style.imageSize}
-                />
+                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
               </TouchableHighlight>
             </View>
           );
@@ -148,7 +135,7 @@ const FourthLayout = ({
   const secondColumnPiece = pieces[0];
 
   const handleFirstPieceResponder = (evt) => {
-    if (!isNull(secondColumnPiece.file.uri)) {
+    if (!isNull(secondColumnPiece.file)) {
       onSelectImage(0);
       panResponder.panHandlers.onResponderGrant(evt);
     }
@@ -159,7 +146,7 @@ const FourthLayout = ({
       <View style={style.largeWrapper}>
         {firstColumnPieces.map((piece, index) => {
           const handleResponder = (evt) => {
-            if (!isNull(piece.file.uri)) {
+            if (!isNull(piece.file)) {
               onSelectImage(index + 1);
               panResponder.panHandlers.onResponderGrant(evt);
             }
@@ -172,11 +159,7 @@ const FourthLayout = ({
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
               <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage
-                  base64={piece.file.base64}
-                  uri={piece.file.uri}
-                  styleImg={style.imageSize}
-                />
+                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
               </TouchableHighlight>
             </View>
           );
@@ -188,8 +171,7 @@ const FourthLayout = ({
         onResponderGrant={handleFirstPieceResponder}>
         <TouchableHighlight onPress={onPressImage}>
           <GeneralImage
-            base64={secondColumnPiece.file.base64}
-            uri={secondColumnPiece.file.uri}
+            uri={secondColumnPiece.file}
             styleImg={style.imageSize}
           />
         </TouchableHighlight>
@@ -213,7 +195,7 @@ const FifthLayout = ({
       <View style={style.largeWrapper}>
         {firstColumnPieces.map((piece, index) => {
           const handleResponder = (evt) => {
-            if (!isNull(piece.file.uri)) {
+            if (!isNull(piece.file)) {
               onSelectImage(index);
               panResponder.panHandlers.onResponderGrant(evt);
             }
@@ -226,11 +208,7 @@ const FifthLayout = ({
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
               <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage
-                  base64={piece.file.base64}
-                  uri={piece.file.uri}
-                  styleImg={style.imageSize}
-                />
+                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
               </TouchableHighlight>
             </View>
           );
@@ -239,7 +217,7 @@ const FifthLayout = ({
       <View style={style.largeWrapper}>
         {secondColumnPieces.map((piece, index) => {
           const handleResponder = (evt) => {
-            if (!isNull(piece.file.uri)) {
+            if (!isNull(piece.file)) {
               onSelectImage(index + 2);
               panResponder.panHandlers.onResponderGrant(evt);
             }
@@ -252,11 +230,7 @@ const FifthLayout = ({
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
               <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage
-                  base64={piece.file.base64}
-                  uri={piece.file.uri}
-                  styleImg={style.imageSize}
-                />
+                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
               </TouchableHighlight>
             </View>
           );
@@ -275,10 +249,7 @@ class CartLayoutWrapper extends Component {
 
       const totalEmpty = amountImagesNeeded - page.pieces.length;
       const fillEmptySpace = fill(Array(totalEmpty), {
-        file: {
-          base64: null,
-          uri: null,
-        },
+        file: null,
       });
 
       const piecesSelected = concat(currentPieces, fillEmptySpace).map(

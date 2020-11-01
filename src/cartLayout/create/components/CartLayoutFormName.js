@@ -33,14 +33,15 @@ const CartLayoutFormName = ({
         <Icon name="arrow-left" size={27} color={colores.negro} />
         <Text style={style.headerText}>Crea tu proyecto</Text>
       </TouchableOpacity>
-      <View>
-        <View style={{height: useWindowDimensions().height / 2}}>
-          <Image
-            style={style.image}
-            resizeMode="contain"
-            source={require('../../../assets/img/slide-4.png')}
-          />
-        </View>
+
+      <View style={{height: useWindowDimensions().height / 2}}>
+        <Image
+          style={style.image}
+          resizeMode="contain"
+          source={require('../../../assets/img/slide-4.png')}
+        />
+      </View>
+      <View style={style.infoContainer}>
         <View style={style.titleContainer}>
           <Text style={style.title}>¿Qué nombre tiene tu proyecto?</Text>
         </View>
@@ -84,6 +85,10 @@ const style = StyleSheet.create({
     color: 'black',
     fontWeight: '600',
     fontSize: 19,
+  },
+  infoContainer: {
+    justifyContent: 'flex-end',
+    marginTop: 10,
   },
   image: {
     height: '100%',

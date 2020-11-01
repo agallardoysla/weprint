@@ -1,18 +1,17 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, FlatList, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, FlatList, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
-import Container from '../../generales/Container';
+import {tipoDeLetra, colores} from '../../constantes/Temas';
+import map from 'lodash/map';
 import Cargando from '../../generales/Cargando';
-import Logo from '../../assets/img/logo.svg';
-import {MenuItem} from '../../generales/MenuItem';
-import {estiloDeLetra, tipoDeLetra} from '../../constantes/Temas';
-import {PromoView} from '../components/PromoView';
+import Container from '../../generales/Container';
 import ProjectCardView from '../components/ProjectCardView';
+import ProjectHeader from '../components/ProjectHeader';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {get_projects_api} from '../../utils/apis/project_api';
 
-function Home({dispatch, navigation}) {
+function Home({dispatch, navigation, carts}) {
   const [projects, setProjects] = useState([]);
   const [errorProject, setErrorProject] = useState(false);
   const [loadingProject, setLoadingProject] = useState(true);
@@ -30,20 +29,23 @@ function Home({dispatch, navigation}) {
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-  }, []);
-
   const handleOnPressGoToFormat = (projectId) =>
     navigation.navigate('FormatList', {projectId});
 
-  const handleGoToAlbumList = () => {
-    console.log('prop: ' + navigation);
-    navigation.navigate('AlbumList');
+  const handleOnPressGoToDetail = (cart) => {
+    navigation.navigate('CartLayoutDetail', {
+      cartId: cart.id,
+      formatId: cart.format_id,
+    });
   };
+
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  useEffect(() => {
+    dispatch(actions.actualizarNavigation(navigation));
+  }, [dispatch, navigation]);
 
   const renderProjectCards = ({item: project}) => (
     <ProjectCardView
@@ -53,93 +55,66 @@ function Home({dispatch, navigation}) {
   );
 
   return (
-    <>
-      <View style={style.mainContainer}>
-        <View style={style.logoContainer}>
-          <Logo height={style.logo.height} width={style.logo.width} />
+    <Container>
+      {loadingProject && (
+        <View style={style.loaderContainer}>
+          <Cargando titulo="" loaderColor={colores.logo} />
         </View>
-        <PromoView />
-        <View style={style.avatarContainer}>
-          <MenuItem
-            name="Mis Proyectos"
-            text="En estos momentos: 0"
-            photo={
-              'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg'
-            }
-            background="transparent"
-            textStyle={{
-              ...estiloDeLetra.negrita,
-            }}
-            onPressFunction={() => navigation.navigate('Home')}
-            nameStyle={{color: '#000000'}}
-          />
+      )}
+
+      {!loadingProject && !errorProject && (
+        <FlatList
+          ListHeaderComponent={
+            <ProjectHeader
+              carts={carts}
+              onPressGoToDetail={handleOnPressGoToDetail}
+            />
+          }
+          style={style.projectsListContainer}
+          contentContainerStyle={style.projectsListContent}
+          data={projects}
+          renderItem={renderProjectCards}
+          keyExtractor={(project) => project.id.toString()}
+        />
+      )}
+      {errorProject && (
+        <View style={style.projectErrorContainer}>
+          <Text style={style.projectErrorText}>
+            En estos momentos no se pudieron cargar los datos :C
+          </Text>
         </View>
-        <View style={style.projectsTextContainer}>
-          <Text style={style.projectText}>Crea tus proyectos</Text>
-        </View>
-        {loadingProject && <Cargando titulo="" />}
-        {!loadingProject && !errorProject && (
-          <FlatList
-            style={style.projectsListContainer}
-            contentContainerStyle={style.projectsListContent}
-            data={projects}
-            renderItem={renderProjectCards}
-            keyExtractor={(project) => project.id.toString()}
-          />
-        )}
-        {errorProject && (
-          <View style={style.projectErrorContainer}>
-            <Text style={style.projectErrorText}>
-              En estos momentos no se pudieron cargar los datos :C
-            </Text>
-          </View>
-        )}
-      </View>
-    </>
+      )}
+    </Container>
   );
 }
 const style = StyleSheet.create({
-  mainContainer: {
-    width: '100%',
+  loaderContainer: {
     height: '100%',
     alignItems: 'center',
-  },
-  logoContainer: {
-    margin: 10,
-  },
-  logo: {
-    height: 110,
-    width: 110,
-  },
-  avatarContainer: {
-    width: '90%',
-  },
-  projectsTextContainer: {
-    width: '100%',
+    justifyContent: 'center',
   },
   projectsListContainer: {
     width: '100%',
   },
   projectsListContent: {
-    paddingBottom: 60,
-    paddingHorizontal: 12,
-  },
-  projectText: {
-    ...estiloDeLetra.negrita,
-    marginVertical: 25,
-    marginHorizontal: 20,
-    fontSize: RFPercentage(3),
+    paddingHorizontal: 10,
   },
   projectErrorContainer: {
     alignItems: 'center',
   },
   projectErrorText: {
     marginLeft: 20,
-    color: 'black',
+    color: colores.negro,
     fontFamily: tipoDeLetra.regular,
     fontSize: RFPercentage(3),
   },
 });
-const mapStateToProps = (state) => ({login: state.login});
+const mapStateToProps = (state) => {
+  const carts = map(state.cart.list, (cart) => cart);
+
+  return {
+    carts,
+  };
+};
 
 export default connect(mapStateToProps)(Home);

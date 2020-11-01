@@ -16,15 +16,11 @@ const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   return (
     <>
       <View style={style.basicLayout}>
-        {piece.file.uri ? (
+        {piece.file ? (
           <TouchableOpacity
             style={style.basicLayoutItem}
             onPress={handleEditPhoto}>
-            <GeneralImage
-              styleImg={style.basicLayoutItem}
-              uri={piece.file.uri}
-              base64={piece.file.base64}
-            />
+            <GeneralImage styleImg={style.basicLayoutItem} uri={piece.file} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
@@ -42,8 +38,7 @@ const BasicCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
 
 const TwoCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const pieces = getSelectedImages(2);
-  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file.uri))
-    .length;
+  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file)).length;
 
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
@@ -54,12 +49,11 @@ const TwoCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
         const handleEditPhoto = () => onEditPhoto(piece.file);
         return (
           <View style={{...style.layoutLargeItem, width: '50%'}} key={index}>
-            {piece.file.uri ? (
+            {piece.file ? (
               <TouchableOpacity onPress={handleEditPhoto}>
                 <GeneralImage
                   styleImg={style.basicLayoutItem}
-                  uri={piece.file.uri}
-                  base64={piece.file.base64}
+                  uri={piece.file}
                 />
               </TouchableOpacity>
             ) : (
@@ -86,7 +80,7 @@ const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   const offsetSelectImg = concat(
     [firstColumnPiece],
     secondColumnPieces,
-  ).filter((piece) => isNull(piece.file.uri)).length;
+  ).filter((piece) => isNull(piece.file)).length;
 
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
@@ -96,12 +90,11 @@ const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
   return (
     <View style={style.layoutTwoColumnsContainer}>
       <View style={{...style.layoutLargeItem, width: '65%'}}>
-        {firstColumnPiece.file.uri ? (
+        {firstColumnPiece.file ? (
           <TouchableOpacity onPress={handleOnEditFirstImage}>
             <GeneralImage
               styleImg={style.basicLayoutItem}
-              uri={firstColumnPiece.file.uri}
-              base64={firstColumnPiece.file.base64}
+              uri={firstColumnPiece.file}
             />
           </TouchableOpacity>
         ) : (
@@ -123,12 +116,11 @@ const ThreeCartLayout = ({onShowListImage, onEditPhoto, getSelectedImages}) => {
           const handleEditPhoto = () => onEditPhoto(piece.file);
           return (
             <View style={style.layoutSquareItem} key={index}>
-              {piece.file.uri ? (
+              {piece.file ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
                   <GeneralImage
                     styleImg={style.basicLayoutItem}
-                    uri={piece.file.uri}
-                    base64={piece.file.base64}
+                    uri={piece.file}
                   />
                 </TouchableOpacity>
               ) : (
@@ -160,7 +152,7 @@ const FourthCartLayout = ({
 
   const offsetSelectImg = concat(firstColumnPieces, [
     secondColumnPiece,
-  ]).filter((piece) => isNull(piece.file.uri)).length;
+  ]).filter((piece) => isNull(piece.file)).length;
 
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
@@ -179,12 +171,11 @@ const FourthCartLayout = ({
                 ...style.layoutSquareItem,
                 height: '49.5%',
               }}>
-              {piece.file.uri ? (
+              {piece.file ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
                   <GeneralImage
                     styleImg={style.basicLayoutItem}
-                    uri={piece.file.uri}
-                    base64={piece.file.base64}
+                    uri={piece.file}
                   />
                 </TouchableOpacity>
               ) : (
@@ -201,12 +192,11 @@ const FourthCartLayout = ({
         })}
       </View>
       <View style={{...style.layoutLargeItem, width: '55%'}}>
-        {secondColumnPiece.file.uri ? (
+        {secondColumnPiece.file ? (
           <TouchableOpacity onPress={handleEditPhotoSecondColumn}>
             <GeneralImage
               styleImg={style.basicLayoutItem}
-              uri={secondColumnPiece.file.uri}
-              base64={secondColumnPiece.file.base64}
+              uri={secondColumnPiece.file}
             />
           </TouchableOpacity>
         ) : (
@@ -228,8 +218,7 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
 
   const firstColumnPieces = pieces.slice(0, 2);
   const secondColumnPieces = pieces.slice(2, 4);
-  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file.uri))
-    .length;
+  const offsetSelectImg = pieces.filter((piece) => isNull(piece.file)).length;
 
   const handleShowListImage = () =>
     onShowListImage(offsetSelectImg, offsetSelectImg);
@@ -247,12 +236,11 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
                 marginBottom: 4,
                 height: '49%',
               }}>
-              {piece.file.uri ? (
+              {piece.file ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
                   <GeneralImage
                     styleImg={style.basicLayoutItem}
-                    uri={piece.file.uri}
-                    base64={piece.file.base64}
+                    uri={piece.file}
                   />
                 </TouchableOpacity>
               ) : (
@@ -280,12 +268,11 @@ const FiveCartLayout = ({getSelectedImages, onShowListImage, onEditPhoto}) => {
                 marginBottom: 4,
                 height: '49%',
               }}>
-              {piece.file.uri ? (
+              {piece.file ? (
                 <TouchableOpacity onPress={handleEditPhoto}>
                   <GeneralImage
                     styleImg={style.basicLayoutItem}
-                    uri={piece.file.uri}
-                    base64={piece.file.base64}
+                    uri={piece.file}
                   />
                 </TouchableOpacity>
               ) : (
@@ -317,7 +304,7 @@ const EditCartLayoutCover = ({
       const totalSpace = amountImagesNeeded - selectedPage.pieces.length;
 
       const fillEmptySpace = fill(Array(totalSpace), {
-        file: {uri: null, base64: null},
+        file: null,
       });
       const imagesSelected = concat(images, fillEmptySpace);
 

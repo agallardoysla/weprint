@@ -1,29 +1,28 @@
-export const AGREGAR_CART_PRESELECCIONADO = 'AGREGAR_CART_PRESELECCIONADO';
+export const AGREGAR_CART = 'AGREGAR_CART';
 
-export const agregarCartPreseleccionado = (customId, cart) => ({
-  type: AGREGAR_CART_PRESELECCIONADO,
+export const agregarCart = (cart) => ({
+  type: AGREGAR_CART,
   payload: {
-    customId,
     cart,
   },
 });
 
 const initialState = {
-  shortlisted: {},
+  list: {},
 };
 
 export default (state = initialState, action) => {
   const {type, payload} = action;
 
   switch (type) {
-    case AGREGAR_CART_PRESELECCIONADO:
-      const {customId, cart} = payload;
+    case AGREGAR_CART:
+      const {cart} = payload;
 
       return {
         ...state,
-        shortlisted: {
-          ...state.shortlisted,
-          [customId]: {
+        list: {
+          ...state.list,
+          [cart.id]: {
             ...cart,
           },
         },

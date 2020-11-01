@@ -1,8 +1,7 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import GeneralImage from '../../generales/GeneralImage';
-import {RFPercentage} from 'react-native-responsive-fontsize';
-import {colores} from '../../constantes/Temas';
+import {colores, tipoDeLetra} from '../../constantes/Temas';
 
 const ProjectCardView = ({project, onPressGoToFormat}) => {
   const handleOnPress = () => onPressGoToFormat(project.id);
@@ -13,7 +12,9 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
       style={style.projectCardContainer}>
       <GeneralImage uri={project.image} styleImg={style.projectCardImage} />
       <View style={style.projectCardOverlay}>
-        <Text style={style.projectCardOverlayText}>{project.name}</Text>
+        <Text style={style.projectCardOverlayText}>
+          {project.name.toUpperCase()}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -22,10 +23,10 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
 const style = StyleSheet.create({
   projectCardContainer: {
     position: 'relative',
-    height: 300,
+    height: 250,
     width: '100%',
-    marginBottom: 10,
-    borderRadius: 8,
+    marginBottom: 20,
+    borderRadius: 4,
     overflow: 'hidden',
   },
   projectCardImage: {
@@ -42,10 +43,11 @@ const style = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   projectCardOverlayText: {
+    marginLeft: 16,
+
     color: colores.blanco,
-    fontSize: RFPercentage(3.5),
-    fontWeight: 'bold',
-    marginLeft: 20,
+    fontSize: 20,
+    fontFamily: tipoDeLetra.regular,
   },
 });
 

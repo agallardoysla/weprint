@@ -2,12 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {nanoid} from 'nanoid/non-secure';
 import {connect} from 'react-redux';
 import {actions} from '../../../redux';
-import has from 'lodash/has';
 import SelectionListImage from '../../../generales/SelectionListImage';
 import CartLayoutFormName from '../components/CartLayoutFormName';
 import CartLayoutFormReview from '../components/CartLayoutFormReview';
 
-function CartLayoutCreate({dispatch, navigation, format, route}) {
+function CartLayoutCreate({dispatch, navigation, format}) {
   const [step, setStep] = useState(1);
   const [projectName, setProjectName] = useState('');
   const [projectReview, setProjectReview] = useState('');
@@ -17,15 +16,56 @@ function CartLayoutCreate({dispatch, navigation, format, route}) {
   const handleGoToStepTwo = () => setStep(2);
   const hangleGoToStepThree = () => setStep(3);
 
+  const getPages = (images) => {
+    const pages = images.map((img, index) => ({
+      number: index,
+      layout_id: null,
+      pieces: [
+        {
+          order: 0,
+          file: img.uri,
+        },
+      ],
+    }));
+
+    return pages;
+  };
+
+  const handleCalculatePrice = (totalPages) => {
+    const minQuantity = format.min_quantity;
+    const minPrice = format.min_price;
+    const priceUnit = format.price_unit;
+
+    if (totalPages > minQuantity) {
+      return minPrice + (totalPages - minQuantity) * priceUnit;
+    }
+
+    return minPrice;
+  };
+
+  const handleSaveCartLayout = (storageId, images) => {
+    const pages = getPages(images);
+
+    const cart = {
+      id: storageId,
+      format_id: format.id,
+      name: projectName,
+      description: projectReview,
+      pages,
+      price: handleCalculatePrice(pages.length),
+    };
+
+    dispatch(actions.agregarCart(cart));
+  };
+
   const handleOnResponse = (images) => {
-    const storageId = has(route.params, 'storageId')
-      ? route.params.storageId
-      : nanoid();
+    const storageId = nanoid();
 
     dispatch(actions.actualizarImagenes(storageId, images));
+    handleSaveCartLayout(storageId, images);
 
     navigation.navigate('CartLayoutDetail', {
-      storageId,
+      cartId: storageId,
       formatId: format.id,
     });
   };
@@ -35,7 +75,7 @@ function CartLayoutCreate({dispatch, navigation, format, route}) {
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
 
   return (
     <>

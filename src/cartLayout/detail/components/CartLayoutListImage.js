@@ -43,7 +43,7 @@ class CartLayoutListImage extends PureComponent {
     this.state = {
       dragging: false,
       draggingIdx: -1,
-      pages: props.preSelectedCart.pages,
+      pages: props.cart.pages,
       piece: {
         position: null,
         pageNumber: null,
@@ -116,7 +116,7 @@ class CartLayoutListImage extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const {preSelectedCart} = this.props;
+    const {cart} = this.props;
     const {dragging} = this.state;
 
     if (dragging) {
@@ -125,8 +125,8 @@ class CartLayoutListImage extends PureComponent {
       this.handleChangePage();
     }
 
-    if (prevProps.preSelectedCart !== preSelectedCart) {
-      this.setState({...this.state, pages: preSelectedCart.pages});
+    if (prevProps.cart !== cart) {
+      this.setState({...this.state, pages: cart.pages});
     }
   }
 
@@ -462,8 +462,7 @@ class CartLayoutListImage extends PureComponent {
               <CartLayoutWrapper page={pages[draggingIdx]} />
             ) : (
               <GeneralImage
-                uri={pages[draggingIdx].pieces[piece.position].file.uri}
-                base64={pages[draggingIdx].pieces[piece.position].file.base64}
+                uri={pages[draggingIdx].pieces[piece.position].file}
                 styleImg={style.cartLayoutImageSize}
               />
             )}

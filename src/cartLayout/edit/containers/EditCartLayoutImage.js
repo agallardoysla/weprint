@@ -14,27 +14,18 @@ import {get_layout_api} from '../../../utils/apis/layout_api';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import isNull from 'lodash/isNull';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import RNFetchBlob from 'rn-fetch-blob';
 import EditCartLayoutCover from '../components/EditCartLayoutCover';
 import EditCartLayoutList from '../components/EditCartLayoutList';
 import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
 import SelectionListImage from '../../../generales/SelectionListImage';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 
-function EditCartLayoutImage({
-  dispatch,
-  navigation,
-  route,
-  preSelectedCart,
-  layouts,
-}) {
+function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
   const [layoutError, setLayoutError] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [photoEdit, setPhotoEdit] = useState(null);
-  const [selectedPages, setSelectedPages] = useState(
-    concat(preSelectedCart.pages),
-  );
+  const [selectedPages, setSelectedPages] = useState(concat(cart.pages));
 
   const searchPage = (numberPage) =>
     selectedPages.find((pageSearched) => pageSearched.number === numberPage);
@@ -62,7 +53,7 @@ function EditCartLayoutImage({
       setLayoutLoading(false);
       setLayoutError(true);
     }
-  }, [setLayoutLoading, setLayoutError]);
+  }, [setLayoutLoading, setLayoutError, dispatch]);
 
   const loadData = useCallback(() => {
     if (layouts.length) {
@@ -70,7 +61,7 @@ function EditCartLayoutImage({
     } else {
       loadLayouts();
     }
-  }, [loadLayouts, setLayoutLoading]);
+  }, [loadLayouts, setLayoutLoading, layouts]);
 
   const handleShowListImage = (min = 1, max = 1) => {
     minQuantity.current = min;
@@ -115,9 +106,10 @@ function EditCartLayoutImage({
 
   const handleResponseImage = (newPieces) => {
     const prevPieces = selectedPage.pieces.filter(
-      (piece) => !isNull(piece.file.uri),
+      (piece) => !isNull(piece.file),
     );
-    const fusedPieces = newPieces.map((piece) => ({file: {...piece}}));
+
+    const fusedPieces = newPieces.map((piece) => ({file: piece.uri}));
     const selectedPieces = concat(prevPieces, fusedPieces);
 
     const pieces = selectedPieces.map((piece, index) => ({
@@ -131,15 +123,10 @@ function EditCartLayoutImage({
 
   const handleOnEditPhoto = async (file) => {
     const selectedPhoto = selectedPage.pieces.find(
-      (piece) => piece.file.uri === file.uri,
+      (piece) => piece.file === file,
     );
 
-    const base64 = `data:image/gif;base64,${selectedPhoto.file.base64}`;
-    const uriExits = await RNFetchBlob.fs.exists(selectedPhoto.file.uri);
-
-    const source = uriExits ? selectedPhoto.file.uri : base64;
-
-    setPhotoEdit({source, uri: selectedPhoto.file.uri});
+    setPhotoEdit({source: selectedPhoto.file});
     setShowEdit(true);
   };
 
@@ -150,11 +137,11 @@ function EditCartLayoutImage({
 
   const handleExport = async (result) => {
     const position = selectedPage.pieces.findIndex(
-      (piece) => piece.file.uri === photoEdit.uri,
+      (piece) => piece.file === photoEdit.source,
     );
-    const base64 = await RNFetchBlob.fs.readFile(result.image, 'base64');
+
     const pieces = concat(selectedPage.pieces);
-    pieces[position] = {...pieces[position], file: {base64, uri: result.image}};
+    pieces[position] = {...pieces[position], file: result.image};
 
     handleUpdatePage(pieces);
     setShowEdit(false);
@@ -177,8 +164,8 @@ function EditCartLayoutImage({
     });
 
     dispatch(
-      actions.agregarCartPreseleccionado(route.params.storageId, {
-        ...preSelectedCart,
+      actions.agregarCart({
+        ...cart,
         pages,
       }),
     );
@@ -336,15 +323,15 @@ const mapStateToProps = (
   state,
   {
     route: {
-      params: {storageId},
+      params: {cartId},
     },
   },
 ) => {
   const layouts = state.layout.data;
-  const preSelectedCart = state.cart.shortlisted[storageId];
+  const cart = state.cart.list[cartId];
 
   return {
-    preSelectedCart,
+    cart,
     layouts,
   };
 };

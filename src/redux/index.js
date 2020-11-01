@@ -6,7 +6,7 @@ import navigation, {actualizarNavigation} from './reducer/navigation';
 import format, {actualizarFormats} from './reducer/format';
 import selectImage, {actualizarImagenes} from './reducer/selectImagen';
 
-import cart, {agregarCartPreseleccionado} from './reducer/cart';
+import cart, {agregarCart} from './reducer/cart';
 import layout, {actualizarLayout} from './reducer/layout';
 
 export default combineReducers({
@@ -26,6 +26,6 @@ export const actions = {
   logout,
   actualizarFormats,
   actualizarImagenes,
-  agregarCartPreseleccionado,
+  agregarCart,
   actualizarLayout,
 };

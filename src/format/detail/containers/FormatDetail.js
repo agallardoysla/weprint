@@ -21,7 +21,7 @@ function FormatDetail({dispatch, navigation, format}) {
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
 
   return (
     <View style={style.formatContainer}>

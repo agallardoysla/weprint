@@ -2,13 +2,13 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
   FlatList,
   useWindowDimensions,
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
 import Cargando from '../../../generales/Cargando';
+import GeneralImage from '../../../generales/GeneralImage';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 
 const EditCartLayoutItem = ({layout, selectedLayout, onSelectedLayout}) => {
@@ -25,7 +25,7 @@ const EditCartLayoutItem = ({layout, selectedLayout, onSelectedLayout}) => {
           borderColor:
             layout.id === selectedLayout ? colores.logo : 'transparent',
         }}>
-        <Image source={{uri: layout.preview}} style={style.image} />
+        <GeneralImage uri={layout.preview} styleImg={style.image} />
       </View>
     </TouchableWithoutFeedback>
   );

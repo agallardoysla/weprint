@@ -22,59 +22,49 @@ function CartLayoutDetail({
   navigation,
   route,
   preSelectedImages,
-  preSelectedCart,
+  cart,
   format,
 }) {
-  const {storageId} = route.params;
+  const {cartId} = route.params;
   const [showAddImages, setShowAddImages] = useState(false);
   const [showReorganize, setShowReorganize] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const getPages = useCallback(() => {
-    const pages = preSelectedImages.map((img, index) => ({
-      number: index,
-      layout_id: null,
-      pieces: [
-        {
-          order: 0,
-          file: {...img},
-        },
-      ],
-    }));
+  const handleCalculatePrice = (totalPages) => {
+    const minQuantity = format.min_quantity;
+    const minPrice = format.min_price;
+    const priceUnit = format.price_unit;
 
-    return pages;
-  }, []);
+    if (totalPages > minQuantity) {
+      return minPrice + (totalPages - minQuantity) * priceUnit;
+    }
 
+    return minPrice;
+  };
 
-  const handleSavePreSelectedCart = useCallback((pages) => {
-    const basePreSelectedCart = {
-      format_id: format.id,
-      name: preSelectedCart ? preSelectedCart.name : format.name,
-      description: preSelectedCart ? preSelectedCart.description : format.description,
+  const handleSaveCart = (pages) => {
+    const cartEdited = {
+      ...cart,
       pages,
-      price: pages.length === 24 ? format.min_price : (format.min_price + (pages.length-24)*format.price_unit)
+      price: handleCalculatePrice(pages.length),
     };
 
-    dispatch(
-      actions.agregarCartPreseleccionado(storageId, basePreSelectedCart),
-    );
+    dispatch(actions.agregarCart(cartEdited));
     setLoading(false);
-  }, []);
-
-  const handlePreSelectedCart = useCallback(() => {
-    const pages = getPages();
-    handleSavePreSelectedCart(pages);
-  }, [getPages, handleSavePreSelectedCart, setLoading]);
+  };
 
   const handleGoToEditCartImage = (page) =>
     navigation.navigate('EditCartLayoutImage', {
       numberPage: page.number,
-      storageId,
+      cartId,
     });
 
   const handleGoBack = useCallback(() => {
-    navigation.navigate('Home');
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Home'}],
+    });
   }, [navigation]);
 
   const handleToggleShowImages = () => {
@@ -104,20 +94,20 @@ function CartLayoutDetail({
         pieces: [
           {
             order: 0,
-            file: {...img},
+            file: img.uri,
           },
         ],
       }));
 
-      const pages = concat(
-        preSelectedCart.pages,
-        newPages,
-      ).map((page, index) => ({...page, number: index}));
+      const pages = concat(cart.pages, newPages).map((page, index) => ({
+        ...page,
+        number: index,
+      }));
 
-      dispatch(actions.actualizarImagenes(storageId, images));
+      dispatch(actions.actualizarImagenes(cartId, images));
       dispatch(
-        actions.agregarCartPreseleccionado(storageId, {
-          ...preSelectedCart,
+        actions.agregarCart({
+          ...cart,
           pages,
         }),
       );
@@ -128,9 +118,7 @@ function CartLayoutDetail({
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
-
-  useEffect(() => handlePreSelectedCart(), [handlePreSelectedCart]);
+  }, [dispatch, navigation]);
 
   useFocusEffect(
     useCallback(() => {
@@ -248,9 +236,9 @@ function CartLayoutDetail({
             <Cargando titulo="" loaderColor={colores.logo} />
           ) : (
             <CartLayoutListImage
-              onSavePages={handleSavePreSelectedCart}
+              onSavePages={handleSaveCart}
               onGoToEditCartImage={handleGoToEditCartImage}
-              preSelectedCart={preSelectedCart}
+              cart={cart}
               format={format}
             />
           )}
@@ -264,7 +252,7 @@ const mapStateToProps = (
   state,
   {
     route: {
-      params: {formatId, storageId},
+      params: {formatId, cartId},
     },
   },
 ) => {
@@ -272,13 +260,13 @@ const mapStateToProps = (
     (searchedFormat) => searchedFormat.id === formatId,
   );
 
-  const preSelectedImages = state.selectImage.preSelectedImages[storageId];
-  const preSelectedCart = state.cart.shortlisted[storageId];
+  const preSelectedImages = state.selectImage.preSelectedImages[cartId];
+  const cart = state.cart.list[cartId];
 
   return {
     format,
     preSelectedImages,
-    preSelectedCart,
+    cart,
   };
 };
 

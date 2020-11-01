@@ -30,7 +30,7 @@ function FormatList({dispatch, navigation, route, formats}) {
       setLoadingFormat(false);
       setFormatError(true);
     }
-  }, [projectId]);
+  }, [projectId, dispatch]);
 
   const loadData = useCallback(() => {
     if (formats.length) {
@@ -38,11 +38,11 @@ function FormatList({dispatch, navigation, route, formats}) {
     } else {
       loadFormats();
     }
-  }, [setLoadingFormat, loadFormats]);
+  }, [setLoadingFormat, loadFormats, formats.length]);
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
 
   useEffect(() => {
     loadData();
