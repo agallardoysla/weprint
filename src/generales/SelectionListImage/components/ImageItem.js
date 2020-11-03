@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
-  useWindowDimensions,
 } from 'react-native';
 import Cargando from '../../Cargando';
 import Icon from 'react-native-vector-icons/dist/Feather';

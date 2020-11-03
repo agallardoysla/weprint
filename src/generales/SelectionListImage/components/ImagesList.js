@@ -1,4 +1,4 @@
-import React, {PureComponent, useEffect, useState, useCallback} from 'react';
+import React, {PureComponent} from 'react';
 import {
   Text,
   View,
@@ -23,7 +23,7 @@ class ImagesList extends PureComponent {
       after: '0',
     },
     loading: false,
-    loadingAll: false,
+
     selectAll: false,
   };
 
@@ -64,7 +64,8 @@ class ImagesList extends PureComponent {
     const {selectedImages, albumTitle} = this.props;
 
     const selectAll = selectedImages.some(
-      (selectedImage) => selectedImage.node.group_name === albumTitle,
+      (selectedImage) =>
+        selectedImage.node && selectedImage.node.group_name === albumTitle,
     );
 
     this.setState({...this.state, selectAll});
@@ -72,10 +73,11 @@ class ImagesList extends PureComponent {
 
   async componentDidMount() {
     await this.loadImages();
+    this.handleSelectedAll();
   }
 
-  componentDidUpdate(_, prevState) {
-    if (prevState.edges !== this.props.edges) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedImages !== this.props.selectedImages) {
       this.handleSelectedAll();
     }
   }
@@ -126,7 +128,8 @@ class ImagesList extends PureComponent {
   onDeselectAll = () => {
     const {selectedImages, onSelectImages, albumTitle} = this.props;
     const images = selectedImages.filter(
-      (selectedImage) => selectedImage.node.group_name !== albumTitle,
+      (selectedImage) =>
+        !selectedImage.node || selectedImage.node.group_name !== albumTitle,
     );
 
     onSelectImages(images);
@@ -197,7 +200,6 @@ class ImagesList extends PureComponent {
     const {
       albumTitle,
       minQuantity,
-      hasMaxQuantity,
       selectedImages,
       onPressGoToAlbum,
     } = this.props;
@@ -251,7 +253,6 @@ class ImagesList extends PureComponent {
             data={edges}
             numColumns={3}
             renderItem={this.renderImage}
-            hasMaxQuantity={hasMaxQuantity}
             keyExtractor={(edge) => edge.node.image.uri}
             onEndReachedThreshold={0.4}
             onEndReached={this.loadImages}

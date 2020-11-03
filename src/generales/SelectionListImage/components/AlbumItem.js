@@ -10,7 +10,7 @@ import GeneralImage from '../../GeneralImage';
 import {estiloDeLetra, tipoDeLetra, colores} from '../../../constantes/Temas';
 
 const AlbumItem = ({album, onPressSelectAlbum}) => {
-  const handleOnPress = () => onPressSelectAlbum(album.title);
+  const handleOnPress = () => onPressSelectAlbum(album.id || album.title);
 
   return (
     <TouchableOpacity

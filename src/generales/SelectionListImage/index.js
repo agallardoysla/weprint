@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Alert, StyleSheet} from 'react-native';
-import RNFetchBlob from 'rn-fetch-blob';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import AlbumList from './components/AlbumList';
 import ImagesList from './components/ImagesList';
-import Cargando from '../Cargando';
+import StorageImageList from './components/StorageImageList';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
-//Funciona como un modal
 const SelectionListImage = ({
   minQuantity,
   maxQuantity,
@@ -14,68 +18,54 @@ const SelectionListImage = ({
   onPressGoToBack,
   onResponse,
 }) => {
-  const [selectedAlbum, setSelectedAlbum] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showImagesList, setShowImagesList] = useState(false);
+  const [albumIdentifier, setAlbumIdentifier] = useState('');
   const [selectedImages, setSelectedImages] = useState(preSelectedImages);
   const [hasMaxQuantity, setHasMaxQuantity] = useState(false);
+  const [listImage, setListImage] = useState(0);
+  const [storage, setStorage] = useState('device');
+  const [loading, setLoading] = useState(false);
 
-  const handleOnPressSelectAlbum = (albumTitle) => {
-    if (!loading) {
-      setSelectedAlbum(albumTitle);
-      setShowImagesList(true);
+  const handleChangeStorage = (storageName) => setStorage(storageName);
+
+  const handleOnPressSelectAlbum = (identifier) => {
+    setAlbumIdentifier(identifier);
+
+    if (storage === 'device') {
+      setListImage(1);
+    } else if (storage === 'package') {
+      setListImage(2);
     }
   };
 
   const handleOnPressGoToAlbumList = () => {
-    if (!loading) {
-      setSelectedAlbum('');
-      setShowImagesList(false);
-    }
-  };
-
-  const getImageToBase64 = (selectedImage) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const base64 = await RNFetchBlob.fs.readFile(
-          selectedImage.uri,
-          'base64',
-        );
-        resolve({...selectedImage, base64});
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  const handleTransformImagesToBase64 = async () => {
-    setLoading(true);
-    const promises = selectedImages.map((selectedImage) =>
-      getImageToBase64(selectedImage),
-    );
-
-    try {
-      const imagesToBase64 = await Promise.all(promises);
-      setLoading(false);
-      onResponse(imagesToBase64);
-    } catch {
-      Alert.alert('Ha ocurrido un error vuelve a intentarlo');
-      setLoading(false);
-    }
+    setAlbumIdentifier('');
+    setListImage(0);
   };
 
   const hasMinQuantitiy = () => selectedImages.length >= minQuantity;
 
   const handleSelectImages = (images) => {
-    if (!loading) {
-      if (!hasMaxQuantity || images.length < selectedImages.length) {
-        setSelectedImages(images);
-      }
+    if (!hasMaxQuantity || images.length < selectedImages.length) {
+      setSelectedImages(images);
     }
   };
 
+  const handleRespond = () => setLoading(true);
+
+  const getStyleButton = (imageListNumber) =>
+    StyleSheet.create({
+      buttonContainer: {
+        position: 'absolute',
+        bottom: imageListNumber > 0 ? 10 : 65,
+        width: '100%',
+        alignItems: 'center',
+        zIndex: 999,
+        elevation: 999,
+      },
+    });
+
   const renderButtom = () => {
-    return showImagesList || (!showImagesList && hasMinQuantitiy());
+    return listImage > 0 || (listImage === 0 && hasMinQuantitiy());
   };
 
   useEffect(() => {
@@ -84,18 +74,29 @@ const SelectionListImage = ({
     } else {
       setHasMaxQuantity(false);
     }
-  }, [selectedImages, maxQuantity, setHasMaxQuantity]);
+  }, [selectedImages, maxQuantity]);
+
+  useEffect(() => {
+    if (loading) {
+      onResponse(selectedImages);
+    }
+  }, [onResponse, loading, selectedImages]);
 
   return (
-    <View style={style.mainContainer}>
-      {loading && (
-        <View style={style.overlay}>
-          <Cargando titulo="" loaderColor={colores.logo} />
-        </View>
+    <>
+      {listImage === 0 && (
+        <AlbumList
+          minQuantity={minQuantity}
+          selectedImages={selectedImages}
+          storage={storage}
+          onPressSelectAlbum={handleOnPressSelectAlbum}
+          onChangeStorage={handleChangeStorage}
+          onPressGoToBack={onPressGoToBack}
+        />
       )}
-      {showImagesList ? (
+      {listImage === 1 && (
         <ImagesList
-          albumTitle={selectedAlbum}
+          albumTitle={albumIdentifier}
           preSelectedImages={preSelectedImages}
           selectedImages={selectedImages}
           onSelectImages={handleSelectImages}
@@ -104,35 +105,42 @@ const SelectionListImage = ({
           maxQuantity={maxQuantity}
           hasMaxQuantity={hasMaxQuantity}
         />
-      ) : (
-        <AlbumList
-          minQuantity={minQuantity}
+      )}
+      {listImage === 2 && (
+        <StorageImageList
+          storage={storage}
+          albumIdentifier={albumIdentifier}
           selectedImages={selectedImages}
-          onPressSelectAlbum={handleOnPressSelectAlbum}
-          onPressGoToBack={onPressGoToBack}
+          preSelectedImages={preSelectedImages}
+          onPressGoToAlbum={handleOnPressGoToAlbumList}
+          onSelectImages={handleSelectImages}
+          minQuantity={minQuantity}
+          maxQuantity={maxQuantity}
+          hasMaxQuantity={hasMaxQuantity}
         />
       )}
       {renderButtom() && (
-        <View
-          style={{...style.buttonContainer, bottom: showImagesList ? 10 : 65}}>
+        <View style={getStyleButton(listImage).buttonContainer}>
           <TouchableOpacity
             style={style.button}
-            onPress={handleTransformImagesToBase64}
-            disabled={!hasMinQuantitiy() || loading}>
-            {!hasMinQuantitiy() && <View style={style.overlayButton} />}
-            <Text style={style.buttonText}>Siguiente</Text>
+            onPress={handleRespond}
+            disabled={loading || !hasMinQuantitiy()}>
+            {(loading || !hasMinQuantitiy()) && (
+              <View style={style.overlayButton} />
+            )}
+            {loading ? (
+              <ActivityIndicator size="large" color={colores.blanco} />
+            ) : (
+              <Text style={style.buttonText}>Siguiente</Text>
+            )}
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </>
   );
 };
 
 const style = StyleSheet.create({
-  mainContainer: {
-    position: 'relative',
-    height: '100%',
-  },
   buttonContainer: {
     position: 'absolute',
     bottom: 10,
@@ -150,6 +158,11 @@ const style = StyleSheet.create({
     borderRadius: 290486,
     backgroundColor: colores.logo,
   },
+  buttonText: {
+    color: colores.blanco,
+    fontFamily: tipoDeLetra.regular,
+    fontSize: 20,
+  },
   overlayButton: {
     position: 'absolute',
     top: 0,
@@ -160,24 +173,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 290486,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '100%',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    elevation: 5,
-  },
-  buttonText: {
-    color: colores.blanco,
-    fontFamily: tipoDeLetra.regular,
-    fontSize: 20,
   },
 });
 

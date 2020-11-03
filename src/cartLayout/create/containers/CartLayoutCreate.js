@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Text} from 'react-native';
 import {nanoid} from 'nanoid/non-secure';
 import {connect} from 'react-redux';
 import {actions} from '../../../redux';
@@ -60,8 +61,6 @@ function CartLayoutCreate({dispatch, navigation, format}) {
 
   const handleOnResponse = (images) => {
     const storageId = nanoid();
-
-    dispatch(actions.actualizarImagenes(storageId, images));
     handleSaveCartLayout(storageId, images);
 
     navigation.navigate('CartLayoutDetail', {
