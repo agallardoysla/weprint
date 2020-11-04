@@ -65,8 +65,12 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     getPreSelectedImages(cart.pages),
   );
 
-  const handleSaveImages = async () => {
-    //const pages = cart.pages.reduce
+  const handleSaveImages = () => {
+    const pages = cart.pages.reduce((memo, page) => {
+      memo.push(page);
+    }, []);
+
+    console.warn('save image', pages);
   };
 
   const handleAddCart = async () => {
@@ -248,7 +252,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
           )}
         </>
         <View style={style.footer}>
-          <TouchableOpacity style={style.button}>
+          <TouchableOpacity style={style.button} onPress={handleSaveImages}>
             <Text style={style.buttonText}>Guardar Borrador</Text>
           </TouchableOpacity>
         </View>
