@@ -15,21 +15,13 @@ import {colores, estiloDeLetra} from '../../constantes/Temas';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
-<<<<<<< HEAD
-=======
-import DraftIllustration from '../../assets/img/draftillustration.svg';
->>>>>>> 52872c1d0cf70837f6cb76bd4b0281f5b6ce9ff7
 
 function Drafts({profilePhoto, route, items, navigation}) {
   console.log('route.params');
   console.log(items.shortlisted);
   const draftList = Object.values(items.shortlisted);
 
-<<<<<<< HEAD
-    console.log(Object.keys(items.shortlisted))
-=======
-  console.log(draftList);
->>>>>>> 52872c1d0cf70837f6cb76bd4b0281f5b6ce9ff7
+  console.log(Object.keys(items.shortlisted));
 
   //INSERT DRAFTS
 
@@ -38,79 +30,23 @@ function Drafts({profilePhoto, route, items, navigation}) {
       <ScrollView>
         <Container footer={false}>
           <Header />
-<<<<<<< HEAD
-          {draftList.map((draft,index) => (
+          {draftList.map((draft, index) => (
             <DraftCard
               photo={draft.pages[0].pieces[0].file.base64}
               available={true}
               name={draft.name}
               description={draft.description}
-              onPressFunction={() => navigation.navigate('CartLayout', {
+              onPressFunction={() =>
+                navigation.navigate('CartLayout', {
                   storageId: Object.keys(items.shortlisted)[index],
                   formatId: draft.format,
-              })}
+                })
+              }
               price={draft.price}
               pages={draft.pages.length}
               format={draft.format}
             />
           ))}
-=======
-          {draftList.length !== 0 ? (
-            draftList.map((draft, index) => (
-              <DraftCard
-                photo={draft.pages[0].pieces[0].file.base64}
-                available={true}
-                name={draft.name}
-                description={draft.description}
-                onPressFunction={() =>
-                  navigation.navigate('CartLayout', {
-                    storageId: Object.keys(items.shortlisted)[index],
-                    formatId: draft.format,
-                  })
-                }
-                price={draft.price}
-                pages={draft.pages.length}
-                format={draft.format}
-              />
-            ))
-          ) : (
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-              <Text
-                style={{
-                  ...estiloDeLetra.negrita,
-                  fontSize: RFPercentage(2.5),
-                  width: '85%',
-                  textAlign: 'center',
-                  marginBottom: 40,
-                }}>
-                Aún  no tienes ningun Proyecto ☹. Porque no creas uno ?
-              </Text>
-              <DraftIllustration height={250} width={250} />
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Home')}>
-                <View
-                  style={{
-                    marginTop: 50,
-                    padding: 20,
-                    backgroundColor: colores.button,
-                    width: 190,
-                    borderRadius: 50,
-                    margin: 5,
-                  }}>
-                  <Text
-                    style={{
-                      ...estiloDeLetra.negrita,
-                      color: colores.blanco,
-                      textAlign: 'center',
-                      fontSize: RFPercentage(1.5),
-                    }}>
-                    + CREAR UN PROYECTO
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          )}
->>>>>>> 52872c1d0cf70837f6cb76bd4b0281f5b6ce9ff7
         </Container>
       </ScrollView>
     </SafeAreaView>
@@ -166,13 +102,9 @@ const DraftCard = ({
 
             Agregar fecha para luego hacer el mapeo y pegar ahi
       */}
-<<<<<<< HEAD
-      <Text style={{...estiloDeLetra.negrita, color: colores.gris}} numberOfLines={4}>
-=======
       <Text
         style={{...estiloDeLetra.negrita, color: colores.gris}}
         numberOfLines={4}>
->>>>>>> 52872c1d0cf70837f6cb76bd4b0281f5b6ce9ff7
         {description}
       </Text>
     </View>
