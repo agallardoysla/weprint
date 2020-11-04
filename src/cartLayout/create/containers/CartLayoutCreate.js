@@ -20,7 +20,7 @@ function CartLayoutCreate({dispatch, navigation, format}) {
   const getPages = (images) => {
     const pages = images.map((img, index) => ({
       number: index,
-      layout_id: null,
+      layout_id: 1,
       pieces: [
         {
           order: 0,

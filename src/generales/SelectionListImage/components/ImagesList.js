@@ -153,7 +153,7 @@ class ImagesList extends PureComponent {
   handleImageIsPreselected = (uri) => {
     const {preSelectedImages} = this.props;
     return preSelectedImages.some(
-      (preselectImage) => preselectImage.uri === uri,
+      (preSelectImage) => preSelectImage.uri === uri,
     );
   };
 

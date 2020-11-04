@@ -6,3 +6,5 @@ export const get_albums_request = async () => get('/cart-shared');
 
 export const accept_shared_album = async (shared_id) =>
   post('/cart-shared/accepted', shared_id);
+
+export const create_cart = async (body) => post('/cart', body);

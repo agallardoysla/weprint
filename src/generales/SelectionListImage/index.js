@@ -28,12 +28,14 @@ const SelectionListImage = ({
   const handleChangeStorage = (storageName) => setStorage(storageName);
 
   const handleOnPressSelectAlbum = (identifier) => {
-    setAlbumIdentifier(identifier);
+    if (!loading) {
+      setAlbumIdentifier(identifier);
 
-    if (storage === 'device') {
-      setListImage(1);
-    } else if (storage === 'package') {
-      setListImage(2);
+      if (storage === 'device') {
+        setListImage(1);
+      } else if (storage === 'package') {
+        setListImage(2);
+      }
     }
   };
 
@@ -45,8 +47,10 @@ const SelectionListImage = ({
   const hasMinQuantitiy = () => selectedImages.length >= minQuantity;
 
   const handleSelectImages = (images) => {
-    if (!hasMaxQuantity || images.length < selectedImages.length) {
-      setSelectedImages(images);
+    if (!loading) {
+      if (!hasMaxQuantity || images.length < selectedImages.length) {
+        setSelectedImages(images);
+      }
     }
   };
 

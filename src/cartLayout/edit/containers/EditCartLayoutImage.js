@@ -193,7 +193,7 @@ function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
 
   useEffect(() => {
     loadData();

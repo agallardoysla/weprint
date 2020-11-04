@@ -3,33 +3,57 @@ import {useFocusEffect} from '@react-navigation/native';
 import {
   Text,
   View,
-  Modal,
   StyleSheet,
   TouchableOpacity,
+  Alert,
   BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {colores, tipoDeLetra} from '../../../constantes/Temas';
+import concat from 'lodash/concat';
+import omit from 'lodash/omit';
+import flatten from 'lodash/flatten';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import {actions} from '../../../redux';
 import Cargando from '../../../generales/Cargando';
 import SelectionListImage from '../../../generales/SelectionListImage';
 import CartLayoutListImage from '../components/CartLayoutListImage';
-import concat from 'lodash/concat';
+import CartDeleteModal from '../components/CartDeleteModal';
+import CartOptionsModal from '../components/CartOptionsModal';
+import {actions} from '../../../redux';
+import {colores, tipoDeLetra} from '../../../constantes/Temas';
+import {create_cart} from '../../../utils/apis/cart_api';
 
-function CartLayoutDetail({
-  dispatch,
-  navigation,
-  route,
-  preSelectedImages,
-  cart,
-  format,
-}) {
+function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
+  const getPreSelectedImages = useCallback((pages) => {
+    const allPieces = pages.map((page) => page.pieces);
+    const piecesLevel = flatten(allPieces);
+    const preSelectedFormat = piecesLevel.map((piece) => ({
+      node: null,
+      uri: piece.file,
+    }));
+
+    return preSelectedFormat;
+  }, []);
+
   const {cartId} = route.params;
   const [showAddImages, setShowAddImages] = useState(false);
   const [showReorganize, setShowReorganize] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [preSelectedImages, setPreSelectedImages] = useState(
+    getPreSelectedImages(cart.pages),
+  );
+
+  const handleAddCart = async () => {
+    try {
+      const response = await create_cart(omit(cart, ['id']));
+
+      if (response.error) {
+        Alert.alert('No se pudo guardar, intenta de nuevo');
+      }
+    } catch (error) {
+      Alert.alert('No se pudo guardar, intenta de nuevo');
+    }
+  };
 
   const handleCalculatePrice = (totalPages) => {
     const minQuantity = format.min_quantity;
@@ -90,7 +114,7 @@ function CartLayoutDetail({
       const newImages = images.slice(preSelectedImages.length, images.length);
       const newPages = newImages.map((img) => ({
         number: 0,
-        layout_id: null,
+        layout_id: 1,
         pieces: [
           {
             order: 0,
@@ -104,7 +128,6 @@ function CartLayoutDetail({
         number: index,
       }));
 
-      dispatch(actions.actualizarImagenes(cartId, images));
       dispatch(
         actions.agregarCart({
           ...cart,
@@ -119,6 +142,11 @@ function CartLayoutDetail({
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
   }, [dispatch, navigation]);
+
+  useEffect(() => {
+    const preSelectedFormat = getPreSelectedImages(cart.pages);
+    setPreSelectedImages(preSelectedFormat);
+  }, [cart, getPreSelectedImages]);
 
   useFocusEffect(
     useCallback(() => {
@@ -136,59 +164,14 @@ function CartLayoutDetail({
 
   return (
     <>
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={showReorganize}
-        onRequestClose={handleToggleReorganizeModal}>
-        <View style={style.modalContainer}>
-          <View style={style.modalContent}>
-            <TouchableOpacity style={style.modelOptionItemContainer}>
-              <Text style={style.modelOptionItemText}>
-                De más antiguas a más recientes
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.modelOptionItemContainer}>
-              <Text style={style.modelOptionItemText}>
-                De más recientes a más antiguas
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={style.modelOptionItemContainerEnd}
-              onPress={handleToggleReorganizeModal}>
-              <Text style={{...style.modelOptionItemText, color: colores.rojo}}>
-                Cancelar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-      <Modal
-        transparent={true}
-        animationType="fade"
-        visible={showOptions}
-        onRequestClose={handleToggleOptionsModal}>
-        <View style={style.modalContainer}>
-          <View style={style.modalContent}>
-            <TouchableOpacity style={style.modelOptionItemContainer}>
-              <Text
-                style={{
-                  ...style.modelOptionItemText,
-                  color: colores.azulNoche,
-                }}>
-                Eliminar
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={style.modelOptionItemContainer}
-              onPress={handleToggleOptionsModal}>
-              <Text style={{...style.modelOptionItemText, color: colores.rojo}}>
-                Cancelar
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <CartOptionsModal
+        showReorganize={showReorganize}
+        onToggleReorganizeModal={handleToggleReorganizeModal}
+      />
+      <CartDeleteModal
+        showOptions={showOptions}
+        onToggleOptionsModal={handleToggleOptionsModal}
+      />
       <View style={style.cartLayoutMainContainer}>
         <>
           {showAddImages && (
@@ -209,12 +192,7 @@ function CartLayoutDetail({
           </TouchableOpacity>
           <View style={style.cartLayoutIconsBar}>
             <TouchableOpacity
-              style={{
-                ...style.cartLayoutIconContainer,
-                borderRightWidth: 1,
-                borderRightColor: colores.grisClaro,
-                paddingVertical: 2,
-              }}
+              style={style.cartLayoutIconContainerFirst}
               onPress={handleToggleShowImages}>
               <Icon name="image" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Añadir fotos </Text>
@@ -243,6 +221,11 @@ function CartLayoutDetail({
             />
           )}
         </>
+        <View style={style.footer}>
+          <TouchableOpacity style={style.button}>
+            <Text style={style.buttonText}>Guardar Borrador</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   );
@@ -260,18 +243,17 @@ const mapStateToProps = (
     (searchedFormat) => searchedFormat.id === formatId,
   );
 
-  const preSelectedImages = state.selectImage.preSelectedImages[cartId];
   const cart = state.cart.list[cartId];
 
   return {
     format,
-    preSelectedImages,
     cart,
   };
 };
 
 const style = StyleSheet.create({
   cartLayoutMainContainer: {
+    position: 'relative',
     width: '100%',
     height: '100%',
   },
@@ -314,44 +296,43 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRightWidth: 0.5,
-
     borderRightColor: colores.grisClaro,
+  },
+  cartLayoutIconContainerFirst: {
+    height: '100%',
+    flexDirection: 'row',
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRightWidth: 1,
+    borderRightColor: colores.grisClaro,
+    paddingVertical: 2,
   },
   cartLayoutIconText: {
     maxWidth: 95,
     paddingLeft: 5,
     fontSize: 14,
   },
-  modalContainer: {
-    flex: 1,
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    height: 55,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  modalContent: {
-    width: '80%',
-    marginHorizontal: '20%',
-    borderRadius: 20,
-    backgroundColor: colores.blanco,
-    elevation: 1,
-  },
-  modelOptionItemContainer: {
-    height: 60,
+  button: {
+    width: '40%',
+    paddingVertical: 10,
     alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 0.5,
-    borderColor: colores.grisFormatoAlbum,
+    borderRadius: 5,
+    backgroundColor: colores.logo,
   },
-  modelOptionItemContainerEnd: {
-    height: 55,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modelOptionItemText: {
+  buttonText: {
+    color: colores.blanco,
     fontFamily: tipoDeLetra.regular,
-    fontWeight: '500',
-    fontSize: 15,
+    fontSize: 16,
   },
 });
 

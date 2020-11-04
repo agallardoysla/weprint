@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
-import mime from "mime";
+import mime from 'mime';
 
 export const BEARER_TOKEN_NAME = 'bearer_token_api';
 export const BASE_API = 'http://52.9.49.89';
@@ -37,7 +37,7 @@ export const put = async (uri, body) => {
   };
 
   return fetch(`${BASE_API}${uri}`, requestOptions)
-    .then(async(response) => await response.json())
+    .then(async (response) => await response.json())
     .then((response) => console.log(response))
     .catch((error) => console.log('error', error));
 };
@@ -95,8 +95,8 @@ export const post = async (uri, body) => {
   var myHeaders = await getHeaders();
 
   var raw = JSON.stringify(body);
-  
-  console.log(raw)
+
+  console.log(raw);
 
   var requestOptions = {
     method: 'POST',
@@ -106,7 +106,7 @@ export const post = async (uri, body) => {
   };
 
   return fetch(`${BASE_API}${uri}`, requestOptions)
-    .then(async(response) => await response.json())
+    .then(async (response) => await response.json())
     .catch((error) => console.log('error', error));
 };
 

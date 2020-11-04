@@ -110,10 +110,8 @@ const style = StyleSheet.create({
   },
 });
 const mapStateToProps = (state) => {
-  const carts = map(state.cart.list, (cart) => cart);
-
   return {
-    carts,
+    carts: [],
   };
 };
 
