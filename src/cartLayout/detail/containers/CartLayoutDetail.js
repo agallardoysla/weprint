@@ -230,7 +230,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     </>
   );
 }
-
+console.log('cart layout');
 const mapStateToProps = (
   state,
   {
