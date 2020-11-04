@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Text} from 'react-native';
 import {nanoid} from 'nanoid/non-secure';
 import {connect} from 'react-redux';
 import {actions} from '../../../redux';
@@ -59,7 +58,7 @@ function CartLayoutCreate({dispatch, navigation, format}) {
     dispatch(actions.agregarCart(cart));
   };
 
-  const handleOnResponse = (images) => {
+  const handleOnResponse = async (images) => {
     const storageId = nanoid();
     handleSaveCartLayout(storageId, images);
 

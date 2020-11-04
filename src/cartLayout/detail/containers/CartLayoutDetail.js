@@ -21,6 +21,28 @@ import CartOptionsModal from '../components/CartOptionsModal';
 import {actions} from '../../../redux';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import {create_cart} from '../../../utils/apis/cart_api';
+import {upload_image_uri} from '../../../utils/apis/project_api';
+
+/*type": "image/png"
+const uri =
+'file:///storage/emulated/0/Pictures/Screenshots/Screenshot_20201104-002432.png';
+
+const m = uri.toString().match(/.*\/(.+?)\./);
+
+console.warn(m[1]);
+const body = {
+uri:
+  'file:///storage/emulated/0/Pictures/Screenshots/Screenshot_20201104-002432.png',
+filename: 'Screenshot_20201104-002432.png',
+type: 'image/png',
+};
+
+
+const response = await upload_image_uri(body);
+
+console.warn(response);
+return;*/
+//var ext = fileName.substr(fileName.lastIndexOf('.') + 1);
 
 function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   const getPreSelectedImages = useCallback((pages) => {
@@ -42,6 +64,10 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   const [preSelectedImages, setPreSelectedImages] = useState(
     getPreSelectedImages(cart.pages),
   );
+
+  const handleSaveImages = async () => {
+    //const pages = cart.pages.reduce
+  };
 
   const handleAddCart = async () => {
     try {
@@ -230,7 +256,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     </>
   );
 }
-console.log('cart layout');
+
 const mapStateToProps = (
   state,
   {
