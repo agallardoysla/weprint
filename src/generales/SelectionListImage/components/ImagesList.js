@@ -23,7 +23,6 @@ class ImagesList extends PureComponent {
       after: '0',
     },
     loading: false,
-
     selectAll: false,
   };
 

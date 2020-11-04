@@ -44,7 +44,6 @@ const style = StyleSheet.create({
   },
   projectCardOverlayText: {
     marginLeft: 16,
-
     color: colores.blanco,
     fontSize: 20,
     fontFamily: tipoDeLetra.regular,
