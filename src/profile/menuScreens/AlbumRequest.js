@@ -6,31 +6,31 @@ import {
   get_albums_request,
   accept_shared_album,
 } from '../../utils/apis/cart_api';
-import {RequestView} from '../components/RequestView'
+import {RequestView} from '../components/RequestView';
 
 function AlbumRequest({navigation}) {
-  const [albumRequest, setAlbumRequest] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [albumRequest, setAlbumRequest] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    get_albums_request().then((data) =>{
+    get_albums_request().then((data) => {
       setAlbumRequest(data.data);
-      setLoading(false)
+      setLoading(false);
     });
-  }, [])
+  }, []);
 
   const acceptRequest = (id) => {
-    setLoading(true)
+    setLoading(true);
     const sharedIdRequest = {
-      "shared_id": id
-    }
+      shared_id: id,
+    };
 
-    accept_shared_album(sharedIdRequest).then((data) =>{
-        console.log(data);
-        setLoading(false)
-        navigation.goBack()
-      });
-  }
+    accept_shared_album(sharedIdRequest).then((data) => {
+      console.log(data);
+      setLoading(false);
+      navigation.goBack();
+    });
+  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#F5F6FA'}}>
@@ -44,8 +44,8 @@ function AlbumRequest({navigation}) {
               username={request.from_user_fullname}
               fullName={request.to_user_fullname}
               onPressFunction={() => acceptRequest(request.shared_id)}
-            />))
-          }
+            />
+          ))}
         </Container>
       </ScrollView>
     </SafeAreaView>

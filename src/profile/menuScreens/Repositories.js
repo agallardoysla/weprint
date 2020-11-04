@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {
-  ScrollView,
-  SafeAreaView,
-  View,
-  Text,
-  Alert
-} from 'react-native';
+import {ScrollView, SafeAreaView, View, Text, Alert} from 'react-native';
 import Container from '../../generales/Container';
 import {colores, estiloDeLetra} from '../../constantes/Temas';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {get_repositories, delete_repository} from '../../utils/apis/repository_api';
+import {
+  get_repositories,
+  delete_repository,
+} from '../../utils/apis/repository_api';
 import {ProjectPreview} from '../components/ProjectPreview';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CargandoModal from '../../generales/CargandoModal';
@@ -39,8 +36,8 @@ function Repositories({route, cover, navigation}) {
         {
           text: 'Aceptar',
           onPress: () => {
-            setLoading(true)
-            delete_repository(repoId)
+            setLoading(true);
+            delete_repository(repoId);
           },
         },
       ],
@@ -52,9 +49,9 @@ function Repositories({route, cover, navigation}) {
     navigation.navigate('RepositoryDescription', {
       repoName: name,
       repoCode: code,
-      repoId: id
-  })
-  }
+      repoId: id,
+    });
+  };
   console.log(route.params);
   const photo = route.params;
   return (
@@ -88,7 +85,8 @@ function Repositories({route, cover, navigation}) {
             </Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("RepositoryRequest")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('RepositoryRequest')}>
           <View
             style={{
               padding: 20,
@@ -113,7 +111,7 @@ function Repositories({route, cover, navigation}) {
         <Container footer={false}>
           <View style={{marginTop: 25}}>
             {repositoriesData &&
-              repositoriesData.map((repository) =>
+              repositoriesData.map((repository) => (
                 <ProjectPreview
                   title={repository.name}
                   totalPieces={repository.totalPieces}
@@ -129,7 +127,7 @@ function Repositories({route, cover, navigation}) {
                     )
                   }
                 />
-              )}
+              ))}
           </View>
         </Container>
       </ScrollView>
@@ -142,4 +140,4 @@ export default Repositories;
 Repositories.defaultProps = {
   cover:
     'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg',
-}
+};

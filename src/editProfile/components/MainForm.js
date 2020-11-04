@@ -196,8 +196,9 @@ export const MainForm = ({data}) => {
             setUserData({...userData, district_id: val});
             setUserData({
               ...userData,
-              province: provinceLocation.find((province) => province.id === val).name
-            })
+              province: provinceLocation.find((province) => province.id === val)
+                .name,
+            });
           }}
           itemStyle={{height: 120}}
           style={{height: 25}}>

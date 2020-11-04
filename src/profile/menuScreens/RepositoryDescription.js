@@ -28,7 +28,8 @@ function RepositoryDescription({route, navigation}) {
   const [showListImage, setShowListImage] = useState(false);
   const [loading, setLoading] = useState(route.params.repoId ? true : false);
 
-  console.log(route)
+  console.log(route);
+  const imageWidth = Dimensions.get('window').width;
 
   const handleDeleteImage = (index) => {
     const newImageArray = imagesToSend;
