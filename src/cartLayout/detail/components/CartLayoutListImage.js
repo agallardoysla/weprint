@@ -224,10 +224,7 @@ class CartLayoutListImage extends PureComponent {
     if (pieces.length < totalSpace) {
       const totalEmpty = totalSpace - pieces.length;
       const fillEmptySpace = fill(Array(totalEmpty), {
-        file: {
-          base64: null,
-          uri: null,
-        },
+        file: null,
       });
 
       return concat(pieces, fillEmptySpace);

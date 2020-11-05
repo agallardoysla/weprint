@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {TouchableHighlight, View, StyleSheet} from 'react-native';
+import {TouchableHighlight, View, StyleSheet, Text} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';

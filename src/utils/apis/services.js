@@ -118,7 +118,7 @@ export const postUploadImage = async (uri, body, repository) => {
     .then((result) => {
       return result;
     })
-    .catch((error) => console.warn('error', error));
+    .catch((error) => Promise.error(error));
 };
 
 export const post = async (uri, body) => {
