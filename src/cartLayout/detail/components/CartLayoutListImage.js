@@ -356,7 +356,7 @@ class CartLayoutListImage extends PureComponent {
     const {pages} = this.state;
 
     const defaultPage = {
-      layout_id: null,
+      layout_id: 1,
       number: numberPage,
       pieces: [],
     };

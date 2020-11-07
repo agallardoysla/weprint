@@ -6,7 +6,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  ActivityIndicator,
   BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -17,30 +16,53 @@ import Icon from 'react-native-vector-icons/dist/Feather';
 import Cargando from '../../../generales/Cargando';
 import SelectionListImage from '../../../generales/SelectionListImage';
 import CartLayoutListImage from '../components/CartLayoutListImage';
+import CartProgress from '../components/CartProgress';
 import CartDeleteModal from '../components/CartDeleteModal';
 import CartOptionsModal from '../components/CartOptionsModal';
+import CartButton from '../components/CartButton';
 import {actions} from '../../../redux';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
-import {create_cart} from '../../../utils/apis/cart_api';
+import {create_cart, update_cart} from '../../../utils/apis/cart_api';
 import {upload_image_uri} from '../../../utils/apis/project_api';
 
+const WEPRINT_REPO = 'weprint-app.s3.us-west-1.amazonaws.com';
+
 function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
-  const getPreSelectedImages = useCallback((pages) => {
-    const allPieces = pages.map((page) => page.pieces);
-    const piecesLevel = flatten(allPieces);
-    const preSelectedFormat = piecesLevel.map((piece) => ({
+  const getPiecesOneLevel = useCallback(() => {
+    const pieces = cart.pages.map((page) => page.pieces);
+    const piecesOneLevel = flatten(pieces);
+
+    return piecesOneLevel;
+  }, [cart]);
+
+  const getPreSelectedImages = useCallback(() => {
+    const piecesOneLevel = getPiecesOneLevel();
+    const preSelectedFormat = piecesOneLevel.map((piece) => ({
       node: null,
       uri: piece.file,
     }));
 
     return preSelectedFormat;
-  }, []);
+  }, [getPiecesOneLevel]);
 
   const [showAddImages, setShowAddImages] = useState(false);
   const [showReorganize, setShowReorganize] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [hasLocalChange, setHasLocalChange] = useState(false);
   const [preSelectedImages, setPreSelectedImages] = useState([]);
+
+  const calculateProgress = (totalPieces, numberOfPiecesSaved) => {
+    const progressUpdated = Math.floor(
+      (numberOfPiecesSaved / totalPieces) * 100,
+    );
+
+    setProgress(progressUpdated);
+  };
+
+  const wait = (n) => new Promise((res) => setTimeout(res, n));
 
   const uploadPieces = async (memo, piece) => {
     const pagePieces = await memo;
@@ -56,7 +78,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     };
 
     try {
-      if (!file.includes('weprint-app.s3.us-west-1.amazonaws.com')) {
+      if (!file.includes(WEPRINT_REPO)) {
         const response = await upload_image_uri(body);
         const data = JSON.parse(response);
 
@@ -70,23 +92,51 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
         }
       }
 
+      await wait(30);
+
       return [...pagePieces, piece];
     } catch (error) {
       return [...pagePieces, piece];
     }
   };
 
-  const handleSaveImages = async () => {
-    const pages = await cart.pages.reduce(async (memo, page) => {
-      const cartPages = await memo;
-      const pieces = await page.pieces.reduce(uploadPieces, []);
-      const newPage = {...page, pieces};
+  const atLeastOneToUpload = () => {
+    const piecesOneLevel = getPiecesOneLevel();
 
-      return [...cartPages, newPage];
-    }, []);
+    return piecesOneLevel.some((piece) => !piece.file.includes(WEPRINT_REPO));
   };
 
-  const handleEditCartFormat = (data) => {
+  const handleSaveImages = async () => {
+    setShowProgress(true);
+    let numberOfPiecesSaved = 0;
+    let pages = cart.pages;
+
+    if (atLeastOneToUpload()) {
+      const piecesOneLevel = getPiecesOneLevel();
+
+      pages = await cart.pages.reduce(async (memo, page) => {
+        const cartPages = await memo;
+        const pieces = await page.pieces.reduce(uploadPieces, []);
+        const newPage = {...page, pieces};
+        numberOfPiecesSaved += pieces.length;
+
+        calculateProgress(piecesOneLevel.length, numberOfPiecesSaved);
+
+        return [...cartPages, newPage];
+      }, []);
+    }
+
+    setShowProgress(false);
+    setProgress(0);
+
+    if (!cart.user_id) {
+      handleAddCart(pages);
+    } else {
+      handleUpdateCart(pages);
+    }
+  };
+
+  const handleTransformCartFormat = (data) => {
     const pages = data.pages.map((page) => ({
       ...omit(page, ['active', 'cart_id', 'created', 'updated', 'id']),
       pieces: page.pieces.map((piece) => ({
@@ -105,15 +155,15 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     return {...data, pages};
   };
 
-  const handleAddCart = async () => {
+  const handleAddCart = async (pages) => {
     setLoading(true);
     try {
-      const response = await create_cart(omit(cart, ['id']));
+      const response = await create_cart({...omit(cart, ['id']), pages});
 
       if (response.errors) {
         Alert.alert('No se pudo guardar, intenta de nuevo');
       } else if (response.success) {
-        const editedCart = handleEditCartFormat(response.data[0]);
+        const editedCart = handleTransformCartFormat(response.data[0]);
         dispatch(actions.editarCart(editedCart, route.params.cartId));
 
         navigation.navigate('CartLayoutDetail', {
@@ -124,6 +174,26 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
 
       setLoading(false);
     } catch (error) {
+      setLoading(false);
+      Alert.alert('No se pudo guardar, intenta de nuevo');
+    }
+  };
+
+  const handleUpdateCart = async (pages) => {
+    setLoading(true);
+    try {
+      const response = await update_cart({...cart, pages}, cart.id);
+
+      if (response.errors) {
+        Alert.alert('No se pudo guardar, intenta de nuevo');
+      } else if (response.success) {
+        const editedCart = handleTransformCartFormat(response.data[0]);
+        dispatch(actions.editarCart(editedCart, cart.id));
+        setHasLocalChange(false);
+      }
+
+      setLoading(false);
+    } catch {
       setLoading(false);
       Alert.alert('No se pudo guardar, intenta de nuevo');
     }
@@ -141,12 +211,17 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     return minPrice;
   };
 
-  const handleSaveCart = (pages) => {
+  const handleLocalChangeCart = (pages) => {
     const editedCart = {
       ...cart,
       pages,
       price: handleCalculatePrice(pages.length),
     };
+
+    if (editedCart.user_id) {
+      setHasLocalChange(true);
+    }
+
     dispatch(actions.editarCart(editedCart, editedCart.id));
   };
 
@@ -217,7 +292,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
 
   useEffect(() => {
     if (cart) {
-      const preSelectedFormat = getPreSelectedImages(cart.pages);
+      const preSelectedFormat = getPreSelectedImages();
       setPreSelectedImages(preSelectedFormat);
     }
   }, [cart, getPreSelectedImages]);
@@ -246,6 +321,8 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
         showOptions={showOptions}
         onToggleOptionsModal={handleToggleOptionsModal}
       />
+      <CartProgress progress={progress} showProgress={showProgress} />
+
       <View style={style.cartLayoutMainContainer}>
         <>
           {showAddImages && (
@@ -287,26 +364,23 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
           {loading ? (
             <Cargando titulo="" loaderColor={colores.logo} />
           ) : (
-            <CartLayoutListImage
-              onSavePages={handleSaveCart}
-              onGoToEditCartImage={handleGoToEditCartImage}
-              cart={cart}
-              format={format}
-            />
+            <>
+              <CartLayoutListImage
+                onSavePages={handleLocalChangeCart}
+                onGoToEditCartImage={handleGoToEditCartImage}
+                cart={cart}
+                format={format}
+              />
+            </>
           )}
         </>
         <View style={style.footer}>
-          <TouchableOpacity
-            style={style.button}
-            activeOpacity={true}
-            onPress={handleAddCart}
-            disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color={colores.blanco} size="large" />
-            ) : (
-              <Text style={style.buttonText}>Guardar Borrador</Text>
-            )}
-          </TouchableOpacity>
+          <CartButton
+            cart={cart}
+            hasLocalChange={hasLocalChange}
+            loading={loading}
+            onHandleSaveImages={handleSaveImages}
+          />
         </View>
       </View>
     </>
@@ -410,6 +484,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     backgroundColor: colores.logo,
+    elevation: 5,
+    zIndex: 5,
   },
   buttonText: {
     color: colores.blanco,

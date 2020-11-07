@@ -38,7 +38,6 @@ export const put = async (uri, body) => {
 
   return fetch(`${BASE_API}${uri}`, requestOptions)
     .then(async (response) => await response.json())
-    .then((response) => console.log(response))
     .catch((error) => console.log('error', error));
 };
 

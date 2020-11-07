@@ -163,12 +163,7 @@ function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
       };
     });
 
-    dispatch(
-      actions.agregarCart({
-        ...cart,
-        pages,
-      }),
-    );
+    dispatch(actions.editarCart({...cart, pages}, cart.id));
 
     navigation.goBack();
   };
@@ -328,7 +323,7 @@ const mapStateToProps = (
   },
 ) => {
   const layouts = state.layout.data;
-  const cart = state.cart.list[cartId];
+  const cart = state.cart.data.find((searchCart) => searchCart.id === cartId);
 
   return {
     cart,

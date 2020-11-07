@@ -23,14 +23,16 @@ const BasicLayout = ({
   };
 
   return (
-    <View
-      {...panResponder.panHandlers}
-      onResponderGrant={handleResponder}
-      style={style.basicWrapper}>
-      <TouchableHighlight onPress={onPressImage}>
-        <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-      </TouchableHighlight>
-    </View>
+    <>
+      <View
+        {...panResponder.panHandlers}
+        onResponderGrant={handleResponder}
+        style={style.basicWrapper}>
+        <TouchableHighlight onPress={onPressImage}>
+          <GeneralImage uri={piece.file} styleImg={style.imageSize} />
+        </TouchableHighlight>
+      </View>
+    </>
   );
 };
 
