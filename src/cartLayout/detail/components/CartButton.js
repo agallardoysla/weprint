@@ -39,7 +39,13 @@ const CartButton = ({cart, hasLocalChange, loading, onHandleSaveImages}) => {
         style={style.button}
         onPress={() => {}}
         disabled={loading}>
-        <Text style={style.buttonText}>Comprar</Text>
+        {loading ? (
+          <ActivityIndicator color={colores.blanco} />
+        ) : (
+          <Text style={style.buttonText}>Comprar</Text>
+        )}
+
+        {loading && <View style={style.overlay} />}
       </TouchableOpacity>
     );
   }

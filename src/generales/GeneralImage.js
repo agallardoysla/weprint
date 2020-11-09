@@ -22,7 +22,7 @@ const GeneralImage = ({styleImg, uri, base64, resizeMode}) => {
 
   useEffect(() => {
     setSource(uri ? {uri} : defaultImg);
-  }, [uri]);
+  }, [uri, defaultImg]);
 
   return (
     <View style={style.wrapper}>

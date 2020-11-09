@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {TouchableHighlight, View, StyleSheet, Text} from 'react-native';
+import {
+  TouchableHighlight,
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
@@ -26,8 +33,8 @@ const BasicLayout = ({
     <>
       <View
         {...panResponder.panHandlers}
-        onResponderGrant={handleResponder}
-        style={style.basicWrapper}>
+        style={style.basicWrapper}
+        onResponderGrant={handleResponder}>
         <TouchableHighlight onPress={onPressImage}>
           <GeneralImage uri={piece.file} styleImg={style.imageSize} />
         </TouchableHighlight>

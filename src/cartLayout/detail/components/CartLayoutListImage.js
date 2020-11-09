@@ -152,8 +152,8 @@ class CartLayoutListImage extends PureComponent {
 
   handleChangePage = () => {
     if (
-      this.newIdx >= 0 &&
-      this.currentIdx >= 0 &&
+      this.newIdx > 0 &&
+      this.currentIdx > 0 &&
       this.newIdx !== this.currentIdx
     ) {
       const {piece} = this.state;
@@ -467,7 +467,8 @@ class CartLayoutListImage extends PureComponent {
         )}
         <FlatList
           scrollEnabled={!dragging}
-          contentContainerStyle={style.listContainer}
+          style={style.listContainer}
+          contentContainerStyle={style.listContent}
           ListHeaderComponent={
             <CartLayoutCover
               piece={pages[0].pieces[0]}
@@ -491,6 +492,9 @@ class CartLayoutListImage extends PureComponent {
 
 const style = StyleSheet.create({
   listContainer: {
+    marginBottom: 60,
+  },
+  listContent: {
     position: 'relative',
     marginTop: 35,
     paddingTop: 5,

@@ -1,6 +1,7 @@
 import concat from 'lodash/concat';
 export const AGREGAR_CART = 'AGREGAR_CART';
 export const EDITAR_CART = 'EDITAR_CART';
+export const SET_LIST_CART = 'SET_LIST_CART';
 
 export const agregarCart = (newCart) => ({
   type: AGREGAR_CART,
@@ -14,6 +15,13 @@ export const editarCart = (editedCart, searchId) => ({
   payload: {
     editedCart,
     searchId,
+  },
+});
+
+export const setListCart = (carts) => ({
+  type: SET_LIST_CART,
+  payload: {
+    carts,
   },
 });
 
@@ -47,6 +55,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: editedData,
+      };
+    case SET_LIST_CART:
+      const {carts} = payload;
+
+      return {
+        ...state,
+        data: carts,
       };
     default:
       return state;

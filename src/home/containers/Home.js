@@ -3,20 +3,37 @@ import {View, FlatList, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
 import {tipoDeLetra, colores} from '../../constantes/Temas';
-import map from 'lodash/map';
 import Cargando from '../../generales/Cargando';
 import Container from '../../generales/Container';
 import ProjectCardView from '../components/ProjectCardView';
 import ProjectHeader from '../components/ProjectHeader';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {get_projects_api} from '../../utils/apis/project_api';
+import {get_carts} from '../../utils/apis/cart_api';
 
 function Home({dispatch, navigation, carts}) {
   const [projects, setProjects] = useState([]);
   const [errorProject, setErrorProject] = useState(false);
   const [loadingProject, setLoadingProject] = useState(true);
+  const [loadingCartDraft, setLoadingCartDraft] = useState(false);
+  const [errorCartDraft, setErrorCartDraft] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const loadCarts = useCallback(async () => {
+    setLoadingCartDraft(true);
+    setErrorCartDraft(false);
+
+    try {
+      const status = 'draft';
+      const response = await get_carts(status);
+      dispatch(actions.setListCart(response.data));
+      setLoadingCartDraft(false);
+    } catch {
+      setErrorCartDraft(true);
+      setLoadingCartDraft(false);
+    }
+  }, [dispatch]);
+
+  const loadProjects = useCallback(async () => {
     setErrorProject(false);
     setLoadingProject(true);
     try {
@@ -40,8 +57,9 @@ function Home({dispatch, navigation, carts}) {
   };
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    loadProjects();
+    loadCarts();
+  }, [loadProjects, loadCarts]);
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
@@ -66,12 +84,12 @@ function Home({dispatch, navigation, carts}) {
         <FlatList
           ListHeaderComponent={
             <ProjectHeader
+              loading={loadingCartDraft}
               carts={carts}
               onPressGoToDetail={handleOnPressGoToDetail}
             />
           }
           style={style.projectsListContainer}
-          contentContainerStyle={style.projectsListContent}
           data={projects}
           renderItem={renderProjectCards}
           keyExtractor={(project) => project.id.toString()}
@@ -96,9 +114,6 @@ const style = StyleSheet.create({
   projectsListContainer: {
     width: '100%',
   },
-  projectsListContent: {
-    paddingHorizontal: 10,
-  },
   projectErrorContainer: {
     alignItems: 'center',
   },
@@ -109,10 +124,10 @@ const style = StyleSheet.create({
     fontSize: RFPercentage(3),
   },
 });
+
 const mapStateToProps = (state) => {
-  return {
-    carts: [],
-  };
+  const carts = state.cart.data.filter((cart) => cart.status === 'draft');
+  return {carts};
 };
 
 export default connect(mapStateToProps)(Home);

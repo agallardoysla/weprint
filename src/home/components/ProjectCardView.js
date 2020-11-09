@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from 'react-native';
 import GeneralImage from '../../generales/GeneralImage';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
@@ -9,7 +15,10 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
   return (
     <TouchableOpacity
       onPress={handleOnPress}
-      style={style.projectCardContainer}>
+      style={{
+        ...style.projectCardContainer,
+        width: useWindowDimensions().width - 20,
+      }}>
       <GeneralImage uri={project.image} styleImg={style.projectCardImage} />
       <View style={style.projectCardOverlay}>
         <Text style={style.projectCardOverlayText}>
@@ -23,10 +32,11 @@ const ProjectCardView = ({project, onPressGoToFormat}) => {
 const style = StyleSheet.create({
   projectCardContainer: {
     position: 'relative',
-    height: 250,
-    width: '100%',
+    height: 300,
+    justifyContent: 'center',
+    marginHorizontal: 10,
     marginBottom: 20,
-    borderRadius: 4,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   projectCardImage: {
@@ -35,8 +45,9 @@ const style = StyleSheet.create({
   },
   projectCardOverlay: {
     position: 'absolute',
+    top: 0,
     width: '100%',
-    height: 60,
+    height: 70,
     justifyContent: 'center',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,

@@ -11,6 +11,7 @@ import {
 import {connect} from 'react-redux';
 import concat from 'lodash/concat';
 import omit from 'lodash/omit';
+import has from 'lodash/has';
 import flatten from 'lodash/flatten';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import Cargando from '../../../generales/Cargando';
@@ -22,7 +23,12 @@ import CartOptionsModal from '../components/CartOptionsModal';
 import CartButton from '../components/CartButton';
 import {actions} from '../../../redux';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
-import {create_cart, update_cart} from '../../../utils/apis/cart_api';
+import {
+  create_cart,
+  update_cart,
+  get_pieces_by_cart,
+} from '../../../utils/apis/cart_api';
+import {get_format_by_id} from '../../../utils/apis/format_api';
 import {upload_image_uri} from '../../../utils/apis/project_api';
 
 const WEPRINT_REPO = 'weprint-app.s3.us-west-1.amazonaws.com';
@@ -50,9 +56,47 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   const [showOptions, setShowOptions] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [hasLocalChange, setHasLocalChange] = useState(false);
   const [preSelectedImages, setPreSelectedImages] = useState([]);
+
+  const handleTransformCartFormat = useCallback((data) => {
+    const pages = data.pages.map((page) => ({
+      ...omit(page, ['active', 'cart_id', 'created', 'updated', 'id']),
+      pieces: page.pieces.map((piece) => ({
+        ...omit(piece, [
+          'sort',
+          'active',
+          'cart_page_id',
+          'created',
+          'id',
+          'updated',
+        ]),
+        order: piece.sort,
+      })),
+    }));
+
+    return {...data, pages};
+  }, []);
+
+  const loadInitialData = useCallback(async () => {
+    if (cart && !has(cart, 'pages')) {
+      const response = await get_pieces_by_cart(cart.id);
+      const editedCart = handleTransformCartFormat({
+        ...cart,
+        pages: response.data[0].pages,
+      });
+
+      dispatch(actions.editarCart(editedCart, editedCart.id));
+    }
+
+    if (!format && cart) {
+      const response = await get_format_by_id(cart.format_id);
+      dispatch(actions.agregarFormat(response.data[0]));
+    }
+
+    setLoading(false);
+  }, [format, cart, handleTransformCartFormat, dispatch]);
 
   const calculateProgress = (totalPieces, numberOfPiecesSaved) => {
     const progressUpdated = Math.floor(
@@ -136,27 +180,9 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     }
   };
 
-  const handleTransformCartFormat = (data) => {
-    const pages = data.pages.map((page) => ({
-      ...omit(page, ['active', 'cart_id', 'created', 'updated', 'id']),
-      pieces: page.pieces.map((piece) => ({
-        ...omit(piece, [
-          'sort',
-          'active',
-          'cart_page_id',
-          'created',
-          'id',
-          'updated',
-        ]),
-        order: piece.sort,
-      })),
-    }));
-
-    return {...data, pages};
-  };
-
   const handleAddCart = async (pages) => {
     setLoading(true);
+    console.warn('add');
     try {
       const response = await create_cart({...omit(cart, ['id']), pages});
 
@@ -275,15 +301,11 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
         number: index,
       }));
 
-      dispatch(
-        actions.agregarCart({
-          ...cart,
-          pages,
-        }),
-      );
+      dispatch(actions.editarCart({...cart, pages}, cart.id));
     }
 
     handleToggleShowImages();
+    setHasLocalChange(true);
   };
 
   useEffect(() => {
@@ -291,11 +313,15 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   }, [dispatch, navigation]);
 
   useEffect(() => {
-    if (cart) {
+    if (cart && has(cart, 'pages')) {
       const preSelectedFormat = getPreSelectedImages();
       setPreSelectedImages(preSelectedFormat);
     }
   }, [cart, getPreSelectedImages]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -348,12 +374,12 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
               <Icon name="image" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Añadir fotos </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/*<TouchableOpacity
               style={style.cartLayoutIconContainer}
               onPress={handleToggleReorganizeModal}>
               <Icon name="layout" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Reorganizar</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
             <TouchableOpacity
               style={style.cartLayoutIconContainer}
               onPress={handleToggleOptionsModal}>
@@ -374,14 +400,16 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
             </>
           )}
         </>
-        <View style={style.footer}>
-          <CartButton
-            cart={cart}
-            hasLocalChange={hasLocalChange}
-            loading={loading}
-            onHandleSaveImages={handleSaveImages}
-          />
-        </View>
+        {!showAddImages && (
+          <View style={style.footer}>
+            <CartButton
+              cart={cart}
+              hasLocalChange={hasLocalChange}
+              loading={loading}
+              onHandleSaveImages={handleSaveImages}
+            />
+          </View>
+        )}
       </View>
     </>
   );
@@ -423,7 +451,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 12,
     backgroundColor: colores.blanco,
-    shadowColor: '#000',
+    shadowColor: colores.negro,
     shadowOffset: {
       width: 0,
       height: 2,
