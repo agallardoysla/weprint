@@ -1,8 +1,17 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import {applyMiddleware, createStore, compose} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
+import {CERRAR_SESION} from './reducer/login';
 
-import rootReducer from './';
+import appReducer from './';
+
+const rootReducer = (state, action) => {
+  if (action.type === CERRAR_SESION) {
+    state = undefined;
+  }
+
+  return appReducer(state, action);
+};
 
 const persistConfig = {
   key: 'root2',
