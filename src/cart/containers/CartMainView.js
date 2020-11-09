@@ -10,22 +10,16 @@ import {ProductItem} from '../components/ProductItem';
 import {Header} from '../../generales/Header';
 
 function CartMainView({dispatch, navigation, items}) {
-  const [isCartEmpty, setCartEmpty] = useState(
-    Object.keys(items.shortlisted).length !== 0 ? false : true,
-  );
-  const [itemData, setItemData] = useState(Object.values(items.shortlisted));
-  console.log(items);
-
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
 
   return (
     <Container>
       <SafeAreaView>
         <Header />
         <ScrollView>
-          {isCartEmpty ? (
+          {items.length === 0 ? (
             <View
               style={{
                 width: '100%',
@@ -92,8 +86,8 @@ function CartMainView({dispatch, navigation, items}) {
                 }}>
                 Productos en tu cesta
               </Text>
-              {itemData.map((item, key) => {
-                return <ProductItem key={key} {...item} />;
+              {items.map((item, key) => {
+                return <ProductItem key={key} item={item} />;
               })}
               <View
                 style={{
@@ -106,7 +100,7 @@ function CartMainView({dispatch, navigation, items}) {
                   marginBottom: 30,
                 }}>
                 <TouchableWithoutFeedback
-                  onPress={() => navigation.push('ConfirmCart', {itemData})}>
+                  onPress={() => navigation.push('ConfirmCart', {items})}>
                   <Text
                     style={{
                       textAlign: 'center',
@@ -125,8 +119,9 @@ function CartMainView({dispatch, navigation, items}) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  login: state.login,
-  items: {shortlisted: []},
-});
+const mapStateToProps = (state) => {
+  const items = state.cart.data.filter((cart) => cart.status === 'draft');
+
+  return {items};
+};
 export default connect(mapStateToProps)(CartMainView);

@@ -13,11 +13,9 @@ import Background from '../../assets/img/bg-app.svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {MainForm} from '../components/MainForm';
 import {colores} from '../../constantes/Temas';
-import {get_profile_api} from '../../utils/apis/login_api'
-
+import {get_profile_api} from '../../utils/apis/login_api';
 
 function EditProfile({navigation, route}) {
-
   return (
     <Container footer={false}>
       <SafeAreaView>
@@ -48,7 +46,7 @@ function EditProfile({navigation, route}) {
                 />
               </View>
             </View>
-            
+
             <MainForm data={route.params} />
           </View>
         </ScrollView>

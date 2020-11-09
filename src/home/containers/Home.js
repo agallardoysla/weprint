@@ -46,6 +46,14 @@ function Home({dispatch, navigation, carts}) {
     }
   }, []);
 
+  const renderLoader = () => loadingProject || loadingCartDraft;
+
+  const renderList = () => {
+    return (
+      !loadingCartDraft && !loadingProject && !errorCartDraft && !errorProject
+    );
+  };
+
   const handleOnPressGoToFormat = (projectId) =>
     navigation.navigate('FormatList', {projectId});
 
@@ -74,13 +82,13 @@ function Home({dispatch, navigation, carts}) {
 
   return (
     <Container>
-      {loadingProject && (
+      {renderLoader() && (
         <View style={style.loaderContainer}>
           <Cargando titulo="" loaderColor={colores.logo} />
         </View>
       )}
 
-      {!loadingProject && !errorProject && (
+      {renderList() && (
         <FlatList
           ListHeaderComponent={
             <ProjectHeader
