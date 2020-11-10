@@ -74,7 +74,7 @@ function Register(props) {
     const provinceData = getProvinces().then((data) =>
       setProvinceLocation(data.data),
     );
-  }, []);
+  }, [dispatch, navigation]);
 
   useEffect(() => {
     if (locationSelector) {

@@ -27,8 +27,8 @@ const ProjectHeader = ({carts, loading, onPressGoToDetail}) => {
           {carts.length > 0 && (
             <FlatList
               horizontal
-              contentContainerStyle={style.projectListContent}
               style={style.projectsListContainer}
+              contentContainerStyle={style.projectListContent}
               data={carts}
               renderItem={renderProjectDraft}
               keyExtractor={(cart) => cart.id.toString()}
@@ -68,7 +68,7 @@ const style = StyleSheet.create({
     marginBottom: 20,
   },
   projectListContent: {
-    paddingLeft: 5,
+    paddingLeft: 4,
   },
   projectsTextContainer: {
     marginVertical: 25,

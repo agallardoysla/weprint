@@ -20,11 +20,6 @@ export default (state = initialState, action) => {
         ...state,
         login: true,
       };
-    /*case CERRAR_SESION:
-      return {
-        ...state,
-        login: false,
-      };*/
     default:
       return state;
   }

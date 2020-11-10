@@ -30,6 +30,8 @@ import CartLayoutDetail from './cartLayout/detail/containers/CartLayoutDetail';
 import EditCartLayoutImage from './cartLayout/edit/containers/EditCartLayoutImage';
 import FormatDetail from './format/detail/containers/FormatDetail';
 import CartLayoutCreate from './cartLayout/create/containers/CartLayoutCreate';
+import RememberPassword from './rememberPassword/containers/RememberPassword';
+import ChangePassword from './changePassword/containers/ChangePassword';
 
 import Album from './profile/menuScreens/Album';
 import AlbumRequest from './profile/menuScreens/AlbumRequest';
@@ -86,6 +88,8 @@ const Navegador = (props) => {
       }}>
       <AuthStack.Screen name="SignIn" component={Register} />
       <AuthStack.Screen name="SignUp" component={Login} />
+      <AuthStack.Screen name="RememberPassword" component={RememberPassword} />
+      <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
     </AuthStack.Navigator>
   );
 
