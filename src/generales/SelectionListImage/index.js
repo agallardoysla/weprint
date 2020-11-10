@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import AlbumList from './components/AlbumList';
 import ImagesList from './components/ImagesList';
+import CargandoOverlay from '../CargandoOverlay';
 import StorageImageList from './components/StorageImageList';
 import {colores, tipoDeLetra} from '../../constantes/Temas';
 
@@ -133,13 +134,14 @@ const SelectionListImage = ({
               <View style={style.overlayButton} />
             )}
             {loading ? (
-              <ActivityIndicator size="large" color={colores.blanco} />
+              <ActivityIndicator size={25} color={colores.blanco} />
             ) : (
               <Text style={style.buttonText}>Siguiente</Text>
             )}
           </TouchableOpacity>
         </View>
       )}
+      {loading && <CargandoOverlay />}
     </>
   );
 };

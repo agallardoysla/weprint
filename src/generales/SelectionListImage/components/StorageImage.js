@@ -75,7 +75,7 @@ const StorageImage = ({
   }, [isSelected, check, uri, prevState, onPressCheckImage]);
 
   return (
-    <TouchableWithoutFeedback onPress={handleOnPressImage}>
+    <TouchableWithoutFeedback delayPressIn={0} onPress={handleOnPressImage}>
       <View
         style={{
           ...style.mainContainer,

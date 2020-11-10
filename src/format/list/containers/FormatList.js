@@ -32,21 +32,13 @@ function FormatList({dispatch, navigation, route, formats}) {
     }
   }, [projectId, dispatch]);
 
-  const loadData = useCallback(() => {
-    if (formats.length) {
-      setLoadingFormat(false);
-    } else {
-      loadFormats();
-    }
-  }, [setLoadingFormat, loadFormats, formats.length]);
-
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
   }, [dispatch, navigation]);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    loadFormats();
+  }, [loadFormats]);
 
   const handleOnPressGoToBack = () => navigation.navigate('Home');
 

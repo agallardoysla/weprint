@@ -22,7 +22,7 @@ import Background from '../../../assets/images/svg/login.svg';
 import styles from '../styles/styles';
 import {actualizarLogin} from '../../redux/reducer/login';
 import {login_api} from '../../utils/apis/login_api';
-import CargandoModal from '../../generales/CargandoModal'
+import CargandoModal from '../../generales/CargandoModal';
 
 function Login(props) {
   const {login, dispatch, navigation} = props;
@@ -37,11 +37,14 @@ function Login(props) {
   });
   const [error, setError] = useState(false);
 
-  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
-  }, []);
+  }, [dispatch, navigation]);
+
+  const handleOnPressGoToChangePassword = () =>
+    navigation.navigate('RememberPassword');
 
   const loginHandle = async () => {
     let body = {
@@ -50,12 +53,12 @@ function Login(props) {
     };
 
     if (data.isValidPassword && data.isValidUser) {
-      setloading(true)
+      setloading(true);
       login_api(body).then((response) => {
         console.log(response);
         response.success && dispatch(actualizarLogin());
         response.errors && setError(true);
-        setloading(false)
+        setloading(false);
       });
     }
   };
@@ -63,9 +66,12 @@ function Login(props) {
 
   return (
     <Container footer={false}>
-      <CargandoModal title="Validando, porfavor espere..." show={loading} /> 
+      <CargandoModal title="Validando, porfavor espere..." show={loading} />
       <ScrollView>
-        <StatusBar backgroundColor={colores.grisClaro} barStyle="light-content" />
+        <StatusBar
+          backgroundColor={colores.grisClaro}
+          barStyle="light-content"
+        />
         <View style={{height: 30, width: '100%'}}>
           <Background width={'100%'} height={95} />
         </View>
@@ -76,7 +82,9 @@ function Login(props) {
             <Text style={styles.subtitleform}>
               Ingresa a tu email y contraseña para acceder a la aplicación
             </Text>
-            {error === true && !login && <Text>* Email y/o password es incorrecto</Text>}
+            {error === true && !login && (
+              <Text>* Email y/o password es incorrecto</Text>
+            )}
             <View style={styles.action}>
               <Text style={{marginVertical: 10}}>Email</Text>
               <TextInput
@@ -88,16 +96,18 @@ function Login(props) {
                     ...data,
                     email: val.trim(),
                     check_textInputChange: true,
-                    isValidUser: val.trim().length >= 4  ? true : false,
-                    
+                    isValidUser: val.trim().length >= 4 ? true : false,
                   })
                 }
-                onEndEditing={(e) =>{
+                onEndEditing={(e) => {
                   setData({
                     ...data,
                     isValidUser:
-                      e.nativeEvent.text.trim().length >= 4 && regexMail.test(e.nativeEvent.text.trim()) ? true : false,
-                  })
+                      e.nativeEvent.text.trim().length >= 4 &&
+                      regexMail.test(e.nativeEvent.text.trim())
+                        ? true
+                        : false,
+                  });
                 }}
               />
               {data.isValidUser ? null : (
@@ -164,7 +174,7 @@ function Login(props) {
               </LinearGradientButton>
             </TouchableOpacity>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleOnPressGoToChangePassword}>
               <Text style={styles.forgotPassword}>Olvidé mi contraseña</Text>
             </TouchableOpacity>
           </CardLogin>

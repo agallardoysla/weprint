@@ -1,11 +1,12 @@
 import React from 'react';
 import Logo from '../../assets/img/logo.svg';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
-import {MenuItem} from '../../generales/MenuItem';
 import ProjectDraft from './ProjectDraft';
-import {estiloDeLetra, colores} from '../../constantes/Temas';
+import ProjectCardCount from './ProjectCardCount';
+import Cargando from '../../generales/Cargando';
+import {colores} from '../../constantes/Temas';
 
-const ProjectHeader = ({carts, onPressGoToDetail}) => {
+const ProjectHeader = ({carts, loading, onPressGoToDetail}) => {
   const renderProjectDraft = ({item: cart}) => {
     return <ProjectDraft cart={cart} onPressGoToDetail={onPressGoToDetail} />;
   };
@@ -15,31 +16,28 @@ const ProjectHeader = ({carts, onPressGoToDetail}) => {
       <View style={style.logoContainer}>
         <Logo height={style.logo.height} width={style.logo.width} />
       </View>
-      {carts.length > 0 && (
-        <FlatList
-          horizontal
-          style={style.projectsListContainer}
-          data={carts}
-          renderItem={renderProjectDraft}
-          keyExtractor={(cart) => cart.id.toString()}
+      {loading ? (
+        <Cargando
+          loaderColor={colores.logo}
+          titulo="Cargando carritos..."
+          tituloStyle={style.loaderTitle}
         />
+      ) : (
+        <>
+          {carts.length > 0 && (
+            <FlatList
+              horizontal
+              style={style.projectsListContainer}
+              contentContainerStyle={style.projectListContent}
+              data={carts}
+              renderItem={renderProjectDraft}
+              keyExtractor={(cart) => cart.id.toString()}
+            />
+          )}
+          <ProjectCardCount cartsAmount={carts.length} />
+        </>
       )}
 
-      <View style={style.avatarContainer}>
-        <MenuItem
-          name="Mis Proyectos"
-          text="En estos momentos: 0"
-          photo={
-            'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg'
-          }
-          background="transparent"
-          textStyle={{
-            ...estiloDeLetra.negrita,
-          }}
-          onPressFunction={() => {}}
-          nameStyle={{color: colores.negro}}
-        />
-      </View>
       <View style={style.projectsTextContainer}>
         <Text style={style.projectText}>Crea tus proyectos</Text>
       </View>
@@ -52,27 +50,35 @@ const style = StyleSheet.create({
     alignItems: 'center',
   },
   logoContainer: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 18,
+    height: 110,
+    width: '35%',
+    justifyContent: 'center',
   },
   logo: {
-    height: 110,
-    width: 110,
+    width: '100%',
+    height: '100%',
   },
-  avatarContainer: {
-    marginHorizontal: 10,
+  loaderTitle: {
+    marginBottom: 10,
+    color: colores.gris,
+  },
+  projectsListContainer: {
+    marginBottom: 20,
+  },
+  projectListContent: {
+    paddingLeft: 4,
+  },
+  projectsTextContainer: {
+    marginVertical: 25,
+    paddingLeft: 16,
     width: '100%',
   },
   projectText: {
-    ...estiloDeLetra.negrita,
-    fontSize: 18,
-  },
-  projectsTextContainer: {
-    marginVertical: 20,
-    paddingLeft: 10,
-    width: '100%',
-  },
-  projectsListContainer: {
-    marginBottom: 10,
+    color: colores.negro,
+    fontWeight: '500',
+    fontSize: 20,
   },
 });
 

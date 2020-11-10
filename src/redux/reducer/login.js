@@ -1,5 +1,5 @@
 export const ACTUALIZAR_LOGIN = 'ACTUALIZAR_LOGIN';
-export const CERRAR_SESION = 'CERRAR_SESION'
+export const CERRAR_SESION = 'CERRAR_SESION';
 
 export const actualizarLogin = (login) => ({
   type: ACTUALIZAR_LOGIN,
@@ -20,11 +20,6 @@ export default (state = initialState, action) => {
         ...state,
         login: true,
       };
-    case CERRAR_SESION: 
-      return {
-        ...state,
-        login: false
-      }
     default:
       return state;
   }

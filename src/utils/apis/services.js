@@ -38,7 +38,6 @@ export const put = async (uri, body) => {
 
   return fetch(`${BASE_API}${uri}`, requestOptions)
     .then(async (response) => await response.json())
-    .then((response) => console.log(response))
     .catch((error) => console.log('error', error));
 };
 
@@ -91,12 +90,40 @@ export const postUpload = async (uri, body, repository) => {
     .catch((error) => console.log('error', error));
 };
 
+export const postUploadImage = async (uri, body, repository) => {
+  let myHeaders = await getHeaders('form');
+  const data = new FormData();
+
+  data.append('file', {
+    name: body.filename,
+    type: body.type,
+    uri: body.uri,
+  });
+
+  data.append('folder', 'user');
+  repository && data.append('repository', repository);
+
+  const requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: data,
+    redirect: 'follow',
+  };
+
+  return fetch(`${BASE_API}${uri}`, requestOptions)
+    .then((response) => {
+      return response.text();
+    })
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => Promise.error(error));
+};
+
 export const post = async (uri, body) => {
   var myHeaders = await getHeaders();
 
   var raw = JSON.stringify(body);
-
-  console.log(raw);
 
   var requestOptions = {
     method: 'POST',

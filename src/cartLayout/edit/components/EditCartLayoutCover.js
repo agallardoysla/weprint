@@ -365,10 +365,10 @@ const EditCartLayoutCover = ({
 
 const style = StyleSheet.create({
   mainContainer: {
-    paddingHorizontal: 6,
+    paddingHorizontal: 16,
   },
   container: {
-    height: 240,
+    height: 200,
     width: '100%',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,

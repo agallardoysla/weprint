@@ -67,14 +67,14 @@ function Register(props) {
 
   const [registerValidation, setRegisterValidation] = useState(null);
 
-  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+  const regexMail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
     const provinceData = getProvinces().then((data) =>
       setProvinceLocation(data.data),
     );
-  }, []);
+  }, [dispatch, navigation]);
 
   useEffect(() => {
     if (locationSelector) {
@@ -102,6 +102,7 @@ function Register(props) {
       bornDate,
       districtId,
     } = data;
+
     let body = {
       nickname: username.trim(),
       firstname: name.trim(),
@@ -112,23 +113,25 @@ function Register(props) {
       birthdate: bornDate.trim(),
       district_id: districtId,
     };
+
     for (let value in textValidator) {
       if (!textValidator[value]) {
         setRegisterValidation(false);
         return false;
       }
     }
+
     setRegisterValidation(true);
 
-    if (registerValidation === true) {
-      setloading(true);
-      register_api(body).then((response) => {
-        console.log(response);
-        response.success && dispatch(actualizarLogin());
-        response.errors && setError(true);
-        setloading(false);
-      });
-    }
+    /*if (registerValidation === true) {*/
+    setloading(true);
+    register_api(body).then((response) => {
+      console.log(response);
+      response.success && dispatch(actualizarLogin());
+      response.errors && setError(true);
+      setloading(false);
+    });
+    /*}*/
   };
 
   const textDataValidation = (value, minLength, validateKey, datakey) => {
@@ -258,11 +261,12 @@ function Register(props) {
                   onChangeText={(val) =>
                     textDataValidation(val, 2, 'isValidEmail', 'email')
                   }
-                  onEndEditing={(e) =>{
-                    regexMail.test(e.nativeEvent.text.trim()) === false && setTextValidator({
-                      ...textValidator,
-                      isValidEmail: false,
-                    })
+                  onEndEditing={(e) => {
+                    regexMail.test(e.nativeEvent.text.trim()) === false &&
+                      setTextValidator({
+                        ...textValidator,
+                        isValidEmail: false,
+                      });
                   }}
                 />
                 {textValidator.isValidEmail === false && (

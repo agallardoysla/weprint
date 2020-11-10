@@ -14,13 +14,14 @@ const ProjectDraft = ({cart, onPressGoToDetail}) => {
   const handleOnPress = () => onPressGoToDetail(cart);
 
   return (
-    <TouchableOpacity style={style.mainContainer} onPress={handleOnPress}>
-      <View
-        style={{...style.imageContainer, width: useWindowDimensions().width}}>
+    <TouchableOpacity
+      style={{...style.mainContainer, width: useWindowDimensions().width - 25}}
+      onPress={handleOnPress}>
+      <View style={style.imageContainer}>
         <Image
           style={style.image}
           source={{
-            uri: cart.pages[0].pieces[0].file,
+            uri: cart.file,
           }}
           resizeMode="cover"
         />
@@ -40,7 +41,7 @@ const ProjectDraft = ({cart, onPressGoToDetail}) => {
 
 const style = StyleSheet.create({
   mainContainer: {
-    marginRight: 10,
+    marginHorizontal: 5,
   },
   overlay: {
     position: 'absolute',
@@ -52,8 +53,10 @@ const style = StyleSheet.create({
   },
   imageContainer: {
     position: 'relative',
-    height: 135,
-    borderRadius: 4,
+    height: 126,
+    width: '100%',
+    backgroundColor: colores.grisClaro,
+    borderRadius: 5,
     overflow: 'hidden',
   },
   image: {

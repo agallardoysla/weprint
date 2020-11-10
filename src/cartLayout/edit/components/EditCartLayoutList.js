@@ -7,7 +7,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Cargando from '../../../generales/Cargando';
 import GeneralImage from '../../../generales/GeneralImage';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 
@@ -21,7 +20,7 @@ const EditCartLayoutItem = ({layout, selectedLayout, onSelectedLayout}) => {
         style={{
           ...style.wrapperImage,
           width: Math.floor(useWindowDimensions().width / 4 - 2),
-          height: Math.floor(useWindowDimensions().width / 4 - 2 - 9),
+          height: Math.floor(useWindowDimensions().width / 4 - 2),
           borderColor:
             layout.id === selectedLayout ? colores.logo : 'transparent',
         }}>
@@ -32,7 +31,6 @@ const EditCartLayoutItem = ({layout, selectedLayout, onSelectedLayout}) => {
 };
 
 const EditCartLayoutList = ({
-  loading,
   error,
   layouts,
   selectedLayout,
@@ -48,6 +46,8 @@ const EditCartLayoutList = ({
     );
   };
 
+  const renderList = () => !error && layouts.length > 0;
+
   return (
     <>
       {error && (
@@ -57,12 +57,7 @@ const EditCartLayoutList = ({
           </Text>
         </View>
       )}
-      {loading && (
-        <View style={style.loadingContainer}>
-          <Cargando titulo="" loaderColor={colores.logo} />
-        </View>
-      )}
-      {layouts.length > 0 && (
+      {renderList() && (
         <>
           <View style={style.prompMainContainer}>
             <View style={style.prompContainer}>
@@ -85,7 +80,7 @@ const EditCartLayoutList = ({
 const style = StyleSheet.create({
   wrapperImage: {
     marginHorizontal: 2,
-    borderWidth: 2,
+    borderWidth: 1,
   },
   image: {
     height: '100%',
@@ -116,22 +111,20 @@ const style = StyleSheet.create({
     width: '100%',
   },
   prompContainer: {
-    marginTop: 13,
+    marginTop: 20,
     width: 160,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-
     backgroundColor: colores.blanco,
   },
   prompText: {
     color: colores.grisFormatoAlbum,
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '600',
   },
   listContent: {
-    marginTop: 12,
-    paddingBottom: 60,
+    marginTop: 15,
   },
 });
 

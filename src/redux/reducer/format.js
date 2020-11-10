@@ -1,9 +1,18 @@
-import concat from 'lodash/concat';
 export const ACTUALIZAR_FORMAT = 'ACTUALIZAR_FORMAT ';
+export const AGREGAR_FORMAT = 'AGREGAR_FORMAT';
 
 export const actualizarFormats = (formats) => ({
   type: ACTUALIZAR_FORMAT,
-  formats,
+  payload: {
+    formats,
+  },
+});
+
+export const agregarFormat = (format) => ({
+  type: AGREGAR_FORMAT,
+  payload: {
+    format,
+  },
 });
 
 const initialState = {
@@ -11,14 +20,26 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-  switch (action.type) {
+  const {type, payload} = action;
+
+  switch (type) {
     case ACTUALIZAR_FORMAT:
-      const data = concat(state.data, action.formats);
+      const {formats} = payload;
 
       return {
         ...state,
-        data,
+        data: formats,
       };
+
+    case AGREGAR_FORMAT:
+      const {format} = payload;
+      const formatAdded = [...state.data, format];
+
+      return {
+        ...state,
+        data: formatAdded,
+      };
+
     default:
       return state;
   }

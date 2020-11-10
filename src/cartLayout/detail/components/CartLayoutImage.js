@@ -1,23 +1,17 @@
 import React, {PureComponent} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableHighlight,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import CartLayoutWrapper from './CartLayoutWrapper';
+import CartDeleteItemModal from './CartDeleteItemModal';
+import CartLayoutWhitePage from './CartLayoutWhitePage';
 
 class CartLayoutImage extends PureComponent {
   state = {
     showModal: false,
   };
 
-  handleOnPressImage = (e) => {
-    e.stopPropagation();
+  handleOnPressImage = () => {
     const {page, onGoToEditCartImage} = this.props;
 
     onGoToEditCartImage(page);
@@ -34,83 +28,67 @@ class CartLayoutImage extends PureComponent {
     onDeletePage(page.number);
   };
 
+  handleResponseGrant = (evt) => {
+    const {panResponder, onResetPieceItem} = this.props;
+
+    onResetPieceItem();
+    panResponder.panHandlers.onResponderGrant(evt);
+  };
+
   pageIsOdd() {
     const {page} = this.props;
     return page.number % 2 !== 0;
   }
 
   render() {
-    const {
-      page,
-      panResponder,
-      onRowHeight,
-      onSelectPieceItem,
-      onResetPieceItem,
-    } = this.props;
+    const {page, panResponder, onRowHeight, onSelectPieceItem} = this.props;
     const {showModal} = this.state;
 
     return (
       <>
-        <Modal transparent={true} animationType="fade" visible={showModal}>
-          <View style={style.modalContainer}>
-            <View style={style.modalContent}>
-              <Text style={style.modalTitle}>¿Eliminar el artículo?</Text>
-              <Text style={style.modalSecondTitle}>
-                ¿Estás seguro que quieres eliminar esto?
-              </Text>
-
-              <View style={style.modalOptionsContainer}>
-                <TouchableOpacity
-                  onPress={this.handleToggleModal}
-                  style={{
-                    ...style.modalOptionItem,
-                    borderRightWidth: 0.5,
-                    borderRightColor: colores.grisFormatoAlbum,
-                    borderBottomLeftRadius: 5,
-                  }}>
-                  <Text style={{color: colores.azulMedio}}>No</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{...style.modalOptionItem, borderBottomRightRadius: 5}}
-                  onPress={this.handleOnPressDelete}>
-                  <Text style={{color: colores.rojo}}>Eliminar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-        <View style={style.cartLayoutImageMainContainer} onLayout={onRowHeight}>
-          <View style={style.cartLayoutImageBg}>
-            <CartLayoutWrapper
-              panResponder={panResponder}
-              page={page}
-              onSelectPieceItem={onSelectPieceItem}
-              onPressImage={this.handleOnPressImage}
-            />
-          </View>
-          <Text style={style.cartLayoutText}>Pg {page.number}</Text>
+        <CartDeleteItemModal
+          showModal={showModal}
+          onPressDelete={this.handleOnPressDelete}
+          onToggleModal={this.handleToggleModal}
+        />
+        {page.number === 0 ? (
+          <CartLayoutWhitePage title="Portada interior" />
+        ) : (
           <View
-            nativeID={page.number.toString()}
-            style={
-              this.pageIsOdd()
-                ? style.cartLayoutIconContainerRight
-                : style.cartLayoutIconContainer
-            }
-            {...panResponder.panHandlers}
-            onResponderStart={onResetPieceItem}>
-            <Icon name="move" size={15} color={colores.gris} />
+            style={style.cartLayoutImageMainContainer}
+            onLayout={onRowHeight}>
+            <View style={style.cartLayoutImageBg}>
+              <CartLayoutWrapper
+                panResponder={panResponder}
+                page={page}
+                onSelectPieceItem={onSelectPieceItem}
+                onPressImage={this.handleOnPressImage}
+              />
+            </View>
+            <Text style={style.cartLayoutText}>Pg {page.number}</Text>
+            <View
+              style={
+                this.pageIsOdd()
+                  ? style.cartLayoutIconContainerRight
+                  : style.cartLayoutIconContainer
+              }
+              {...panResponder.panHandlers}
+              //onResponderStart={onResetPieceItem}
+              onResponderGrant={this.handleResponseGrant}>
+              <Icon name="move" size={15} color={colores.gris} />
+            </View>
+            <TouchableOpacity
+              delayPressIn={0}
+              onPress={this.handleToggleModal}
+              style={
+                this.pageIsOdd()
+                  ? style.cartLayoutIconContainerXRight
+                  : style.cartLayoutIconContainerX
+              }>
+              <Icon name="x" size={15} color={colores.rojo} />
+            </TouchableOpacity>
           </View>
-          <TouchableHighlight
-            underlayColor={colores.blanco}
-            onPress={this.handleToggleModal}
-            style={
-              this.pageIsOdd()
-                ? style.cartLayoutIconContainerXRight
-                : style.cartLayoutIconContainerX
-            }>
-            <Icon name="x" size={15} color={colores.rojo} />
-          </TouchableHighlight>
-        </View>
+        )}
       </>
     );
   }
@@ -144,7 +122,8 @@ const style = StyleSheet.create({
     backgroundColor: '#F6F8FA',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 3,
+    zIndex: 3,
   },
   cartLayoutIconContainerRight: {
     position: 'absolute',
@@ -159,7 +138,8 @@ const style = StyleSheet.create({
     backgroundColor: '#F6F8FA',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 3,
+    zIndex: 3,
   },
   cartLayoutIconContainerX: {
     position: 'absolute',
@@ -199,50 +179,8 @@ const style = StyleSheet.create({
     color: colores.gris,
     fontWeight: '700',
     fontFamily: tipoDeLetra.bold,
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center',
-  },
-  modalContainer: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  modalContent: {
-    width: '80%',
-    marginHorizontal: '20%',
-    borderRadius: 5,
-    backgroundColor: colores.blanco,
-    elevation: 1,
-  },
-  modalTitle: {
-    marginTop: 15,
-    fontSize: 18,
-    fontFamily: tipoDeLetra.bold,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalSecondTitle: {
-    marginTop: 12,
-    fontSize: 16,
-    fontFamily: tipoDeLetra.regular,
-    textAlign: 'center',
-  },
-  modalOptionsContainer: {
-    flexDirection: 'row',
-    marginTop: 18,
-    borderTopColor: colores.grisFormatoAlbum,
-    borderBottomRightRadius: 5,
-    borderBottomLeftRadius: 5,
-    borderTopWidth: 0.5,
-  },
-  modalOptionItem: {
-    height: 50,
-    width: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colores.blanco,
   },
 });
 

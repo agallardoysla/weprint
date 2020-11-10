@@ -18,7 +18,7 @@ import EditCartLayoutCover from '../components/EditCartLayoutCover';
 import EditCartLayoutList from '../components/EditCartLayoutList';
 import EditCartLayoutFooter from '../components/EditCartLayoutFooter';
 import SelectionListImage from '../../../generales/SelectionListImage';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import Cargando from '../../../generales/Cargando';
 
 function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
   const [layoutLoading, setLayoutLoading] = useState(true);
@@ -163,12 +163,8 @@ function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
       };
     });
 
-    dispatch(
-      actions.agregarCart({
-        ...cart,
-        pages,
-      }),
-    );
+    dispatch(actions.editarCart({...cart, pages}, cart.id));
+    dispatch(actions.cartHasLocalChange(true));
 
     navigation.goBack();
   };
@@ -199,59 +195,70 @@ function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
     loadData();
   }, [loadData]);
 
+  useEffect(() => {
+    setPhotoEdit(null);
+    setShowEdit(false);
+  }, []);
+
   return (
     <>
-      {showSelectImage ? (
+      {showSelectImage && (
         <SelectionListImage
           minQuantity={minQuantity.current}
           maxQuantity={maxQuantity.current}
           onPressGoToBack={handleToggleListImage}
           onResponse={handleResponseImage}
         />
-      ) : (
-        <View style={style.editCartLayoutMainContainer}>
-          <ScrollView>
-            <PhotoEditorModal
-              visible={showEdit}
-              image={photoEdit && photoEdit.source}
-              onCancel={handleCancelEditPhoto}
-              onExport={handleExport}
-            />
-            <TouchableOpacity
-              style={style.editCartLayoutImageHeader}
-              onPress={handleGoBack}>
-              <Icon name="arrow-left" size={27} color={colores.negro} />
-              <Text style={style.editCartLayoutImageHeaderText}>
-                Página {selectedPage.number}
-              </Text>
-            </TouchableOpacity>
-            <TouchableWithoutFeedback
-              style={style.editCartImageDeleteTextContainer}
-              onPress={handleOnPressDelete}>
-              <Text style={style.editCartImageDeleteText}>Borrar Diseño</Text>
-            </TouchableWithoutFeedback>
-            <EditCartLayoutCover
-              onShowListImage={handleShowListImage}
-              onEditPhoto={handleOnEditPhoto}
-              selectedLayout={selectedLayout}
-              selectedPage={selectedPage}
-            />
-            <EditCartLayoutList
-              error={layoutError}
-              loading={layoutLoading}
-              layouts={layouts}
-              selectedLayout={selectedLayout}
-              onSelectedLayout={handleSelectedLayout}
-            />
-          </ScrollView>
+      )}
+      <View style={style.editCartLayoutMainContainer}>
+        <ScrollView>
+          <PhotoEditorModal
+            visible={showEdit}
+            image={photoEdit && photoEdit.source}
+            onCancel={handleCancelEditPhoto}
+            onExport={handleExport}
+          />
+          <TouchableOpacity
+            style={style.editCartLayoutImageHeader}
+            onPress={handleGoBack}>
+            <Icon name="arrow-left" size={27} color={colores.negro} />
+            <Text style={style.editCartLayoutImageHeaderText}>
+              Página {selectedPage.number}
+            </Text>
+          </TouchableOpacity>
+          {layoutLoading ? (
+            <Cargando titulo="" loaderColor={colores.logo} />
+          ) : (
+            <>
+              <TouchableOpacity
+                style={style.editCartImageDeleteTextContainer}
+                onPress={handleOnPressDelete}>
+                <Text style={style.editCartImageDeleteText}>Borrar Diseño</Text>
+              </TouchableOpacity>
+              <EditCartLayoutCover
+                onShowListImage={handleShowListImage}
+                onEditPhoto={handleOnEditPhoto}
+                selectedLayout={selectedLayout}
+                selectedPage={selectedPage}
+              />
+              <EditCartLayoutList
+                error={layoutError}
+                layouts={layouts}
+                selectedLayout={selectedLayout}
+                onSelectedLayout={handleSelectedLayout}
+              />
+            </>
+          )}
+        </ScrollView>
+        {!layoutLoading && (
           <EditCartLayoutFooter
             onSelectPage={handleSelectPage}
             onSaveChanges={handleSaveChanges}
             pages={selectedPages}
             page={selectedPage}
           />
-        </View>
-      )}
+        )}
+      </View>
     </>
   );
 }
@@ -269,7 +276,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 12,
     backgroundColor: colores.blanco,
-    shadowColor: '#000',
+    shadowColor: colores.negro,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -287,9 +294,9 @@ const style = StyleSheet.create({
     position: 'relative',
   },
   editCartImageDeleteTextContainer: {
-    marginTop: 25,
+    marginTop: 32,
     marginBottom: 10,
-    paddingRight: 8,
+    paddingRight: 16,
     alignItems: 'flex-end',
   },
   editCartImageDeleteText: {
@@ -317,6 +324,18 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colores.blanco,
   },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    elevation: 999,
+    zIndex: 999,
+  },
 });
 
 const mapStateToProps = (
@@ -328,7 +347,7 @@ const mapStateToProps = (
   },
 ) => {
   const layouts = state.layout.data;
-  const cart = state.cart.list[cartId];
+  const cart = state.cart.data.find((searchCart) => searchCart.id === cartId);
 
   return {
     cart,

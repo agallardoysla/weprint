@@ -5,7 +5,7 @@ import {
   Animated,
   View,
   Alert,
-  TouchableHighlight,
+  TouchableOpacity,
   PanResponder,
   Dimensions,
 } from 'react-native';
@@ -152,8 +152,8 @@ class CartLayoutListImage extends PureComponent {
 
   handleChangePage = () => {
     if (
-      this.newIdx >= 0 &&
-      this.currentIdx >= 0 &&
+      this.newIdx > 0 &&
+      this.currentIdx > 0 &&
       this.newIdx !== this.currentIdx
     ) {
       const {piece} = this.state;
@@ -224,10 +224,7 @@ class CartLayoutListImage extends PureComponent {
     if (pieces.length < totalSpace) {
       const totalEmpty = totalSpace - pieces.length;
       const fillEmptySpace = fill(Array(totalEmpty), {
-        file: {
-          base64: null,
-          uri: null,
-        },
+        file: null,
       });
 
       return concat(pieces, fillEmptySpace);
@@ -359,7 +356,7 @@ class CartLayoutListImage extends PureComponent {
     const {pages} = this.state;
 
     const defaultPage = {
-      layout_id: null,
+      layout_id: 1,
       number: numberPage,
       pieces: [],
     };
@@ -376,17 +373,23 @@ class CartLayoutListImage extends PureComponent {
   };
 
   handleDeletePage = (numberPage) => {
-    const {onSavePages} = this.props;
+    const {onSavePages, format} = this.props;
     const {pages} = this.state;
 
-    const selectedPages = pages
-      .filter((page) => page.number !== numberPage)
-      .map((page, index) => ({
-        ...page,
-        number: index,
-      }));
+    if (pages.length > format.min_quantity) {
+      const selectedPages = pages
+        .filter((page) => page.number !== numberPage)
+        .map((page, index) => ({
+          ...page,
+          number: index,
+        }));
 
-    onSavePages(selectedPages);
+      onSavePages(selectedPages);
+    } else {
+      Alert.alert(
+        `No se puede eliminar, el álbum debe tener mínimo ${format.min_quantity} páginas`,
+      );
+    }
   };
 
   getRow = (y) => {
@@ -415,14 +418,13 @@ class CartLayoutListImage extends PureComponent {
     };
 
     return (
-      <View style={{marginLeft: 4}}>
-        <TouchableHighlight
-          underlayColor={'rgba(255, 255, 255, 0.7)'}
-          activeOpacity={0.2}
+      <View style={style.buttonPlusContainer}>
+        <TouchableOpacity
+          delayPressIn={0}
           style={style.cartLayoutIconContainer}
           onPress={handleOnPress}>
           <Icon name="plus" size={15} color={colores.verde} />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -470,7 +472,8 @@ class CartLayoutListImage extends PureComponent {
         )}
         <FlatList
           scrollEnabled={!dragging}
-          contentContainerStyle={style.listContainer}
+          style={style.listContainer}
+          contentContainerStyle={style.listContent}
           ListHeaderComponent={
             <CartLayoutCover
               piece={pages[0].pieces[0]}
@@ -494,6 +497,9 @@ class CartLayoutListImage extends PureComponent {
 
 const style = StyleSheet.create({
   listContainer: {
+    marginBottom: 50,
+  },
+  listContent: {
     position: 'relative',
     marginTop: 35,
     paddingTop: 5,
@@ -537,6 +543,9 @@ const style = StyleSheet.create({
     borderColor: colores.grisFormatoAlbum,
     elevation: 999,
     zIndex: 999,
+  },
+  buttonPlusContainer: {
+    marginLeft: 4,
   },
 });
 

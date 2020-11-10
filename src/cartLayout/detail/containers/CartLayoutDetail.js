@@ -11,46 +11,221 @@ import {
 import {connect} from 'react-redux';
 import concat from 'lodash/concat';
 import omit from 'lodash/omit';
+import has from 'lodash/has';
 import flatten from 'lodash/flatten';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import Cargando from '../../../generales/Cargando';
 import SelectionListImage from '../../../generales/SelectionListImage';
 import CartLayoutListImage from '../components/CartLayoutListImage';
+import CartProgress from '../components/CartProgress';
 import CartDeleteModal from '../components/CartDeleteModal';
 import CartOptionsModal from '../components/CartOptionsModal';
+import CartButton from '../components/CartButton';
 import {actions} from '../../../redux';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
-import {create_cart} from '../../../utils/apis/cart_api';
+import {
+  create_cart,
+  update_cart,
+  get_pieces_by_cart,
+} from '../../../utils/apis/cart_api';
+import {get_format_by_id} from '../../../utils/apis/format_api';
+import {upload_image_uri} from '../../../utils/apis/project_api';
 
-function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
-  const getPreSelectedImages = useCallback((pages) => {
-    const allPieces = pages.map((page) => page.pieces);
-    const piecesLevel = flatten(allPieces);
-    const preSelectedFormat = piecesLevel.map((piece) => ({
+const WEPRINT_REPO = 'weprint-app.s3.us-west-1.amazonaws.com';
+
+function CartLayoutDetail({
+  dispatch,
+  navigation,
+  route,
+  cart,
+  format,
+  hasLocalChange,
+}) {
+  const getPiecesOneLevel = useCallback(() => {
+    const pieces = cart.pages.map((page) => page.pieces);
+    const piecesOneLevel = flatten(pieces);
+
+    return piecesOneLevel;
+  }, [cart]);
+
+  const getPreSelectedImages = useCallback(() => {
+    const piecesOneLevel = getPiecesOneLevel();
+    const preSelectedFormat = piecesOneLevel.map((piece) => ({
       node: null,
       uri: piece.file,
     }));
 
     return preSelectedFormat;
-  }, []);
+  }, [getPiecesOneLevel]);
 
-  const {cartId} = route.params;
   const [showAddImages, setShowAddImages] = useState(false);
   const [showReorganize, setShowReorganize] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [preSelectedImages, setPreSelectedImages] = useState(
-    getPreSelectedImages(cart.pages),
-  );
+  const [showProgress, setShowProgress] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [preSelectedImages, setPreSelectedImages] = useState([]);
 
-  const handleAddCart = async () => {
+  const handleTransformCartFormat = useCallback((data) => {
+    const pages = data.pages.map((page) => ({
+      ...omit(page, ['active', 'cart_id', 'created', 'updated', 'id']),
+      pieces: page.pieces.map((piece) => ({
+        ...omit(piece, [
+          'sort',
+          'active',
+          'cart_page_id',
+          'created',
+          'id',
+          'updated',
+        ]),
+        order: piece.sort,
+      })),
+    }));
+
+    return {...data, pages};
+  }, []);
+
+  const loadInitialData = useCallback(async () => {
+    if (cart && !has(cart, 'pages')) {
+      const response = await get_pieces_by_cart(cart.id);
+      const editedCart = handleTransformCartFormat({
+        ...cart,
+        pages: response.data[0].pages,
+      });
+
+      dispatch(actions.editarCart(editedCart, editedCart.id));
+    }
+
+    if (!format && cart) {
+      const response = await get_format_by_id(cart.format_id);
+      dispatch(actions.agregarFormat(response.data[0]));
+    }
+
+    setLoading(false);
+  }, [format, cart, handleTransformCartFormat, dispatch]);
+
+  const calculateProgress = (totalPieces, numberOfPiecesSaved) => {
+    const progressUpdated = Math.floor(
+      (numberOfPiecesSaved / totalPieces) * 100,
+    );
+
+    setProgress(progressUpdated);
+  };
+
+  const wait = (n) => new Promise((res) => setTimeout(res, n));
+
+  const uploadPieces = async (memo, piece) => {
+    const pagePieces = await memo;
+    const {file} = piece;
+    const extension = file.substr(file.lastIndexOf('.') + 1);
+    const filename = `${file.match(/.*\/(.+?)\./)[1]}.${extension}`;
+    const type = `image/${extension}`;
+
+    const body = {
+      uri: file,
+      filename,
+      type,
+    };
+
     try {
-      const response = await create_cart(omit(cart, ['id']));
+      if (!file.includes(WEPRINT_REPO)) {
+        const response = await upload_image_uri(body);
+        const data = JSON.parse(response);
 
-      if (response.error) {
-        Alert.alert('No se pudo guardar, intenta de nuevo');
+        if (data && data.url) {
+          const newPiece = {
+            ...piece,
+            file: data.url,
+          };
+
+          return [...pagePieces, newPiece];
+        }
       }
+
+      await wait(30);
+
+      return [...pagePieces, piece];
     } catch (error) {
+      return [...pagePieces, piece];
+    }
+  };
+
+  const atLeastOneToUpload = () => {
+    const piecesOneLevel = getPiecesOneLevel();
+
+    return piecesOneLevel.some((piece) => !piece.file.includes(WEPRINT_REPO));
+  };
+
+  const handleSaveImages = async () => {
+    setShowProgress(true);
+    let numberOfPiecesSaved = 0;
+    let pages = cart.pages;
+
+    if (atLeastOneToUpload()) {
+      const piecesOneLevel = getPiecesOneLevel();
+
+      pages = await cart.pages.reduce(async (memo, page) => {
+        const cartPages = await memo;
+        const pieces = await page.pieces.reduce(uploadPieces, []);
+        const newPage = {...page, pieces};
+        numberOfPiecesSaved += pieces.length;
+
+        calculateProgress(piecesOneLevel.length, numberOfPiecesSaved);
+
+        return [...cartPages, newPage];
+      }, []);
+    }
+
+    setShowProgress(false);
+    setProgress(0);
+
+    if (!cart.user_id) {
+      handleAddCart(pages);
+    } else {
+      handleUpdateCart(pages);
+    }
+  };
+
+  const handleAddCart = async (pages) => {
+    setLoading(true);
+    try {
+      const response = await create_cart({...omit(cart, ['id']), pages});
+
+      if (response.errors) {
+        Alert.alert('No se pudo guardar, intenta de nuevo');
+      } else if (response.success) {
+        const editedCart = handleTransformCartFormat(response.data[0]);
+        dispatch(actions.editarCart(editedCart, route.params.cartId));
+
+        navigation.navigate('CartLayoutDetail', {
+          cartId: editedCart.id,
+          formatId: format.id,
+        });
+      }
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      Alert.alert('No se pudo guardar, intenta de nuevo');
+    }
+  };
+
+  const handleUpdateCart = async (pages) => {
+    setLoading(true);
+    try {
+      const response = await update_cart({...cart, pages}, cart.id);
+
+      if (response.errors) {
+        Alert.alert('No se pudo guardar, intenta de nuevo');
+      } else if (response.success) {
+        const editedCart = handleTransformCartFormat(response.data[0]);
+        dispatch(actions.editarCart(editedCart, cart.id));
+        dispatch(actions.cartHasLocalChange(false));
+      }
+
+      setLoading(false);
+    } catch {
+      setLoading(false);
       Alert.alert('No se pudo guardar, intenta de nuevo');
     }
   };
@@ -67,29 +242,34 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     return minPrice;
   };
 
-  const handleSaveCart = (pages) => {
-    const cartEdited = {
+  const handleLocalChangeCart = (pages) => {
+    const editedCart = {
       ...cart,
       pages,
       price: handleCalculatePrice(pages.length),
     };
 
-    dispatch(actions.agregarCart(cartEdited));
-    setLoading(false);
+    if (editedCart.user_id) {
+      dispatch(actions.cartHasLocalChange(true));
+    }
+
+    dispatch(actions.editarCart(editedCart, editedCart.id));
   };
 
   const handleGoToEditCartImage = (page) =>
     navigation.navigate('EditCartLayoutImage', {
       numberPage: page.number,
-      cartId,
+      cartId: cart.id,
     });
 
   const handleGoBack = useCallback(() => {
+    dispatch(actions.cartHasLocalChange(false));
+
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],
     });
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   const handleToggleShowImages = () => {
     if (!loading) {
@@ -128,15 +308,11 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
         number: index,
       }));
 
-      dispatch(
-        actions.agregarCart({
-          ...cart,
-          pages,
-        }),
-      );
+      dispatch(actions.editarCart({...cart, pages}, cart.id));
     }
 
     handleToggleShowImages();
+    dispatch(actions.cartHasLocalChange(true));
   };
 
   useEffect(() => {
@@ -144,9 +320,15 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   }, [dispatch, navigation]);
 
   useEffect(() => {
-    const preSelectedFormat = getPreSelectedImages(cart.pages);
-    setPreSelectedImages(preSelectedFormat);
+    if (cart && has(cart, 'pages')) {
+      const preSelectedFormat = getPreSelectedImages();
+      setPreSelectedImages(preSelectedFormat);
+    }
   }, [cart, getPreSelectedImages]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, [loadInitialData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -172,6 +354,8 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
         showOptions={showOptions}
         onToggleOptionsModal={handleToggleOptionsModal}
       />
+      <CartProgress progress={progress} showProgress={showProgress} />
+
       <View style={style.cartLayoutMainContainer}>
         <>
           {showAddImages && (
@@ -197,40 +381,47 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
               <Icon name="image" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Añadir fotos </Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/*<TouchableOpacity
               style={style.cartLayoutIconContainer}
               onPress={handleToggleReorganizeModal}>
               <Icon name="layout" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Reorganizar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </TouchableOpacity>*/}
+            {/*<TouchableOpacity
               style={style.cartLayoutIconContainer}
               onPress={handleToggleOptionsModal}>
               <Icon name="sliders" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Opciones</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
           </View>
           {loading ? (
             <Cargando titulo="" loaderColor={colores.logo} />
           ) : (
-            <CartLayoutListImage
-              onSavePages={handleSaveCart}
-              onGoToEditCartImage={handleGoToEditCartImage}
-              cart={cart}
-              format={format}
-            />
+            <>
+              <CartLayoutListImage
+                onSavePages={handleLocalChangeCart}
+                onGoToEditCartImage={handleGoToEditCartImage}
+                cart={cart}
+                format={format}
+              />
+            </>
           )}
         </>
-        <View style={style.footer}>
-          <TouchableOpacity style={style.button}>
-            <Text style={style.buttonText}>Guardar Borrador</Text>
-          </TouchableOpacity>
-        </View>
+        {!showAddImages && (
+          <View style={style.footer}>
+            <CartButton
+              cart={cart}
+              hasLocalChange={hasLocalChange}
+              loading={loading}
+              onHandleSaveImages={handleSaveImages}
+            />
+          </View>
+        )}
       </View>
     </>
   );
 }
-console.log('cart layout');
+
 const mapStateToProps = (
   state,
   {
@@ -243,11 +434,13 @@ const mapStateToProps = (
     (searchedFormat) => searchedFormat.id === formatId,
   );
 
-  const cart = state.cart.list[cartId];
+  const cart = state.cart.data.find((searchCart) => searchCart.id === cartId);
+  const {hasLocalChange} = state.cart;
 
   return {
     format,
     cart,
+    hasLocalChange,
   };
 };
 
@@ -267,7 +460,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 12,
     backgroundColor: colores.blanco,
-    shadowColor: '#000',
+    shadowColor: colores.negro,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -328,6 +521,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     backgroundColor: colores.logo,
+    elevation: 5,
+    zIndex: 5,
   },
   buttonText: {
     color: colores.blanco,

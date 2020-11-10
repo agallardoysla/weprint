@@ -33,7 +33,7 @@ export const MainForm = ({data}) => {
     const provinceData = getProvinces().then((data) =>
       setProvinceLocation(data.data),
     );
-    console.log(provinceLocation);
+    //console.log(provinceLocation);
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export const MainForm = ({data}) => {
 
   const editProfileHandle = async () => {
     setLoading(true);
-    if ((await userData.avatar.uri) && userData.avatar.base64) {
+    if (userData.avatar.uri && userData.avatar.node) {
       await uplaodImage(userData.avatar);
     }
     let body = {
@@ -124,9 +124,7 @@ export const MainForm = ({data}) => {
             resizeMode="cover"
             style={{height: 220, width: 220}}
             source={{
-              uri: userData.avatar.base64
-                ? `data:image/jpeg;base64,${userData.avatar.base64}`
-                : `${userData.avatar}`,
+              uri: userData.avatar.uri ? userData.avatar.uri : userData.avatar,
             }}
           />
         </View>

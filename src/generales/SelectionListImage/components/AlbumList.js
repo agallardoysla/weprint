@@ -75,7 +75,11 @@ const AlbumList = ({
 
     try {
       const response = await get_repositories();
-      const albumsFromRepositories = response.data.map((repository) => {
+      const repositories = response.data.filter(
+        (repository) => repository.totalPieces > 0,
+      );
+
+      const albumsFromRepositories = repositories.map((repository) => {
         return {
           id: repository.id,
           title: repository.name,
@@ -96,14 +100,14 @@ const AlbumList = ({
   );
 
   const handleOnPressDevice = (storageName) => {
-    if (!loading) {
+    if (!loading && storage !== storageName) {
       onChangeStorage(storageName);
       getAlbumsFromPhone();
     }
   };
 
   const handleOnPressRepository = (storageName) => {
-    if (!loading) {
+    if (!loading && storage !== storageName) {
       onChangeStorage(storageName);
       getRepositories();
     }

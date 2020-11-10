@@ -1,4 +1,4 @@
-import {del, get, postToken, put} from './services';
+import {get, postToken, put, post} from './services';
 
 const example = {
   register: {
@@ -41,4 +41,8 @@ export const update_user_api = async (body) => {
 
 export const get_profile_api = async () => {
   return get('/profile');
+};
+
+export const remember_password_api = async (body) => {
+  return post('/remember-password', body);
 };
