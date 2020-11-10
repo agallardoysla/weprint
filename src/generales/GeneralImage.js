@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import Cargando from './Cargando';
+import {Image, StyleSheet, View, ActivityIndicator} from 'react-native';
 import {colores} from '../constantes/Temas';
 
 const GeneralImage = ({styleImg, uri, base64, resizeMode}) => {
@@ -28,7 +27,9 @@ const GeneralImage = ({styleImg, uri, base64, resizeMode}) => {
     <View style={style.wrapper}>
       {loading && (
         <View style={style.wrapperLoading}>
-          <Cargando titulo="" loaderColor={colores.logo} />
+          <View style={style.container}>
+            <ActivityIndicator size={30} color={colores.logo} />
+          </View>
         </View>
       )}
       <Image
@@ -56,6 +57,12 @@ const style = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -33,7 +33,14 @@ import {upload_image_uri} from '../../../utils/apis/project_api';
 
 const WEPRINT_REPO = 'weprint-app.s3.us-west-1.amazonaws.com';
 
-function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
+function CartLayoutDetail({
+  dispatch,
+  navigation,
+  route,
+  cart,
+  format,
+  hasLocalChange,
+}) {
   const getPiecesOneLevel = useCallback(() => {
     const pieces = cart.pages.map((page) => page.pieces);
     const piecesOneLevel = flatten(pieces);
@@ -57,7 +64,6 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [hasLocalChange, setHasLocalChange] = useState(false);
   const [preSelectedImages, setPreSelectedImages] = useState([]);
 
   const handleTransformCartFormat = useCallback((data) => {
@@ -182,7 +188,6 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
 
   const handleAddCart = async (pages) => {
     setLoading(true);
-    console.warn('add');
     try {
       const response = await create_cart({...omit(cart, ['id']), pages});
 
@@ -215,7 +220,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
       } else if (response.success) {
         const editedCart = handleTransformCartFormat(response.data[0]);
         dispatch(actions.editarCart(editedCart, cart.id));
-        setHasLocalChange(false);
+        dispatch(actions.cartHasLocalChange(false));
       }
 
       setLoading(false);
@@ -245,7 +250,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     };
 
     if (editedCart.user_id) {
-      setHasLocalChange(true);
+      dispatch(actions.cartHasLocalChange(true));
     }
 
     dispatch(actions.editarCart(editedCart, editedCart.id));
@@ -258,11 +263,13 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     });
 
   const handleGoBack = useCallback(() => {
+    dispatch(actions.cartHasLocalChange(false));
+
     navigation.reset({
       index: 0,
       routes: [{name: 'Home'}],
     });
-  }, [navigation]);
+  }, [navigation, dispatch]);
 
   const handleToggleShowImages = () => {
     if (!loading) {
@@ -305,7 +312,7 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
     }
 
     handleToggleShowImages();
-    setHasLocalChange(true);
+    dispatch(actions.cartHasLocalChange(true));
   };
 
   useEffect(() => {
@@ -428,10 +435,12 @@ const mapStateToProps = (
   );
 
   const cart = state.cart.data.find((searchCart) => searchCart.id === cartId);
+  const {hasLocalChange} = state.cart;
 
   return {
     format,
     cart,
+    hasLocalChange,
   };
 };
 

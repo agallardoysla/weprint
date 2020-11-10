@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {colores, tipoDeLetra} from '../../../constantes/Temas';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import CartLayoutWrapper from './CartLayoutWrapper';
@@ -28,19 +28,20 @@ class CartLayoutImage extends PureComponent {
     onDeletePage(page.number);
   };
 
+  handleResponseGrant = (evt) => {
+    const {panResponder, onResetPieceItem} = this.props;
+
+    onResetPieceItem();
+    panResponder.panHandlers.onResponderGrant(evt);
+  };
+
   pageIsOdd() {
     const {page} = this.props;
     return page.number % 2 !== 0;
   }
 
   render() {
-    const {
-      page,
-      panResponder,
-      onRowHeight,
-      onSelectPieceItem,
-      onResetPieceItem,
-    } = this.props;
+    const {page, panResponder, onRowHeight, onSelectPieceItem} = this.props;
     const {showModal} = this.state;
 
     return (
@@ -66,18 +67,18 @@ class CartLayoutImage extends PureComponent {
             </View>
             <Text style={style.cartLayoutText}>Pg {page.number}</Text>
             <View
-              nativeID={page.number.toString()}
               style={
                 this.pageIsOdd()
                   ? style.cartLayoutIconContainerRight
                   : style.cartLayoutIconContainer
               }
               {...panResponder.panHandlers}
-              onResponderStart={onResetPieceItem}>
+              //onResponderStart={onResetPieceItem}
+              onResponderGrant={this.handleResponseGrant}>
               <Icon name="move" size={15} color={colores.gris} />
             </View>
-            <TouchableHighlight
-              underlayColor={colores.blanco}
+            <TouchableOpacity
+              delayPressIn={0}
               onPress={this.handleToggleModal}
               style={
                 this.pageIsOdd()
@@ -85,7 +86,7 @@ class CartLayoutImage extends PureComponent {
                   : style.cartLayoutIconContainerX
               }>
               <Icon name="x" size={15} color={colores.rojo} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
         )}
       </>
@@ -121,7 +122,8 @@ const style = StyleSheet.create({
     backgroundColor: '#F6F8FA',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 3,
+    zIndex: 3,
   },
   cartLayoutIconContainerRight: {
     position: 'absolute',
@@ -136,7 +138,8 @@ const style = StyleSheet.create({
     backgroundColor: '#F6F8FA',
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 1,
+    elevation: 3,
+    zIndex: 3,
   },
   cartLayoutIconContainerX: {
     position: 'absolute',

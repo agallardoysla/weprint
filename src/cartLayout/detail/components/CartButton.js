@@ -22,6 +22,7 @@ const CartButton = ({cart, hasLocalChange, loading, onHandleSaveImages}) => {
     return (
       <TouchableOpacity
         style={[style.button, opacityStyles]}
+        delayPressIn={0}
         onPress={onHandleSaveImages}
         disabled={loading}>
         {loading ? (

@@ -164,6 +164,7 @@ function EditCartLayoutImage({dispatch, navigation, route, cart, layouts}) {
     });
 
     dispatch(actions.editarCart({...cart, pages}, cart.id));
+    dispatch(actions.cartHasLocalChange(true));
 
     navigation.goBack();
   };

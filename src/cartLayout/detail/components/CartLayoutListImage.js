@@ -5,7 +5,7 @@ import {
   Animated,
   View,
   Alert,
-  TouchableHighlight,
+  TouchableOpacity,
   PanResponder,
   Dimensions,
 } from 'react-native';
@@ -412,14 +412,13 @@ class CartLayoutListImage extends PureComponent {
     };
 
     return (
-      <View style={{marginLeft: 4}}>
-        <TouchableHighlight
-          underlayColor={'rgba(255, 255, 255, 0.7)'}
-          activeOpacity={0.2}
+      <View style={style.buttonPlusContainer}>
+        <TouchableOpacity
+          delayPressIn={0}
           style={style.cartLayoutIconContainer}
           onPress={handleOnPress}>
           <Icon name="plus" size={15} color={colores.verde} />
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -492,7 +491,7 @@ class CartLayoutListImage extends PureComponent {
 
 const style = StyleSheet.create({
   listContainer: {
-    marginBottom: 60,
+    marginBottom: 50,
   },
   listContent: {
     position: 'relative',
@@ -538,6 +537,9 @@ const style = StyleSheet.create({
     borderColor: colores.grisFormatoAlbum,
     elevation: 999,
     zIndex: 999,
+  },
+  buttonPlusContainer: {
+    marginLeft: 4,
   },
 });
 

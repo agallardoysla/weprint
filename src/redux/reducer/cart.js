@@ -2,6 +2,7 @@ import concat from 'lodash/concat';
 export const AGREGAR_CART = 'AGREGAR_CART';
 export const EDITAR_CART = 'EDITAR_CART';
 export const SET_LIST_CART = 'SET_LIST_CART';
+export const CART_HAS_LOCAL_CHANGES = 'CART_HAS_LOCAL_CHANGES';
 
 export const agregarCart = (newCart) => ({
   type: AGREGAR_CART,
@@ -25,7 +26,15 @@ export const setListCart = (carts) => ({
   },
 });
 
+export const cartHasLocalChange = (status) => ({
+  type: CART_HAS_LOCAL_CHANGES,
+  payload: {
+    status,
+  },
+});
+
 const initialState = {
+  hasLocalChange: false,
   data: [],
 };
 
@@ -62,6 +71,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: carts,
+      };
+    case CART_HAS_LOCAL_CHANGES:
+      const {status} = payload;
+
+      return {
+        ...state,
+        hasLocalChange: status,
       };
     default:
       return state;

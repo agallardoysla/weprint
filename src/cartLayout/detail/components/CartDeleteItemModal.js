@@ -14,6 +14,7 @@ const CartDeleteItemModal = ({showModal, onPressDelete, onToggleModal}) => {
 
           <View style={style.modalOptionsContainer}>
             <TouchableOpacity
+              delayPressIn={0}
               onPress={onToggleModal}
               style={{
                 ...style.modalOptionItem,
@@ -24,6 +25,7 @@ const CartDeleteItemModal = ({showModal, onPressDelete, onToggleModal}) => {
               <Text style={{color: colores.azulMedio}}>No</Text>
             </TouchableOpacity>
             <TouchableOpacity
+              delayPressIn={0}
               style={{...style.modalOptionItem, borderBottomRightRadius: 5}}
               onPress={onPressDelete}>
               <Text style={{color: colores.rojo}}>Eliminar</Text>
