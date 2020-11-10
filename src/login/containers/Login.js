@@ -174,7 +174,9 @@ function Login(props) {
               </LinearGradientButton>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleOnPressGoToChangePassword}>
+            <TouchableOpacity
+              delayPressIn={0}
+              onPress={handleOnPressGoToChangePassword}>
               <Text style={styles.forgotPassword}>Olvidé mi contraseña</Text>
             </TouchableOpacity>
           </CardLogin>
