@@ -134,7 +134,10 @@ const style = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const carts = state.cart.data.filter((cart) => cart.status === 'draft');
+  const carts = state.cart.data.filter(
+    (cart) => cart.status === 'draft' && cart.total_pages > 10,
+  );
+
   return {carts};
 };
 
