@@ -373,17 +373,23 @@ class CartLayoutListImage extends PureComponent {
   };
 
   handleDeletePage = (numberPage) => {
-    const {onSavePages} = this.props;
+    const {onSavePages, format} = this.props;
     const {pages} = this.state;
 
-    const selectedPages = pages
-      .filter((page) => page.number !== numberPage)
-      .map((page, index) => ({
-        ...page,
-        number: index,
-      }));
+    if (pages.length > format.min_quantity) {
+      const selectedPages = pages
+        .filter((page) => page.number !== numberPage)
+        .map((page, index) => ({
+          ...page,
+          number: index,
+        }));
 
-    onSavePages(selectedPages);
+      onSavePages(selectedPages);
+    } else {
+      Alert.alert(
+        `No se puede eliminar, el álbum debe tener mínimo ${format.min_quantity} páginas`,
+      );
+    }
   };
 
   getRow = (y) => {
