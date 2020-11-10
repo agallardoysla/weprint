@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Alert,
   Platform,
   TextInput,
 } from 'react-native';
@@ -24,7 +25,7 @@ import logo from '../../../assets/images/logo_blanco.png';
 import AnimatedMessage from '../components/AnimatedMessage';
 import styles from '../styles/styles';
 import {getProvinces, getDiscricts} from '../../utils/apis/location_api';
-import {register_api} from '../../utils/apis/login_api';
+import {register_api, login_api} from '../../utils/apis/login_api';
 import {actualizarLogin} from '../../redux/reducer/login';
 import CargandoModal from '../../generales/CargandoModal';
 
@@ -125,12 +126,29 @@ function Register(props) {
 
     /*if (registerValidation === true) {*/
     setloading(true);
-    register_api(body).then((response) => {
-      console.log(response);
-      response.success && dispatch(actualizarLogin());
-      response.errors && setError(true);
+    try {
+      const registerResponse = await register_api(body);
+
+      if (registerResponse.errors) {
+        setError(true);
+      } else if (registerResponse.success) {
+        const loginData = {email: body.email, password: body.password};
+        const loginResponse = await login_api(loginData);
+
+        if (loginResponse.success) {
+          dispatch(actualizarLogin());
+        } else if (loginResponse.errors) {
+          Alert.alert(
+            'Su cuenta fue registrada pero no pudo loguearse, por favor intente desde la pantalla de login',
+          );
+        }
+        setloading(false);
+      }
+    } catch {
+      setError(true);
       setloading(false);
-    });
+    }
+
     /*}*/
   };
 
