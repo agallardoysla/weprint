@@ -380,12 +380,12 @@ function CartLayoutDetail({dispatch, navigation, route, cart, format}) {
               <Icon name="layout" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Reorganizar</Text>
             </TouchableOpacity>*/}
-            <TouchableOpacity
+            {/*<TouchableOpacity
               style={style.cartLayoutIconContainer}
               onPress={handleToggleOptionsModal}>
               <Icon name="sliders" size={20} color={colores.negro} />
               <Text style={style.cartLayoutIconText}>Opciones</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
           </View>
           {loading ? (
             <Cargando titulo="" loaderColor={colores.logo} />

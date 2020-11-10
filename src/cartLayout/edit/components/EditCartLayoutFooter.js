@@ -53,13 +53,11 @@ const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
           <Text style={style.arrowText}>{renderStrArrowLeft()}</Text>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableOpacity style={style.button} onPress={onSaveChanges}>
-        <Text
-          style={{
-            ...style.arrowText,
-          }}>
-          Guardar cambios
-        </Text>
+      <TouchableOpacity
+        delayPressIn={0}
+        style={style.button}
+        onPress={onSaveChanges}>
+        <Text style={style.buttonText}>Guardar cambios</Text>
       </TouchableOpacity>
       <TouchableWithoutFeedback onPress={handleOnPressArrowRight}>
         <View style={style.arrowContainer}>
@@ -73,40 +71,36 @@ const EditCartLayoutFooter = ({pages, page, onSelectPage, onSaveChanges}) => {
 
 const style = StyleSheet.create({
   footerContainer: {
-    position: 'absolute',
-    bottom: 0,
-    height: 60,
+    height: 70,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingBottom: 8,
-    backgroundColor: colores.negro,
-    elevation: 3,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
 
   button: {
-    paddingVertical: 5,
-    paddingHorizontal: 3,
-    width: 140,
+    width: '40%',
+    paddingVertical: 10,
+    paddingHorizontal: 2,
     alignItems: 'center',
-    borderRadius: 4,
+    borderRadius: 5,
     backgroundColor: colores.logo,
-    elevation: 3,
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOpacity: 0.8,
-    elevation: 6,
-    shadowRadius: 15,
-    shadowOffset: {width: 1, height: 13},
+  },
+  buttonText: {
+    color: colores.blanco,
+    fontFamily: tipoDeLetra.regular,
+    fontSize: 17,
   },
   arrowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+
   arrowText: {
     color: colores.blanco,
     fontFamily: tipoDeLetra.regular,
-    fontSize: 16,
+    fontSize: 17,
   },
 });
 

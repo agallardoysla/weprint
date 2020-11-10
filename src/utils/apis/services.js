@@ -125,8 +125,6 @@ export const post = async (uri, body) => {
 
   var raw = JSON.stringify(body);
 
-  console.log(raw);
-
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
