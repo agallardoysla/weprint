@@ -16,7 +16,6 @@ const ProjectDraft = ({cart, onPressGoToDetail}) => {
   return (
     <TouchableOpacity
       style={{...style.mainContainer, width: useWindowDimensions().width - 25}}
-      delayPressIn={0}
       onPress={handleOnPress}>
       <View style={style.imageContainer}>
         <Image
