@@ -13,8 +13,7 @@ export default {
   logo: {
     flex: 1,
     width: '80%',
-    height: 125,
-
+    height: 120,
     justifyContent: 'center',
     alignSelf: 'center',
 
@@ -76,7 +75,7 @@ export default {
     borderColor: '#c1c1c1',
     borderWidth: 1,
     borderRadius: 10,
-    paddingLeft: 20
+    paddingLeft: 20,
   },
   button: {
     alignItems: 'center',

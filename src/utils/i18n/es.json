@@ -1,0 +1,6 @@
+{
+  "translation": {
+    "NICKNAME_ALREADY_EXISTS": "El nickname que estas usando ya existe",
+    "EMAIL_ALREADY_EXISTS": "El email que estas usando ya existe"
+  }
+}
