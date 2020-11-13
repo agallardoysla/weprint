@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    flex: 1,
+    height: '100%',
   },
 });
 const mapStateToProps = (state) => state;
