@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {tipoDeLetra, colores} from '../../constantes/Temas';
 import GeneralImage from '../../generales/GeneralImage';
@@ -45,16 +45,6 @@ export const ProfileMainView = ({data, navigation, loading}) => {
               borderWidth: 2.5,
             }}
           />
-          {/*<Image
-            source={{uri: avatar}}
-            style={{
-              height: 90,
-              width: 90,
-              borderRadius: 100,
-              borderColor: colores.blanco,
-              borderWidth: 2.5,
-            }}
-          />*/}
           <Text
             style={{
               justifyContent: 'center',
