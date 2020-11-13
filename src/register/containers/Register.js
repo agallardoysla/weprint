@@ -19,8 +19,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {connect} from 'react-redux';
 import {actions} from '../../redux';
 import {useTranslation} from 'react-i18next';
-
-import Container from '../../generales/Container';
 import {tamañoLetra, colores} from '../../constantes/Temas';
 import CardRegister from '../components/CardRegister';
 import logo from '../../../assets/images/logo_blanco.png';
@@ -271,13 +269,12 @@ function Register({dispatch, navigation}) {
                   <Text style={{marginVertical: 10}}>Nombre</Text>
                   <TextInput
                     style={styles.registerInput}
-                    autoCapitalize="none"
                     onChangeText={(val) =>
                       textDataValidation(val, 2, 'isValidName', 'name')
                     }
                   />
                   {textValidator.isValidName === false && (
-                    <AnimatedMessage message="Ingresa un nombre valido!" />
+                    <AnimatedMessage message="Ingresa un nombre válido!" />
                   )}
                 </View>
                 <View style={styles.action}>
@@ -289,19 +286,20 @@ function Register({dispatch, navigation}) {
                     }
                   />
                   {textValidator.isValidLastName === false && (
-                    <AnimatedMessage message="Ingresa un apellido valido!" />
+                    <AnimatedMessage message="Ingresa un apellido válido!" />
                   )}
                 </View>
                 <View style={styles.action}>
                   <Text style={{marginVertical: 10}}>Nickname</Text>
                   <TextInput
                     style={styles.registerInput}
+                    autoCapitalize="none"
                     onChangeText={(val) =>
                       textDataValidation(val, 2, 'isValidNickName', 'username')
                     }
                   />
                   {textValidator.isValidNickName === false && (
-                    <AnimatedMessage message="Ingresa un nick valido!" />
+                    <AnimatedMessage message="Ingresa un nick válido!" />
                   )}
                 </View>
 
@@ -309,6 +307,7 @@ function Register({dispatch, navigation}) {
                   <Text style={{marginVertical: 10}}>Email</Text>
                   <TextInput
                     style={styles.registerInput}
+                    autoCapitalize="none"
                     onChangeText={(val) =>
                       textDataValidation(val, 2, 'isValidEmail', 'email')
                     }
@@ -321,7 +320,7 @@ function Register({dispatch, navigation}) {
                     }}
                   />
                   {textValidator.isValidEmail === false && (
-                    <AnimatedMessage message="Ingresa un email valido!" />
+                    <AnimatedMessage message="Ingresa un email válido!" />
                   )}
                 </View>
 
@@ -367,7 +366,7 @@ function Register({dispatch, navigation}) {
                     }
                   />
                   {textValidator.isValidDirection === false && (
-                    <AnimatedMessage message="Ingresa una direccion valida!" />
+                    <AnimatedMessage message="Ingresa una dirección válida!" />
                   )}
                 </View>
 
@@ -469,7 +468,7 @@ function Register({dispatch, navigation}) {
                       style={[
                         styles.textSign,
                         {
-                          color: '#fff',
+                          color: colores.blanco,
                         },
                       ]}>
                       Enviar
@@ -517,5 +516,4 @@ function Register({dispatch, navigation}) {
   );
 }
 
-const mapStateToProps = (state) => ({register: state.register});
-export default connect(mapStateToProps)(Register);
+export default connect(null)(Register);
