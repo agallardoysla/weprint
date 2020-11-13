@@ -88,20 +88,15 @@ function Register({dispatch, navigation}) {
   }, []);
 
   const loadDistricts = useCallback(async () => {
-    const response = await getDiscricts(locationSelector);
-    setDiscrictLocation(response.data);
-  }, [locationSelector]);
+    setDiscrictLocation([]);
 
-  useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-    loadProvinces();
-  }, [dispatch, navigation, loadProvinces]);
-
-  useEffect(() => {
-    if (locationSelector) {
-      loadDistricts();
+    try {
+      const response = await getDiscricts(locationSelector);
+      setDiscrictLocation(response.data);
+    } catch {
+      Alert.alert('No se pudo cargar comunas, revisa tu conexión');
     }
-  }, [locationSelector, loadDistricts]);
+  }, [locationSelector]);
 
   const handleLogin = async (email, password) => {
     const loginData = {email, password};
@@ -223,6 +218,17 @@ function Register({dispatch, navigation}) {
     setShow(false);
     setDate(new Date(evt.nativeEvent.timestamp));
   };
+
+  useEffect(() => {
+    dispatch(actions.actualizarNavigation(navigation));
+    loadProvinces();
+  }, [dispatch, navigation, loadProvinces]);
+
+  useEffect(() => {
+    if (locationSelector) {
+      loadDistricts();
+    }
+  }, [locationSelector, loadDistricts]);
 
   return (
     <>
