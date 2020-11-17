@@ -36,8 +36,6 @@ import ChangePassword from './changePassword/containers/ChangePassword';
 import Album from './profile/menuScreens/Album';
 import AlbumRequest from './profile/menuScreens/AlbumRequest';
 
-import {colores} from './constantes/Temas';
-
 const Navegador = (props) => {
   const {login} = props;
   const Stack = createStackNavigator();

@@ -177,7 +177,13 @@ const DraftCard = ({
   </View>
 );
 
-const mapStateToProps = (state) => ({items: state.cart});
+const mapStateToProps = (state) => {
+  const carts = state.cart.data.filter(
+    (cart) => cart.status === 'draft' && cart.total_pages > 10,
+  );
+
+  return {draftList: carts};
+};
 export default connect(mapStateToProps)(Drafts);
 
 Drafts.defaultProps = {

@@ -42,98 +42,104 @@ function Profile({navigation, dispatch}) {
   return (
     <Container>
       <CargandoModal title="Cargando" show={loading} />
-      <Header />
-      <ScrollView>
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            alignItems: 'center',
-          }}>
-          {error ? (
-            <View style={styles.buttonMainContainer}>
-              <Text style={styles.errorText}>
-                Ha ocurrido un problema, revisa tu conexión e inténtalo de
-                nuevo.
-              </Text>
+      {!loading && (
+        <>
+          <Header />
+          <ScrollView>
+            <View
+              style={{
+                width: '100%',
+                height: '100%',
+                alignItems: 'center',
+              }}>
+              {error ? (
+                <View style={styles.buttonMainContainer}>
+                  <Text style={styles.errorText}>
+                    Ha ocurrido un problema, revisa tu conexión e inténtalo de
+                    nuevo.
+                  </Text>
 
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={getUserData}>
-                <Text style={styles.buttonText}>Volver a intentar</Text>
-              </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={getUserData}>
+                    <Text style={styles.buttonText}>Volver a intentar</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <>
+                  <ProfileMainView
+                    loading={loading}
+                    navigation={navigation}
+                    data={userData}
+                  />
+                  <View style={styles.menuContainer}>
+                    <View
+                      style={{
+                        width: '100%',
+                        paddingHorizontal: '4%',
+                        paddingVertical: '4%',
+                      }}>
+                      <MenuItem
+                        name="Mis Compras"
+                        icon="shopping-basket"
+                        color="#f18263"
+                      />
+                      <MenuItem
+                        name="Mis Borradores"
+                        icon="edit"
+                        color="#50c8ff"
+                        onPressFunction={() =>
+                          navigation.navigate('Drafts', userData.photo)
+                        }
+                      />
+                      <MenuItem
+                        name="Mis Albunes compartidos"
+                        icon="insert-photo"
+                        color="#5d58e0"
+                        onPressFunction={() => navigation.navigate('Album')}
+                      />
+                      <MenuItem
+                        name="Mis repositorios"
+                        icon="folder"
+                        color="#e0bb2e"
+                        onPressFunction={() =>
+                          navigation.navigate('Repositories')
+                        }
+                      />
+                      <MenuItem
+                        name="Politicas de Privacidad"
+                        icon="policy"
+                        color="#ffd948"
+                        onPressFunction={() => navigation.navigate('Policy')}
+                      />
+                      <MenuItem
+                        name="Somos #Weprint"
+                        icon="supervisor-account"
+                        color="#ffd948"
+                        onPressFunction={() => navigation.navigate('About')}
+                        divider={false}
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.menuContainer}>
+                    <View
+                      style={{
+                        width: '100%',
+                      }}>
+                      <MenuItem
+                        name="Cerrar Sesion"
+                        color="#ffd948"
+                        onPressFunction={() => dispatch(actions.logout())}
+                        divider={false}
+                      />
+                    </View>
+                  </View>
+                </>
+              )}
             </View>
-          ) : (
-            <>
-              <ProfileMainView
-                loading={loading}
-                navigation={navigation}
-                data={userData}
-              />
-              <View style={styles.menuContainer}>
-                <View
-                  style={{
-                    width: '100%',
-                    paddingHorizontal: '4%',
-                    paddingVertical: '4%',
-                  }}>
-                  <MenuItem
-                    name="Mis Compras"
-                    icon="shopping-basket"
-                    color="#f18263"
-                  />
-                  <MenuItem
-                    name="Mis Borradores"
-                    icon="edit"
-                    color="#50c8ff"
-                    onPressFunction={() =>
-                      navigation.navigate('Drafts', userData.photo)
-                    }
-                  />
-                  <MenuItem
-                    name="Mis Albunes compartidos"
-                    icon="insert-photo"
-                    color="#5d58e0"
-                    onPressFunction={() => navigation.navigate('Album')}
-                  />
-                  <MenuItem
-                    name="Mis repositorios"
-                    icon="folder"
-                    color="#e0bb2e"
-                    onPressFunction={() => navigation.navigate('Repositories')}
-                  />
-                  <MenuItem
-                    name="Politicas de Privacidad"
-                    icon="policy"
-                    color="#ffd948"
-                    onPressFunction={() => navigation.navigate('Policy')}
-                  />
-                  <MenuItem
-                    name="Somos #Weprint"
-                    icon="supervisor-account"
-                    color="#ffd948"
-                    onPressFunction={() => navigation.navigate('About')}
-                    divider={false}
-                  />
-                </View>
-              </View>
-              <View style={styles.menuContainer}>
-                <View
-                  style={{
-                    width: '100%',
-                  }}>
-                  <MenuItem
-                    name="Cerrar Sesion"
-                    color="#ffd948"
-                    onPressFunction={() => dispatch(actions.logout())}
-                    divider={false}
-                  />
-                </View>
-              </View>
-            </>
-          )}
-        </View>
-      </ScrollView>
+          </ScrollView>
+        </>
+      )}
     </Container>
   );
 }
