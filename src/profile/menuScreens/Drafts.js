@@ -16,52 +16,34 @@ import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
-function Drafts({profilePhoto, route, items, navigation}) {
-  console.log('route.params');
-  console.log(items.shortlisted);
-  const draftList = Object.values(items.shortlisted);
-
-  console.log(Object.keys(items.shortlisted));
-
-  //INSERT DRAFTS
-
+function Drafts({carts, navigation}) {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#f5f6fa'}}>
       <ScrollView>
         <Container footer={false}>
           <Header />
-          {draftList.map((draft, index) => (
-            <DraftCard
-              photo={draft.pages[0].pieces[0].file.base64}
-              available={true}
-              name={draft.name}
-              description={draft.description}
-              onPressFunction={() =>
-                navigation.navigate('CartLayout', {
-                  storageId: Object.keys(items.shortlisted)[index],
-                  formatId: draft.format,
-                })
-              }
-              price={draft.price}
-              pages={draft.pages.length}
-              format={draft.format}
-            />
-          ))}
+          {carts.map((cart) => {
+            const handleOnPressGoToDetail = () => {
+              navigation.navigate('CartLayoutDetail', {
+                cartId: cart.id,
+                formatId: cart.format_id,
+              });
+            };
+            return (
+              <DraftCard
+                key={cart.id.toString()}
+                cart={cart}
+                onPressFunction={handleOnPressGoToDetail}
+              />
+            );
+          })}
         </Container>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const DraftCard = ({
-  name,
-  photo,
-  available,
-  description,
-  onPressFunction,
-  price,
-  pages,
-}) => (
+const DraftCard = ({cart, onPressFunction}) => (
   <View
     style={{
       width: '90%',
@@ -74,12 +56,12 @@ const DraftCard = ({
     }}>
     <Image
       width="100%"
-      source={{uri: `data:image/png;base64,${photo}`}}
+      source={{uri: cart.file}}
       style={{backgroundColor: colores.blanco, height: 275}}
     />
     <View style={{padding: 25}}>
       <Text style={{color: colores.gris}}>
-        Album: {pages} paginas {price}
+        Álbum: {cart.name} páginas {cart.total_pages}
       </Text>
       <Text
         style={{
@@ -87,7 +69,7 @@ const DraftCard = ({
           marginVertical: 10,
           ...estiloDeLetra.negrita,
         }}>
-        {name}
+        {cart.name}
       </Text>
       {/*
           <View
@@ -105,10 +87,10 @@ const DraftCard = ({
       <Text
         style={{...estiloDeLetra.negrita, color: colores.gris}}
         numberOfLines={4}>
-        {description}
+        {cart.description}
       </Text>
     </View>
-    {available === true ? (
+    {cart.active ? (
       <View>
         <View
           style={{
@@ -182,11 +164,6 @@ const mapStateToProps = (state) => {
     (cart) => cart.status === 'draft' && cart.total_pages > 10,
   );
 
-  return {draftList: carts};
+  return {carts};
 };
 export default connect(mapStateToProps)(Drafts);
-
-Drafts.defaultProps = {
-  profilePhoto:
-    'https://viajes.nationalgeographic.com.es/medio/2013/09/02/hemis_0314966_1000x766.jpg',
-};

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Dimensions,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Container from '../../generales/Container';
@@ -17,13 +18,13 @@ import {get_profile_api} from '../../utils/apis/login_api';
 
 function EditProfile({navigation, route}) {
   return (
-    <Container footer={false}>
-      <SafeAreaView>
+    <>
+      <View style={{flex: 1}}>
+        <View style={{position: 'absolute', top: -25}}>
+          <Background width={Dimensions.get('screen').width} height={205} />
+        </View>
         <ScrollView>
           <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
-            <View style={{position: 'absolute'}}>
-              <Background width={Dimensions.get('screen').width} height={205} />
-            </View>
             <View
               style={{
                 width: '100%',
@@ -31,7 +32,8 @@ function EditProfile({navigation, route}) {
                 justifyContent: 'center',
                 position: 'absolute',
               }}>
-              <View
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
                 style={{
                   width: 50,
                   height: 50,
@@ -39,21 +41,16 @@ function EditProfile({navigation, route}) {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Icon
-                  name="arrow-back"
-                  size={40}
-                  onPress={() => navigation.goBack()}
-                />
-              </View>
+                <Icon name="arrow-back" color={colores.blanco} size={40} />
+              </TouchableOpacity>
             </View>
 
             <MainForm data={route.params} />
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </Container>
+      </View>
+    </>
   );
 }
 
-const mapStateToProps = (state) => ({login: state.login});
-export default connect(mapStateToProps)(EditProfile);
+export default connect(null)(EditProfile);

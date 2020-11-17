@@ -79,9 +79,7 @@ function Profile({navigation, dispatch}) {
                           name="Mis Borradores"
                           icon="edit"
                           color="#50c8ff"
-                          onPressFunction={() =>
-                            navigation.navigate('Drafts', userData.photo)
-                          }
+                          onPressFunction={() => navigation.navigate('Drafts')}
                         />
                         <MenuItem
                           name="Mis Albunes compartidos"
@@ -181,5 +179,4 @@ const style = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({login: state.login});
-export default connect(mapStateToProps)(Profile);
+export default connect(null)(Profile);
