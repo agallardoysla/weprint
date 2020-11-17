@@ -47,7 +47,7 @@ const style = StyleSheet.create({
     paddingLeft: 5,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colores.gris,
+    borderBottomColor: colores.grisClaro,
   },
   title: {
     ...estiloDeLetra.negrita,

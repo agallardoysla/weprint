@@ -101,7 +101,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 10,
-    backgroundColor: 'white',
+    backgroundColor: colores.blanco,
+    shadowColor: colores.negro,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+
+    elevation: 7,
   },
   loader: {
     position: 'absolute',
