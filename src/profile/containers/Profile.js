@@ -45,119 +45,118 @@ function Profile({navigation, dispatch}) {
       {!loading && (
         <>
           <Header />
-          <ScrollView>
-            <View
-              style={{
-                width: '100%',
-                height: '100%',
-                alignItems: 'center',
-              }}>
-              {error ? (
-                <View style={styles.buttonMainContainer}>
-                  <Text style={styles.errorText}>
-                    Ha ocurrido un problema, revisa tu conexión e inténtalo de
-                    nuevo.
-                  </Text>
+          <View style={style.mainContainer}>
+            <ScrollView contentContainerStyle={style.scrollContent}>
+              <>
+                {error ? (
+                  <View style={style.buttonMainContainer}>
+                    <Text style={style.errorText}>
+                      Ha ocurrido un problema, revisa tu conexión e inténtalo de
+                      nuevo.
+                    </Text>
 
-                  <TouchableOpacity
-                    style={styles.buttonContainer}
-                    onPress={getUserData}>
-                    <Text style={styles.buttonText}>Volver a intentar</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <>
-                  <ProfileMainView
-                    loading={loading}
-                    navigation={navigation}
-                    data={userData}
-                  />
-                  <View style={styles.menuContainer}>
-                    <View
-                      style={{
-                        width: '100%',
-                        paddingHorizontal: '4%',
-                        paddingVertical: '4%',
-                      }}>
-                      <MenuItem
-                        name="Mis Compras"
-                        icon="shopping-basket"
-                        color="#f18263"
-                      />
-                      <MenuItem
-                        name="Mis Borradores"
-                        icon="edit"
-                        color="#50c8ff"
-                        onPressFunction={() =>
-                          navigation.navigate('Drafts', userData.photo)
-                        }
-                      />
-                      <MenuItem
-                        name="Mis Albunes compartidos"
-                        icon="insert-photo"
-                        color="#5d58e0"
-                        onPressFunction={() => navigation.navigate('Album')}
-                      />
-                      <MenuItem
-                        name="Mis repositorios"
-                        icon="folder"
-                        color="#e0bb2e"
-                        onPressFunction={() =>
-                          navigation.navigate('Repositories')
-                        }
-                      />
-                      <MenuItem
-                        name="Politicas de Privacidad"
-                        icon="policy"
-                        color="#ffd948"
-                        onPressFunction={() => navigation.navigate('Policy')}
-                      />
-                      <MenuItem
-                        name="Somos #Weprint"
-                        icon="supervisor-account"
-                        color="#ffd948"
-                        onPressFunction={() => navigation.navigate('About')}
-                        divider={false}
-                      />
-                    </View>
+                    <TouchableOpacity
+                      style={style.buttonContainer}
+                      onPress={getUserData}>
+                      <Text style={style.buttonText}>Volver a intentar</Text>
+                    </TouchableOpacity>
                   </View>
-                  <View style={styles.menuContainer}>
-                    <View
-                      style={{
-                        width: '100%',
-                      }}>
-                      <MenuItem
-                        name="Cerrar Sesion"
-                        color="#ffd948"
-                        onPressFunction={() => dispatch(actions.logout())}
-                        divider={false}
-                      />
+                ) : (
+                  <>
+                    <ProfileMainView
+                      loading={loading}
+                      navigation={navigation}
+                      data={userData}
+                    />
+                    <View style={style.menuContainer}>
+                      <View style={style.menuContent}>
+                        <MenuItem
+                          name="Mis Compras"
+                          icon="shopping-basket"
+                          color="#f18263"
+                        />
+                        <MenuItem
+                          name="Mis Borradores"
+                          icon="edit"
+                          color="#50c8ff"
+                          onPressFunction={() =>
+                            navigation.navigate('Drafts', userData.photo)
+                          }
+                        />
+                        <MenuItem
+                          name="Mis Albunes compartidos"
+                          icon="insert-photo"
+                          color="#5d58e0"
+                          onPressFunction={() => navigation.navigate('Album')}
+                        />
+                        <MenuItem
+                          name="Mis repositorios"
+                          icon="folder"
+                          color="#e0bb2e"
+                          onPressFunction={() =>
+                            navigation.navigate('Repositories')
+                          }
+                        />
+                        <MenuItem
+                          name="Politicas de Privacidad"
+                          icon="policy"
+                          color="#ffd948"
+                          onPressFunction={() => navigation.navigate('Policy')}
+                        />
+                        <MenuItem
+                          name="Somos #Weprint"
+                          icon="supervisor-account"
+                          color="#ffd948"
+                          onPressFunction={() => navigation.navigate('About')}
+                          divider={false}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </>
-              )}
-            </View>
-          </ScrollView>
+                    <View style={style.menuContainer}>
+                      <View style={style.logoutContent}>
+                        <MenuItem
+                          name="Cerrar Sesion"
+                          color="#ffd948"
+                          onPressFunction={() => dispatch(actions.logout())}
+                          divider={false}
+                        />
+                      </View>
+                    </View>
+                  </>
+                )}
+              </>
+            </ScrollView>
+          </View>
         </>
       )}
     </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+const style = StyleSheet.create({
+  mainContainer: {
     flex: 1,
   },
+  logoutContent: {
+    width: '100%',
+  },
   menuContainer: {
+    marginTop: 10,
     alignItems: 'center',
     width: '90%',
     paddingVertical: 5,
     paddingHorizontal: 10,
+    borderRadius: 5,
     backgroundColor: colores.blanco,
-    marginTop: 10,
+  },
+  menuContent: {
+    width: '100%',
+    paddingHorizontal: '4%',
+    paddingVertical: '4%',
+  },
+  scrollContent: {
+    paddingBottom: 60,
+    alignItems: 'center',
   },
   buttonMainContainer: {
     marginTop: '50%',
