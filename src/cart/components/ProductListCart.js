@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableHighlight,
-} from 'react-native';
+import {View, Text, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import ProductCart from './ProductCart';
 import {estiloDeLetra, colores} from '../../constantes/Temas';
 
@@ -16,13 +10,12 @@ const ProductListCart = ({carts, onGoToConfirm}) => {
     <View style={style.mainContainer}>
       <View style={style.header}>
         <Text style={style.title}>Productos de cesta</Text>
-        <TouchableHighlight
+        <TouchableOpacity
           onPress={onGoToConfirm}
           style={style.button}
-          underlayColor="rgba(0, 0, 0, 0.1)"
           delayLongPress={0}>
           <Text style={style.buttonText}>Ir a comprar</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
       <FlatList
         contentContainerStyle={style.listContent}
@@ -50,7 +43,7 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingLeft: 18,
-    paddingRight: 8,
+    paddingRight: 10,
     marginBottom: 2,
     backgroundColor: colores.blanco,
     shadowColor: colores.negro,
@@ -65,7 +58,7 @@ const style = StyleSheet.create({
   title: {
     marginTop: 5,
     ...estiloDeLetra.negrita,
-    fontSize: 18,
+    fontSize: 17,
   },
   buttonContainer: {
     position: 'absolute',

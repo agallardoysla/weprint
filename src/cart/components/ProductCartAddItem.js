@@ -5,13 +5,12 @@ import {
   Image,
   StyleSheet,
   useWindowDimensions,
-  ScrollView,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {colores, estiloDeLetra} from '../../constantes/Temas';
 
-const ProductCartAddItem = ({navigation}) => {
+const ProductCartAddItem = ({onGoToFormatList}) => {
   const {width} = useWindowDimensions();
 
   const getResponsiveStyles = (widthScreen) => {
@@ -67,13 +66,15 @@ const ProductCartAddItem = ({navigation}) => {
               ¡Parece que aún no elegiste tus productos!
             </Text>
           </View>
-          <View style={getResponsiveStyles(width).buttonContainer}>
-            <TouchableWithoutFeedback onPress={() => navigation.push('Home')}>
-              <Text style={getResponsiveStyles(width).buttonText}>
-                + AÑADIR UN PRODUCTO
-              </Text>
-            </TouchableWithoutFeedback>
-          </View>
+
+          <TouchableOpacity
+            delayPressIn={0}
+            style={getResponsiveStyles(width).buttonContainer}
+            onPress={onGoToFormatList}>
+            <Text style={getResponsiveStyles(width).buttonText}>
+              + AÑADIR UN PRODUCTO
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </>

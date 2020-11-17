@@ -34,6 +34,9 @@ function CartMainView({dispatch, navigation}) {
 
   const handleGoToConfirm = () => navigation.navigate('ConfirmCart');
 
+  const handleGoToFormatList = () =>
+    navigation.navigate('FormatList', {projectId: 1});
+
   useEffect(() => {
     dispatch(actions.actualizarNavigation(navigation));
   }, [dispatch, navigation]);
@@ -51,7 +54,7 @@ function CartMainView({dispatch, navigation}) {
             <Header />
             <>
               {!carts.length ? (
-                <ProductCartAddItem />
+                <ProductCartAddItem onGoToFormatList={handleGoToFormatList} />
               ) : (
                 <ProductListCart
                   carts={carts}

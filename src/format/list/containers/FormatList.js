@@ -40,7 +40,7 @@ function FormatList({dispatch, navigation, route, formats}) {
     loadFormats();
   }, [loadFormats]);
 
-  const handleOnPressGoToBack = () => navigation.navigate('Home');
+  const handleOnPressGoToBack = () => navigation.goBack();
 
   const handleOnPressGoToSelectImage = (formatId) =>
     navigation.navigate('FormatDetail', {formatId});
