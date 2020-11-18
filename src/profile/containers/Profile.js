@@ -71,6 +71,9 @@ function Profile({navigation, dispatch}) {
                     <View style={style.menuContainer}>
                       <View style={style.menuContent}>
                         <MenuItem
+                          onPressFunction={() =>
+                            navigation.navigate('PaidAlbums')
+                          }
                           name="Mis Compras"
                           icon="shopping-basket"
                           color="#f18263"
@@ -82,7 +85,7 @@ function Profile({navigation, dispatch}) {
                           onPressFunction={() => navigation.navigate('Drafts')}
                         />
                         <MenuItem
-                          name="Mis Albunes compartidos"
+                          name="Mis Álbumes compartidos"
                           icon="insert-photo"
                           color="#5d58e0"
                           onPressFunction={() => navigation.navigate('Album')}

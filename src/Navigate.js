@@ -15,6 +15,8 @@ import Profile from './profile/containers/Profile';
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
 import Drafts from './profile/menuScreens/Drafts';
+import PaidAlbums from './profile/menuScreens/PaidAlbums';
+
 import Repositories from './profile/menuScreens/Repositories';
 import UploadRepository from './profile/menuScreens/UploadRepository';
 import RepositoryDescription from './profile/menuScreens/RepositoryDescription';
@@ -111,6 +113,8 @@ const ProfileNavigator = () => (
     <ProfileTab.Screen name="Album" component={AlbumsTabScreen} />
     <ProfileTab.Screen name="Repositories" component={RepositoriesTabScreen} />
     <ProfileTab.Screen name="About" component={About} />
+    <ProfileTab.Screen name="PaidAlbums" component={PaidAlbums} />
+
     <ProfileTab.Screen name="EditProfile" component={EditProfile} />
   </ProfileTab.Navigator>
 );

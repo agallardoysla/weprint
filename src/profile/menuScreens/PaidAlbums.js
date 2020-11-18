@@ -5,7 +5,6 @@ import GeneralImage from '../../generales/GeneralImage';
 import CargandoModal from '../../generales/CargandoModal';
 import ButtonReload from '../../generales/ButtonReload';
 import Icon from 'react-native-vector-icons/dist/Feather';
-import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import moment from 'moment';
 import {connect} from 'react-redux';
@@ -14,15 +13,15 @@ import {colores, estiloDeLetra, tipoDeLetra} from '../../constantes/Temas';
 import {get_carts} from '../../utils/apis/cart_api';
 import {get_profile_api} from '../../utils/apis/login_api';
 
-const STATUS = 'draft';
+const STATUS = 'paid';
 
-const DraftCard = ({cart, onPressGoToDetail}) => {
+const PaidAlbumCart = ({cart}) => {
   const {t} = useTranslation();
   const cartDate = moment(cart.created).parseZone();
 
   return (
-    <View style={style.draftContainer}>
-      <GeneralImage styleImg={style.draftImage} uri={cart.file} />
+    <View style={style.paidAlbumContainer}>
+      <GeneralImage styleImg={style.paidAlbumImage} uri={cart.file} />
       <View style={style.infoContainer}>
         <View style={style.titleContainer}>
           <Text style={style.albumTitle}>
@@ -56,11 +55,6 @@ const DraftCard = ({cart, onPressGoToDetail}) => {
             />
             <Text style={style.availableLabelText}>Disponible</Text>
           </View>
-          <View>
-            <TouchableOpacity style={style.button} onPress={onPressGoToDetail}>
-              <Text style={style.buttonText}>¡TERMINAME!</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       ) : (
         <View style={style.disableLabel}>
@@ -77,7 +71,7 @@ const DraftCard = ({cart, onPressGoToDetail}) => {
   );
 };
 
-function Drafts({navigation}) {
+function PaidAlbums({navigation}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [carts, setCarts] = useState([]);
@@ -90,11 +84,8 @@ function Drafts({navigation}) {
     try {
       const responseProfile = await get_profile_api();
       const responseCarts = await get_carts(STATUS);
-      const selectedCarts = responseCarts.data.filter(
-        (selectedCart) => selectedCart.total_pages > 10,
-      );
 
-      setCarts(selectedCarts);
+      setCarts(responseCarts.data);
       setProfile(responseProfile.data[0]);
       setLoading(false);
     } catch {
@@ -105,16 +96,7 @@ function Drafts({navigation}) {
   const handleGoBack = () => navigation.goBack();
 
   const renderCarts = ({item: cart}) => {
-    const handleOnPressGoToDetail = () => {
-      navigation.navigate('CartLayoutDetail', {
-        cartId: cart.id,
-        formatId: cart.format_id,
-      });
-    };
-
-    return (
-      <DraftCard cart={cart} onPressGoToDetail={handleOnPressGoToDetail} />
-    );
+    return <PaidAlbumCart cart={cart} />;
   };
 
   useEffect(() => {
@@ -128,7 +110,7 @@ function Drafts({navigation}) {
         <Container footer={false}>
           <TouchableOpacity style={style.header} onPress={handleGoBack}>
             <Icon name="arrow-left" size={27} color={colores.negro} />
-            <Text style={style.headerText}>Borradores</Text>
+            <Text style={style.headerText}>Mis Compras</Text>
           </TouchableOpacity>
 
           {!loading && !error && (
@@ -152,7 +134,7 @@ function Drafts({navigation}) {
                 ListEmptyComponent={
                   <View style={style.emptyContainer}>
                     <Text style={style.emptyText}>
-                      No tienes álbumes pendientes
+                      No has realizado ninguna compra
                     </Text>
                   </View>
                 }
@@ -219,16 +201,15 @@ const style = StyleSheet.create({
     borderColor: colores.blanco,
     backgroundColor: colores.fondoScreen,
   },
-  draftImage: {
+  paidAlbumImage: {
     width: '100%',
     height: 275,
     backgroundColor: colores.blanco,
   },
-  draftContainer: {
+  paidAlbumContainer: {
     width: '90%',
     alignSelf: 'center',
     marginVertical: 20,
-    paddingBottom: 20,
     borderRadius: 5,
     backgroundColor: colores.blanco,
     elevation: 3,
@@ -280,19 +261,7 @@ const style = StyleSheet.create({
   disableIcon: {
     marginLeft: 5,
   },
-  button: {
-    width: '85%',
-    padding: 15,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    backgroundColor: colores.logo,
-  },
-  buttonText: {
-    textAlign: 'center',
-    ...estiloDeLetra.negrita,
-    color: colores.blanco,
-    fontSize: RFPercentage(2.2),
-  },
+
   titleContainer: {
     flexDirection: 'row',
   },
@@ -325,4 +294,4 @@ const style = StyleSheet.create({
   },
 });
 
-export default connect(null)(Drafts);
+export default connect(null)(PaidAlbums);
