@@ -3,6 +3,7 @@ import {View, Text, Image, StyleSheet, FlatList} from 'react-native';
 import Container from '../../generales/Container';
 import GeneralImage from '../../generales/GeneralImage';
 import CargandoModal from '../../generales/CargandoModal';
+import ButtonReload from '../../generales/ButtonReload';
 import Icon from 'react-native-vector-icons/dist/Feather';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -125,13 +126,13 @@ function Drafts({navigation}) {
       <CargandoModal title="Cargando" show={loading} />
       <View style={style.mainContainer}>
         <Container footer={false}>
+          <TouchableOpacity style={style.header} onPress={handleGoBack}>
+            <Icon name="arrow-left" size={27} color={colores.negro} />
+            <Text style={style.headerText}>Borradores</Text>
+          </TouchableOpacity>
+
           {!loading && !error && (
             <>
-              <TouchableOpacity style={style.header} onPress={handleGoBack}>
-                <Icon name="arrow-left" size={27} color={colores.negro} />
-                <Text style={style.headerText}>Borradores</Text>
-              </TouchableOpacity>
-
               <FlatList
                 ListHeaderComponentStyle={style.listHeader}
                 ListHeaderComponent={
@@ -154,6 +155,7 @@ function Drafts({navigation}) {
               />
             </>
           )}
+          {error && <ButtonReload onReload={loadData} />}
         </Container>
       </View>
     </>
