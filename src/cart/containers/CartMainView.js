@@ -21,8 +21,7 @@ function CartMainView({dispatch, navigation}) {
     try {
       const response = await get_carts(STATUS);
       const selectedCarts = response.data.filter(
-        (selectedCart) =>
-          selectedCart.status === STATUS && selectedCart.total_pages > 10,
+        (selectedCart) => selectedCart.total_pages > 10,
       );
 
       setCarts(selectedCarts);

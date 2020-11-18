@@ -81,9 +81,11 @@ export const MainForm = ({data}) => {
 
   const editProfileHandle = async () => {
     setLoading(true);
+    let avatar = userData.avatar;
     if (userData.avatar.uri && userData.avatar.node) {
-      await uplaodImage(userData.avatar);
+      avatar = await uplaodImage(userData.avatar);
     }
+
     let body = {
       nickname: userData.nickname,
       firstname: userData.firstname,
@@ -92,14 +94,14 @@ export const MainForm = ({data}) => {
       address: `${userData.address}, ${userData.comuna}, ${userData.province}`,
       birthdate: userData.birthdate,
       district_id: userData.district_id,
-      avatar: userData.avatar,
+      avatar: avatar,
     };
 
     console.log(body);
 
     update_user_api(body).then((response) => {
       console.log('response');
-      console.log(response);
+      console.warn('update', response);
       //response.success && setSuccess(true)
       setLoading(false);
     });

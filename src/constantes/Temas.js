@@ -34,7 +34,7 @@ export const colores = {
   negro: 'black',
   negroMedio: '#333',
   lila: '#7474f9',
-  fondoScreen: '#F5F6FA',
+  fondoScreen: '#f5f6fa',
   grisTransparente: 'rgba(192,192,192,0.5)',
   loginInput: 'rgba(52,52,52,0.8)',
   cargandoModal: '#484848',
