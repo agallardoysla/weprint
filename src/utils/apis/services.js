@@ -151,7 +151,9 @@ export const postToken = async (body, uri) => {
   };
 
   return fetch(`${BASE_API}${uri}`, requestOptions)
-    .then((response) => response.json())
+    .then((response) => {
+      return response.json();
+    })
     .then(async (result) => {
       if (result.success) {
         let {token} = result?.data[0];

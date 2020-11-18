@@ -1,24 +1,12 @@
 import React, {Component} from 'react';
-import {
-  TouchableHighlight,
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import isNull from 'lodash/isNull';
 import concat from 'lodash/concat';
 import fill from 'lodash/fill';
 import {colores} from '../../../constantes/Temas';
 import GeneralImage from '../../../generales/GeneralImage';
 
-const BasicLayout = ({
-  getSelectedImages,
-  panResponder,
-  onPressImage,
-  onSelectImage,
-}) => {
+const BasicLayout = ({getSelectedImages, panResponder, onSelectImage}) => {
   const pieces = getSelectedImages(1);
   const piece = pieces[0];
 
@@ -35,20 +23,13 @@ const BasicLayout = ({
         {...panResponder.panHandlers}
         style={style.basicWrapper}
         onResponderGrant={handleResponder}>
-        <TouchableHighlight onPress={onPressImage}>
-          <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-        </TouchableHighlight>
+        <GeneralImage uri={piece.file} styleImg={style.imageSize} />
       </View>
     </>
   );
 };
 
-const TwoLayouts = ({
-  getSelectedImages,
-  panResponder,
-  onPressImage,
-  onSelectImage,
-}) => {
+const TwoLayouts = ({getSelectedImages, panResponder, onSelectImage}) => {
   const pieces = getSelectedImages(2);
 
   return (
@@ -67,9 +48,7 @@ const TwoLayouts = ({
             style={style.largeWrapper}
             key={piece.order.toString()}
             onResponderGrant={handleResponder}>
-            <TouchableHighlight onPress={onPressImage}>
-              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-            </TouchableHighlight>
+            <GeneralImage uri={piece.file} styleImg={style.imageSize} />
           </View>
         );
       })}
@@ -77,12 +56,7 @@ const TwoLayouts = ({
   );
 };
 
-const ThirdLayout = ({
-  getSelectedImages,
-  panResponder,
-  onPressImage,
-  onSelectImage,
-}) => {
+const ThirdLayout = ({getSelectedImages, panResponder, onSelectImage}) => {
   const pieces = getSelectedImages(4);
   const firstColumnPiece = pieces[0];
   const secondColumnPieces = pieces.slice(1, 4);
@@ -100,12 +74,7 @@ const ThirdLayout = ({
         {...panResponder.panHandlers}
         onResponderGrant={handleFirstPieceResponder}
         style={style.largeWrapper}>
-        <TouchableHighlight onPress={onPressImage}>
-          <GeneralImage
-            uri={firstColumnPiece.file}
-            styleImg={style.imageSize}
-          />
-        </TouchableHighlight>
+        <GeneralImage uri={firstColumnPiece.file} styleImg={style.imageSize} />
       </View>
       <View style={style.largeWrapper}>
         {secondColumnPieces.map((piece, index) => {
@@ -122,9 +91,7 @@ const ThirdLayout = ({
               style={style.minWrapper}
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
-              <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-              </TouchableHighlight>
+              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
             </View>
           );
         })}
@@ -133,12 +100,7 @@ const ThirdLayout = ({
   );
 };
 
-const FourthLayout = ({
-  getSelectedImages,
-  panResponder,
-  onPressImage,
-  onSelectImage,
-}) => {
+const FourthLayout = ({getSelectedImages, panResponder, onSelectImage}) => {
   const pieces = getSelectedImages(3);
   const firstColumnPieces = pieces.slice(1, 3);
   const secondColumnPiece = pieces[0];
@@ -167,9 +129,7 @@ const FourthLayout = ({
               style={style.squareWrapper}
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
-              <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-              </TouchableHighlight>
+              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
             </View>
           );
         })}
@@ -178,23 +138,13 @@ const FourthLayout = ({
         style={style.largeWrapper}
         {...panResponder.panHandlers}
         onResponderGrant={handleFirstPieceResponder}>
-        <TouchableHighlight onPress={onPressImage}>
-          <GeneralImage
-            uri={secondColumnPiece.file}
-            styleImg={style.imageSize}
-          />
-        </TouchableHighlight>
+        <GeneralImage uri={secondColumnPiece.file} styleImg={style.imageSize} />
       </View>
     </View>
   );
 };
 
-const FifthLayout = ({
-  getSelectedImages,
-  panResponder,
-  onPressImage,
-  onSelectImage,
-}) => {
+const FifthLayout = ({getSelectedImages, panResponder, onSelectImage}) => {
   const pieces = getSelectedImages(4);
   const firstColumnPieces = pieces.slice(0, 2);
   const secondColumnPieces = pieces.slice(2, 4);
@@ -216,9 +166,7 @@ const FifthLayout = ({
               style={style.squareWrapper}
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
-              <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-              </TouchableHighlight>
+              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
             </View>
           );
         })}
@@ -238,9 +186,7 @@ const FifthLayout = ({
               style={style.squareWrapper}
               {...panResponder.panHandlers}
               onResponderGrant={handleResponder}>
-              <TouchableHighlight onPress={onPressImage}>
-                <GeneralImage uri={piece.file} styleImg={style.imageSize} />
-              </TouchableHighlight>
+              <GeneralImage uri={piece.file} styleImg={style.imageSize} />
             </View>
           );
         })}
@@ -275,7 +221,7 @@ class CartLayoutWrapper extends Component {
   };
 
   renderWrapper = () => {
-    const {onPressImage, onSelectPieceItem, page, panResponder} = this.props;
+    const {onSelectPieceItem, page, panResponder} = this.props;
     const {layout_id: layoutId} = page;
 
     const handleSelectImage = (index) => onSelectPieceItem(page, index);
@@ -284,7 +230,6 @@ class CartLayoutWrapper extends Component {
       return (
         <BasicLayout
           getSelectedImages={this.getSelectedImages}
-          onPressImage={onPressImage}
           onSelectImage={handleSelectImage}
           panResponder={panResponder}
         />
@@ -293,7 +238,6 @@ class CartLayoutWrapper extends Component {
       return (
         <TwoLayouts
           getSelectedImages={this.getSelectedImages}
-          onPressImage={onPressImage}
           onSelectImage={handleSelectImage}
           panResponder={panResponder}
         />
@@ -302,7 +246,6 @@ class CartLayoutWrapper extends Component {
       return (
         <ThirdLayout
           getSelectedImages={this.getSelectedImages}
-          onPressImage={onPressImage}
           onSelectImage={handleSelectImage}
           panResponder={panResponder}
         />
@@ -311,7 +254,6 @@ class CartLayoutWrapper extends Component {
       return (
         <FourthLayout
           getSelectedImages={this.getSelectedImages}
-          onPressImage={onPressImage}
           onSelectImage={handleSelectImage}
           panResponder={panResponder}
         />
@@ -320,7 +262,6 @@ class CartLayoutWrapper extends Component {
       return (
         <FifthLayout
           getSelectedImages={this.getSelectedImages}
-          onPressImage={onPressImage}
           onSelectImage={handleSelectImage}
           panResponder={panResponder}
         />
@@ -334,7 +275,6 @@ class CartLayoutWrapper extends Component {
 }
 
 CartLayoutWrapper.defaultProps = {
-  onPressImage: () => {},
   onSelectPieceItem: () => {},
   panResponder: {},
 };
