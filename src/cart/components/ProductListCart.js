@@ -10,12 +10,14 @@ const ProductListCart = ({carts, onGoToConfirm}) => {
     <View style={style.mainContainer}>
       <View style={style.header}>
         <Text style={style.title}>Productos de cesta</Text>
-        <TouchableOpacity
-          onPress={onGoToConfirm}
-          style={style.button}
-          delayLongPress={0}>
-          <Text style={style.buttonText}>Ir a comprar</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            onPress={onGoToConfirm}
+            style={style.button}
+            delayLongPress={0}>
+            <Text style={style.buttonText}>Ir a comprar</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <FlatList
         contentContainerStyle={style.listContent}
@@ -70,7 +72,8 @@ const style = StyleSheet.create({
     position: 'relative',
     width: 120,
     marginTop: 8,
-    paddingVertical: 5,
+    //paddingVertical: 5,
+    padding: 10,
     alignItems: 'center',
     borderRadius: 290486,
     borderWidth: 1,
