@@ -51,7 +51,7 @@ const Navegador = (props) => {
       initialRouteName="Home">
       <AuthStack.Screen name="Home" component={Home} />
       <AuthStack.Screen name="Profile" component={ProfileNavigator} />
-      <AuthStack.Screen name="EditProfile" component={EditProfile} />
+
       <AuthStack.Screen name="Cart" component={CartMainView} />
       <AuthStack.Screen
         name="ConfirmCart"
@@ -109,11 +109,12 @@ const ProfileNavigator = () => (
     }}>
     <ProfileTab.Screen name="Profile" component={Profile} />
     <ProfileTab.Screen name="Policy" component={Policy} />
-    <ProfileTab.Screen name="Drafts" component={Drafts} />
     <ProfileTab.Screen name="Album" component={AlbumsTabScreen} />
     <ProfileTab.Screen name="Repositories" component={RepositoriesTabScreen} />
     <ProfileTab.Screen name="About" component={About} />
+    <ProfileTab.Screen name="EditProfile" component={EditProfile} />
     <ProfileTab.Screen name="PaidAlbums" component={PaidAlbums} />
+    <ProfileTab.Screen name="Drafts" component={Drafts} />
   </ProfileTab.Navigator>
 );
 

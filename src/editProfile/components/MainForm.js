@@ -258,7 +258,7 @@ export const MainForm = ({profile, onUpdateProfile}) => {
                 onChangeText={(val) => changeValues(val, 'lastname')}
               />
               <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                <View style={style.input} pointerEvents={'none'}>
+                <View style={style.input}>
                   <Text style={style.dateText}>{`${date.getDate()}/${
                     date.getMonth() + 1
                   }/${date.getFullYear()}`}</Text>

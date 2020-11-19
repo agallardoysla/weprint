@@ -40,15 +40,11 @@ function EditProfile({navigation, dispatch, profile}) {
   const handleUpdateProfile = (data) =>
     dispatch(actions.actualizarProfile(data));
 
-  const handleGoBack = () => navigation.navigate('Profile');
+  const handleGoBack = () => navigation.goBack();
 
   useEffect(() => {
     getUserData();
   }, [getUserData]);
-
-  useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-  }, [dispatch, navigation]);
 
   return (
     <>
