@@ -47,7 +47,7 @@ export const ProfileMainView = ({data, navigation, loading}) => {
           <TouchableOpacity
             delayPressIn={0}
             style={style.button}
-            onPress={() => navigation.navigate('EditProfile', data)}>
+            onPress={() => navigation.navigate('EditProfile')}>
             <Text style={style.buttonTitle}>EDITAR PERFIL</Text>
           </TouchableOpacity>
         </>
@@ -60,7 +60,6 @@ const style = StyleSheet.create({
   mainContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-
     width: '100%',
     height: '40%',
   },

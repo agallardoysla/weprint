@@ -4,7 +4,7 @@ import login, {actualizarLogin, logout} from './reducer/login';
 import register, {actualizarRegister} from './reducer/register';
 import navigation, {actualizarNavigation} from './reducer/navigation';
 import format, {actualizarFormats, agregarFormat} from './reducer/format';
-import selectImage, {actualizarImagenes} from './reducer/selectImagen';
+import profile, {actualizarProfile} from './reducer/profile';
 
 import cart, {
   agregarCart,
@@ -19,9 +19,9 @@ export default combineReducers({
   register,
   navigation,
   format,
-  selectImage,
   cart,
   layout,
+  profile,
 });
 
 export const actions = {
@@ -29,9 +29,9 @@ export const actions = {
   actualizarRegister,
   actualizarNavigation,
   logout,
+  actualizarProfile,
   actualizarFormats,
   agregarFormat,
-  actualizarImagenes,
   agregarCart,
   editarCart,
   setListCart,
