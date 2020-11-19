@@ -14,7 +14,7 @@ const ProductListCart = ({carts, onGoToConfirm}) => {
           <TouchableOpacity
             onPress={onGoToConfirm}
             style={style.button}
-            delayLongPress={0}>
+            delayPressIn={0}>
             <Text style={style.buttonText}>Ir a comprar</Text>
           </TouchableOpacity>
         </View>

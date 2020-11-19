@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {actions} from '../../redux';
+
 import sumBy from 'lodash/sumBy';
 import {RFPercentage} from 'react-native-responsive-fontsize';
 import {estiloDeLetra, colores} from '../../constantes/Temas';
-import {get_carts} from '../../utils/apis/cart_api';
 
 const STATUS = 'draft';
 
@@ -42,10 +41,6 @@ function ConfirmCart({dispatch, navigation, carts}) {
       },
     });
   };
-
-  useEffect(() => {
-    dispatch(actions.actualizarNavigation(navigation));
-  }, [dispatch, navigation]);
 
   return (
     <>
