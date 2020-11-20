@@ -17,6 +17,7 @@ import {get_profile_api} from '../../utils/apis/login_api';
 import {actions} from '../../redux';
 
 function EditProfile({navigation, dispatch, profile}) {
+  console.warn('profile', profile);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 

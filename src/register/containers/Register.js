@@ -90,6 +90,7 @@ function Register({dispatch, navigation}) {
 
     try {
       const response = await getDiscricts(locationSelector);
+
       setDiscrictLocation(response.data);
     } catch {
       Alert.alert('No se pudo cargar comunas, revisa tu conexión');
@@ -181,12 +182,7 @@ function Register({dispatch, navigation}) {
     });
   };
 
-  const pickValidation = (value, key, validateKey) => {
-    setData({
-      ...data,
-      [key]: value,
-    });
-
+  const pickValidation = (value, validateKey) => {
     setTextValidator({
       ...textValidator,
       check_textInputChange: true,
@@ -375,15 +371,25 @@ function Register({dispatch, navigation}) {
                   <Picker
                     selectedValue={locationSelector}
                     onValueChange={(val) => {
-                      textDataValidation(
-                        provinceLocation.find((province) => province.id === val)
-                          .name,
-                        0,
-                        'isValidProvinceSelected',
-                        'province',
+                      const selectedProvince = provinceLocation.find(
+                        (province) => province.id === val,
                       );
+
+                      setTextValidator({
+                        ...textValidator,
+                        isValidComunaSelected: false,
+                        isValidProvinceSelected: selectedProvince.name
+                          ? true
+                          : false,
+                      });
+
                       setLocationSelector(val);
-                      setData({...data, districtId: val});
+                      setData({
+                        ...data,
+                        comuna: '',
+                        districtId: '',
+                        province: selectedProvince.name,
+                      });
                     }}
                     itemStyle={{height: 120}}>
                     <Picker.Item label={'- Seleccione -'} value="" />
@@ -400,17 +406,30 @@ function Register({dispatch, navigation}) {
                 <View style={styles.action}>
                   <Text style={{marginVertical: 10}}>Comuna</Text>
                   <Picker
-                    selectedValue={data.comuna}
-                    onValueChange={(val) =>
-                      pickValidation(val, 'comuna', 'isValidComunaSelected')
-                    }
+                    selectedValue={data.districtId}
+                    onValueChange={(districtId) => {
+                      const selectedDistrict = discrictLocation.find(
+                        (district) => district.id === districtId,
+                      );
+
+                      pickValidation(
+                        selectedDistrict.name,
+                        'isValidComunaSelected',
+                      );
+
+                      setData({
+                        ...data,
+                        comuna: selectedDistrict.name,
+                        districtId,
+                      });
+                    }}
                     itemStyle={{height: 120}}>
                     <Picker.Item label={'- Seleccione -'} value={false} />
                     {discrictLocation.map((district) => (
                       <Picker.Item
                         key={district.id}
                         label={district.name}
-                        value={district.name}
+                        value={district.id}
                       />
                     ))}
                   </Picker>
