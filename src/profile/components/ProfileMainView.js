@@ -20,6 +20,8 @@ export const ProfileMainView = ({data, navigation, loading}) => {
     return age;
   };
 
+  const handleGoToEditProfile = () => navigation.navigate('EditProfile');
+
   return (
     <LinearGradient
       colors={['#ffaa66', '#ff7584']}
@@ -44,12 +46,14 @@ export const ProfileMainView = ({data, navigation, loading}) => {
               </Text>
             </View>
           </View>
-          <TouchableOpacity
-            delayPressIn={0}
-            style={style.button}
-            onPress={() => navigation.navigate('EditProfile')}>
-            <Text style={style.buttonTitle}>EDITAR PERFIL</Text>
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity
+              delayPressIn={0}
+              style={style.button}
+              onPress={handleGoToEditProfile}>
+              <Text style={style.buttonTitle}>Editar Perfil</Text>
+            </TouchableOpacity>
+          </View>
         </>
       )}
     </LinearGradient>

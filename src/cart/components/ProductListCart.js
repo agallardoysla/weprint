@@ -22,6 +22,7 @@ const ProductListCart = ({carts, onGoToConfirm}) => {
       <FlatList
         contentContainerStyle={style.listContent}
         data={carts}
+        scrollEventThrottle={16}
         renderItem={renderCart}
         keyExtractor={(cart) => cart.id.toString()}
       />
@@ -31,6 +32,7 @@ const ProductListCart = ({carts, onGoToConfirm}) => {
 
 const style = StyleSheet.create({
   mainContainer: {
+    height: '100%',
     backgroundColor: colores.blanco,
   },
   listContent: {
@@ -72,7 +74,6 @@ const style = StyleSheet.create({
     position: 'relative',
     width: 120,
     marginTop: 8,
-    //paddingVertical: 5,
     padding: 10,
     alignItems: 'center',
     borderRadius: 290486,

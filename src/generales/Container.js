@@ -58,24 +58,26 @@ const Item = ({navigation, ruta, title, iconName, isRoute}) => {
   const handleGoToRoute = () => navigation.navigate(ruta);
 
   return (
-    <TouchableOpacity
-      onPress={handleGoToRoute}
-      style={styles.itemContainer}
-      delayPressIn={0}>
-      <Icon
-        name={iconName}
-        color={isRoute.name !== ruta ? colores.menuSelect : colores.naranja}
-        size={20}
-        style={styles.icon}
-      />
-      <Text
-        style={{
-          ...estiloDeLetra.negrita,
-          color: isRoute.name !== ruta ? colores.menuSelect : colores.naranja,
-        }}>
-        {title}
-      </Text>
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        onPress={handleGoToRoute}
+        style={styles.itemContainer}
+        delayPressIn={0}>
+        <Icon
+          name={iconName}
+          color={isRoute.name !== ruta ? colores.menuSelect : colores.naranja}
+          size={20}
+          style={styles.icon}
+        />
+        <Text
+          style={{
+            ...estiloDeLetra.negrita,
+            color: isRoute.name !== ruta ? colores.menuSelect : colores.naranja,
+          }}>
+          {title}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
