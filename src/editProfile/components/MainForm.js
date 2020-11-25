@@ -75,8 +75,10 @@ export const MainForm = ({profile, onUpdateProfile}) => {
     setDiscrictLocation([]);
 
     try {
-      const response = await getDiscricts(locationSelector);
-      setDiscrictLocation(response.data);
+      if (locationSelector !== 0) {
+        const response = await getDiscricts(locationSelector);
+        setDiscrictLocation(response.data);
+      }
     } catch {
       Alert.alert('No se pudo cargar comunas, revisa tu conexión');
     }
