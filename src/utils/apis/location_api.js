@@ -1,10 +1,9 @@
-import {del, get, postToken, put} from './services';
+import {get} from './services';
 
-export const getProvinces = async (body) => {
+export const getProvinces = async () => {
   return get('/province?country_id=1');
 };
 
 export const getDiscricts = async (id) => {
-    console.log(`/province?country_id=${id}`)
   return get(`/district?province_id=${id}`);
 };

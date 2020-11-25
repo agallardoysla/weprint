@@ -1,5 +1,12 @@
 import React, {useEffect} from 'react';
-import {SafeAreaView, StyleSheet, View, Text, StatusBar} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  StatusBar,
+  Alert,
+} from 'react-native';
 
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -12,6 +19,7 @@ import CargandoModal from './src/generales/CargandoModal';
 import messaging from '@react-native-firebase/messaging';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import './src/i18n';
 
 const App: () => React$Node = () => {
   const renderLoading = () => (
@@ -26,7 +34,7 @@ const App: () => React$Node = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       Alert.alert('Push notify', JSON.stringify(remoteMessage));
     });
 

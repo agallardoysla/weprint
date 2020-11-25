@@ -28,12 +28,13 @@ export const MenuItem = ({
             source={{uri: `${photo}`}}
             style={{height: 45, width: 45, marginRight: 15, borderRadius: 100}}
           />
-        ) : (icon ? (
+        ) : icon ? (
           <Icon name={icon} style={{marginRight: 15}} color={color} size={20} />
-        ) : null)
-        }
+        ) : null}
         <View>
-          <Text style={StyleSheet.flatten([styles.title,nameStyle])}>{name}</Text>
+          <Text style={StyleSheet.flatten([styles.title, nameStyle])}>
+            {name}
+          </Text>
           {text && <Text style={StyleSheet.flatten([textStyle])}>{text}</Text>}
         </View>
         <Icon

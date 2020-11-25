@@ -1,59 +1,96 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
-  Text,
-  SafeAreaView,
   ScrollView,
-  Dimensions,
+  StyleSheet,
   Image,
+  TouchableOpacity,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Container from '../../generales/Container';
-import Background from '../../assets/img/bg-app.svg';
+import CargandoModal from '../../generales/CargandoModal';
+import ButtonReload from '../../generales/ButtonReload';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {MainForm} from '../components/MainForm';
 import {colores} from '../../constantes/Temas';
 import {get_profile_api} from '../../utils/apis/login_api';
+import {actions} from '../../redux';
 
-function EditProfile({navigation, route}) {
+function EditProfile({navigation, dispatch, profile}) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const getUserData = useCallback(async () => {
+    setLoading(true);
+    setError(false);
+
+    try {
+      if (!profile) {
+        const response = await get_profile_api();
+        dispatch(actions.actualizarProfile(response.data[0]));
+      }
+
+      setLoading(false);
+    } catch {
+      setLoading(false);
+      setError(true);
+    }
+  }, [dispatch, profile]);
+
+  const handleUpdateProfile = (data) =>
+    dispatch(actions.actualizarProfile(data));
+
+  const handleGoBack = () => navigation.goBack();
+
+  useEffect(() => {
+    getUserData();
+  }, [getUserData]);
+
   return (
-    <Container footer={false}>
-      <SafeAreaView>
-        <ScrollView>
-          <View style={{width: '100%', height: '100%', alignItems: 'center'}}>
-            <View style={{position: 'absolute'}}>
-              <Background width={Dimensions.get('screen').width} height={205} />
-            </View>
-            <View
-              style={{
-                width: '100%',
-                height: '10%',
-                justifyContent: 'center',
-                position: 'absolute',
-              }}>
-              <View
-                style={{
-                  width: 50,
-                  height: 50,
-                  marginLeft: 10,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Icon
-                  name="arrow-back"
-                  size={40}
-                  onPress={() => navigation.goBack()}
-                />
-              </View>
+    <>
+      <CargandoModal title="Cargando" show={loading} />
+
+      <Container footer={false}>
+        {error && <ButtonReload onReload={getUserData} />}
+
+        {!loading && !error && (
+          <ScrollView keyboardShouldPersistTaps={'handled'}>
+            <Image
+              style={style.bgHeader}
+              source={require('../../assets/img/bg-app.png')}
+            />
+            <View style={style.arrowContainer}>
+              <TouchableOpacity onPress={handleGoBack} delayPressIn={0}>
+                <Icon name="arrow-back" color={colores.blanco} size={40} />
+              </TouchableOpacity>
             </View>
 
-            <MainForm data={route.params} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </Container>
+            <MainForm profile={profile} onUpdateProfile={handleUpdateProfile} />
+          </ScrollView>
+        )}
+      </Container>
+    </>
   );
 }
 
-const mapStateToProps = (state) => ({login: state.login});
+const style = StyleSheet.create({
+  bgHeader: {
+    height: 200,
+    width: '100%',
+  },
+  arrowContainer: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    zIndex: 999,
+    elevation: 999,
+  },
+});
+
+const mapStateToProps = (state) => {
+  return {
+    profile: state.profile.data,
+  };
+};
+
 export default connect(mapStateToProps)(EditProfile);

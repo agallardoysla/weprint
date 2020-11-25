@@ -15,6 +15,8 @@ import Profile from './profile/containers/Profile';
 import Policy from './profile/menuScreens/Policy';
 import About from './profile/menuScreens/About';
 import Drafts from './profile/menuScreens/Drafts';
+import PaidAlbums from './profile/menuScreens/PaidAlbums';
+
 import Repositories from './profile/menuScreens/Repositories';
 import UploadRepository from './profile/menuScreens/UploadRepository';
 import RepositoryDescription from './profile/menuScreens/RepositoryDescription';
@@ -35,8 +37,6 @@ import ChangePassword from './changePassword/containers/ChangePassword';
 
 import Album from './profile/menuScreens/Album';
 import AlbumRequest from './profile/menuScreens/AlbumRequest';
-
-import {colores} from './constantes/Temas';
 
 const Navegador = (props) => {
   const {login} = props;
@@ -109,11 +109,12 @@ const ProfileNavigator = () => (
     }}>
     <ProfileTab.Screen name="Profile" component={Profile} />
     <ProfileTab.Screen name="Policy" component={Policy} />
-    <ProfileTab.Screen name="Drafts" component={Drafts} />
     <ProfileTab.Screen name="Album" component={AlbumsTabScreen} />
     <ProfileTab.Screen name="Repositories" component={RepositoriesTabScreen} />
     <ProfileTab.Screen name="About" component={About} />
     <ProfileTab.Screen name="EditProfile" component={EditProfile} />
+    <ProfileTab.Screen name="PaidAlbums" component={PaidAlbums} />
+    <ProfileTab.Screen name="Drafts" component={Drafts} />
   </ProfileTab.Navigator>
 );
 

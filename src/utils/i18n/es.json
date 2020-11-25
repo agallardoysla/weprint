@@ -1,0 +1,20 @@
+{
+  "translation": {
+    "NICKNAME_ALREADY_EXISTS": "El nickname que estas usando ya existe",
+    "EMAIL_ALREADY_EXISTS": "El email que estas usando ya existe",
+    "MONTHS": {
+      "JANUARY": "Enero",
+      "FEBRUARY": "Febrero",
+      "MARCH": "Marzo",
+      "APRIL": "Abril",
+      "MAY": "Mayo",
+      "JUNE": "Junio",
+      "JULY": "Julio",
+      "AUGUST": "Agosto",
+      "SEPTEMBER": "Septiembre",
+      "OCTOBER": "Octubre",
+      "NOVEMBER": "Noviembre",
+      "DECEMBER": "Diciembre"
+    }
+  }
+}

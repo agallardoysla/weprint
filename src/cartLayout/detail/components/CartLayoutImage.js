@@ -62,7 +62,6 @@ class CartLayoutImage extends PureComponent {
                 panResponder={panResponder}
                 page={page}
                 onSelectPieceItem={onSelectPieceItem}
-                onPressImage={this.handleOnPressImage}
               />
             </View>
             <Text style={style.cartLayoutText}>Pg {page.number}</Text>
@@ -73,10 +72,20 @@ class CartLayoutImage extends PureComponent {
                   : style.cartLayoutIconContainer
               }
               {...panResponder.panHandlers}
-              //onResponderStart={onResetPieceItem}
               onResponderGrant={this.handleResponseGrant}>
               <Icon name="move" size={15} color={colores.gris} />
             </View>
+
+            <TouchableOpacity
+              delayPressIn={0}
+              onPress={this.handleOnPressImage}
+              style={
+                this.pageIsOdd()
+                  ? style.cartLayoutIcontEditRight
+                  : style.cartLayoutIcontEdit
+              }>
+              <Icon name="edit-2" size={15} color={colores.azulMedio} />
+            </TouchableOpacity>
             <TouchableOpacity
               delayPressIn={0}
               onPress={this.handleToggleModal}
@@ -119,11 +128,11 @@ const style = StyleSheet.create({
     paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F6F8FA',
+    backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 3,
-    zIndex: 3,
+    elevation: 999,
+    zIndex: 999,
   },
   cartLayoutIconContainerRight: {
     position: 'absolute',
@@ -135,11 +144,11 @@ const style = StyleSheet.create({
     paddingHorizontal: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F6F8FA',
+    backgroundColor: colores.grisBgIconCart,
     borderWidth: 0.5,
     borderColor: colores.grisFormatoAlbum,
-    elevation: 3,
-    zIndex: 3,
+    elevation: 999,
+    zIndex: 999,
   },
   cartLayoutIconContainerX: {
     position: 'absolute',
@@ -161,6 +170,39 @@ const style = StyleSheet.create({
     position: 'absolute',
     top: -5,
     right: 0,
+    height: 18,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colores.grisBgIconCart,
+    borderWidth: 0.5,
+    borderColor: colores.grisFormatoAlbum,
+    elevation: 999,
+    zIndex: 999,
+  },
+
+  cartLayoutIcontEditRight: {
+    position: 'absolute',
+    top: '30%',
+    right: 0,
+    height: 18,
+    width: 27,
+    paddingVertical: 4,
+    paddingHorizontal: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colores.grisBgIconCart,
+    borderWidth: 0.5,
+    borderColor: colores.grisFormatoAlbum,
+    elevation: 999,
+    zIndex: 999,
+  },
+  cartLayoutIcontEdit: {
+    position: 'absolute',
+    top: '30%',
+    left: 0,
     height: 18,
     width: 27,
     paddingVertical: 4,
