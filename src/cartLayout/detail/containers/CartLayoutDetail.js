@@ -398,12 +398,14 @@ function CartLayoutDetail({
             <Cargando titulo="" loaderColor={colores.logo} />
           ) : (
             <>
-              <CartLayoutListImage
-                onSavePages={handleLocalChangeCart}
-                onGoToEditCartImage={handleGoToEditCartImage}
-                cart={cart}
-                format={format}
-              />
+              {cart && cart.pages && (
+                <CartLayoutListImage
+                  onSavePages={handleLocalChangeCart}
+                  onGoToEditCartImage={handleGoToEditCartImage}
+                  cart={cart}
+                  format={format}
+                />
+              )}
             </>
           )}
         </>

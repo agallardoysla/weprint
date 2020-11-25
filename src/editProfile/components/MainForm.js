@@ -27,11 +27,12 @@ import {colores, estiloDeLetra, tipoDeLetra} from '../../constantes/Temas';
 export const MainForm = ({profile, onUpdateProfile}) => {
   const getUserDataFormat = (data) => {
     const location = data.address.split(',');
+
     return {
       ...data,
-      address: location[0].trim(),
-      comuna: location[1].trim(),
-      province: location[2].trim(),
+      address: location[0] ? location[0].trim() : null,
+      comuna: location[1] ? location[1].trim() : null,
+      province: location[2] ? location[2].trim() : null,
     };
   };
   const {t} = useTranslation();
@@ -54,11 +55,13 @@ export const MainForm = ({profile, onUpdateProfile}) => {
       try {
         const response = await getProvinces();
 
-        const selectedProvince = response.data.find(
-          (province) => province.name === userData.province,
-        );
+        if (userData.province) {
+          const selectedProvince = response.data.find(
+            (province) => province.name === userData.province,
+          );
+          setLocationSelector(selectedProvince.id);
+        }
 
-        setLocationSelector(selectedProvince.id);
         setProvinceLocation(response.data);
         setLoadingProvince(false);
       } catch {
@@ -72,8 +75,10 @@ export const MainForm = ({profile, onUpdateProfile}) => {
     setDiscrictLocation([]);
 
     try {
-      const response = await getDiscricts(locationSelector);
-      setDiscrictLocation(response.data);
+      if (locationSelector !== 0) {
+        const response = await getDiscricts(locationSelector);
+        setDiscrictLocation(response.data);
+      }
     } catch {
       Alert.alert('No se pudo cargar comunas, revisa tu conexión');
     }
@@ -136,8 +141,8 @@ export const MainForm = ({profile, onUpdateProfile}) => {
   };
 
   const editProfileHandle = async () => {
-    if (!userData.comuna) {
-      Alert.alert('Ingresa comuna');
+    if (!userData.comuna || !userData.province) {
+      Alert.alert('Ingresa ambos datos de ubicación: comuna y provincia');
       return;
     }
 

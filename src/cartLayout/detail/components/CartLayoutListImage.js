@@ -125,8 +125,11 @@ class CartLayoutListImage extends PureComponent {
       this.handleChangePage();
     }
 
-    if (prevProps.cart !== cart) {
-      this.setState({...this.state, pages: cart.pages});
+    if (prevProps.cart !== cart && cart) {
+      this.setState({
+        ...this.state,
+        pages: cart.pages ? cart.pages : [],
+      });
     }
   }
 
